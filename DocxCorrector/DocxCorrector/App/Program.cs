@@ -1,20 +1,18 @@
 ﻿using System;
-using System.IO;
-using System.Resources;
 using DocxCorrector.Services.Corrector;
-using Word = Microsoft.Office.Interop.Word;
-
+using DocxCorrector.Services;
 
 namespace DocxCorrector.App
 {
     class Program
     {
-        public static Corrector Corrector = new CorrectorInterop(Config.FilePath);
+        public static Corrector Corrector = new CorrectorInterop(Config.DocFilePath);
 
         static void Main(string[] args)
         {
             // Interop.Word version
-            Corrector.PrintAllParagraphs();
+            string mistakesJSON = Corrector.GetMistakesJSON();
+            FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
         }  
     }
 }

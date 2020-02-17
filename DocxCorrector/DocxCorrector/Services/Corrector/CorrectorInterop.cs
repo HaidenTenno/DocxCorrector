@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using DocxCorrector.Models;
+using DocxCorrector.Services;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace DocxCorrector.Services.Corrector
@@ -36,6 +39,16 @@ namespace DocxCorrector.Services.Corrector
             }
 
             QuitWord();
+        }
+
+        public override string GetMistakesJSON()
+        {
+            List<Mistake> mistakes = new List<Mistake> { new Mistake { ParagraphID = 0, Message = "NOT IMPLEMENTED" } };
+
+            // TODO: - Implement
+
+            string mistakesJSON = JSONMaker.MakeMistakesJSON(mistakes);
+            return mistakesJSON;
         }
     }
 }
