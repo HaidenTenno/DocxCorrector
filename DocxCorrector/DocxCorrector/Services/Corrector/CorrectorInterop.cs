@@ -43,11 +43,21 @@ namespace DocxCorrector.Services.Corrector
 
         public override string GetMistakesJSON()
         {
-            List<Mistake> mistakes = new List<Mistake> { new Mistake { ParagraphID = 0, Message = "NOT IMPLEMENTED" } };
+            List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
+            
+            // TODO: - Remove
+            ParagraphResult testResult = new ParagraphResult
+            {
+                ParagraphID = 0,
+                Type = ElementType.Paragraph,
+                Suffix = "TestParagraph",
+                Mistakes = new List<Mistake> { new Mistake { Message = "Not Implemented" } }
+            };
+            paragraphResults.Add(testResult);
 
-            // TODO: - Implement
+            // TODO: - Implement method
 
-            string mistakesJSON = JSONMaker.MakeMistakesJSON(mistakes);
+            string mistakesJSON = JSONMaker.MakeMistakesJSON(paragraphResults);
             return mistakesJSON;
         }
     }

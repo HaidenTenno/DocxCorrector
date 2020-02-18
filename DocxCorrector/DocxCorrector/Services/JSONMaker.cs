@@ -9,9 +9,9 @@ namespace DocxCorrector.Services
     public static class JSONMaker
     {
         // Создать JSON строку из списка ошибок mistakes
-        public static string MakeMistakesJSON(List<Mistake> mistakes)
+        public static string MakeMistakesJSON(List<ParagraphResult> results)
         {
-            string jsonString = JsonSerializer.Serialize(mistakes);
+            string jsonString = JsonSerializer.Serialize(results);
             return jsonString;
         }
     }
