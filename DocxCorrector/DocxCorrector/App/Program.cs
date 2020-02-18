@@ -13,6 +13,8 @@ namespace DocxCorrector.App
             // Interop.Word version
             string mistakesJSON = Corrector.GetMistakesJSON();
             FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
+
+            Console.ReadLine();
         }  
     }
 }
