@@ -17,6 +17,7 @@ namespace DocxCorrector.Services.Corrector
         private void OpenWord()
         {
             App = new Word.Application();
+            App.Visible = false;
             Document = App.Documents.Open(FilePath);
         }
 
@@ -29,18 +30,6 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Corrector
-        public override void PrintAllParagraphs()
-        {
-            OpenWord();
-
-            foreach (Word.Paragraph paragraph in Document.Paragraphs)
-            {
-                Console.WriteLine(paragraph.Range.Text);
-            }
-
-            QuitWord();
-        }
-
         public override string GetMistakesJSON()
         {
             List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
@@ -59,6 +48,55 @@ namespace DocxCorrector.Services.Corrector
 
             string mistakesJSON = JSONMaker.MakeMistakesJSON(paragraphResults);
             return mistakesJSON;
+        }
+
+        public override void PrintAllParagraphs()
+        {
+            OpenWord();
+
+            foreach (Word.Paragraph paragraph in Document.Paragraphs)
+            {
+                Console.WriteLine(paragraph.Range.Text);
+            }
+
+            QuitWord();
+        }
+
+        public override void PrintFirstParagraphProperties()
+        {
+            OpenWord();
+
+            Word.Paragraph paragraph = Document.Paragraphs.First;
+
+            Console.WriteLine($"Текст: {paragraph.Range.Text}");
+            Console.WriteLine($"Имя шрифта: {paragraph.Range.Font.Name}");
+            Console.WriteLine($"Размер шрифта: {paragraph.Range.Font.Size}");
+            Console.WriteLine($"Уровень заголовка: {paragraph.OutlineLevel}");
+            Console.WriteLine($"Жирный: {paragraph.Range.Bold}");
+            Console.WriteLine($"Курсив: {paragraph.Range.Italic}");
+            Console.WriteLine($"Цвет текста: {paragraph.Range.Font.TextColor.RGB}");
+            Console.WriteLine($"Цвет выделения: {paragraph.Range.Font.UnderlineColor}");
+            Console.WriteLine($"Подчеркнутый: {paragraph.Range.Underline}");
+            Console.WriteLine($"Зачеркнутый: {paragraph.Range.Font.StrikeThrough}");
+            Console.WriteLine($"Надстрочность: {paragraph.Range.Font.Superscript}");
+            Console.WriteLine($"Подстрочность: {paragraph.Range.Font.Subscript}");
+            Console.WriteLine($"Скрытый: {paragraph.Range.Font.Hidden}");
+            Console.WriteLine($"Масштаб: {paragraph.Range.Font.Scaling}");
+            Console.WriteLine($"Смещение: {paragraph.Range.Font.Position}");
+            Console.WriteLine($"Кернинг: {paragraph.Range.Font.Kerning}");
+            Console.WriteLine($"Выравнивание: {paragraph.Alignment}");
+            Console.WriteLine($"Отступ слева (в знаках): {paragraph.CharacterUnitLeftIndent}");
+            Console.WriteLine($"Отступ слева (в пунктах): {paragraph.LeftIndent}");
+            Console.WriteLine($"Отступ справа (в знаках): {paragraph.CharacterUnitRightIndent}");
+            Console.WriteLine($"Отступ справа (в пунктах): {paragraph.RightIndent}");
+            Console.WriteLine($"Отступ первой строки: {paragraph.CharacterUnitFirstLineIndent}");
+            Console.WriteLine($"Зеркальность отступов: {paragraph.MirrorIndents}");
+            Console.WriteLine($"Междустрочный интервал: {paragraph.LineSpacing}");
+            Console.WriteLine($"Интервал перед: {paragraph.SpaceBefore}");
+            Console.WriteLine($"Интервал после: {paragraph.SpaceAfter}");
+            Console.WriteLine($"Интервал после: {paragraph.PageBreakBefore}");
+
+            QuitWord();
         }
     }
 }

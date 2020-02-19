@@ -11,12 +11,17 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Corrector
-        public override void PrintAllParagraphs()
+        public override string GetMistakesJSON()
         {
             throw new NotImplementedException();
         }
 
-        public override string GetMistakesJSON()
+        public override void PrintAllParagraphs()
+        {
+            throw new NotImplementedException();
+        }
+        
+        public override void PrintFirstParagraphProperties()
         {
             throw new NotImplementedException();
         }

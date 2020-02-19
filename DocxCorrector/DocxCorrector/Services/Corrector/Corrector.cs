@@ -11,11 +11,15 @@ namespace DocxCorrector.Services.Corrector
         {
             FilePath = filePath;
         }
+                
+        // Получение JSON-а со списком ошибок
+        public abstract string GetMistakesJSON();
 
+        // MARK: - Вспомогательные на момент разработки методы, котоые возможно подлежат удалению
         // Печать всех абзацев
         public abstract void PrintAllParagraphs();
 
-        // Получение JSON-а со списком ошибок
-        public abstract string GetMistakesJSON();
+        // Напечатать свойства первого параграфа
+        public abstract void PrintFirstParagraphProperties();
     }
 }
