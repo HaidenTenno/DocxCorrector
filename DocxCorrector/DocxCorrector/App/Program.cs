@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using DocxCorrector.Services.Corrector;
 using DocxCorrector.Services;
+using DocxCorrector.Models;
 
 namespace DocxCorrector.App
 {
@@ -10,20 +12,11 @@ namespace DocxCorrector.App
 
         static void Main(string[] args)
         {
-            // Interop.Word version
             //string mistakesJSON = Corrector.GetMistakesJSON();
             //FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
-            //Corrector.PrintAllParagraphs();
-
-            // TODO: - Remove
-            System.Collections.Generic.List<Models.ParagraphProperties> list = new System.Collections.Generic.List<Models.ParagraphProperties>();
-            var properties = new Models.ParagraphProperties
-            {
-                ID = 1,
-                Text = "Test"
-            };
-            list.Add(properties);
-            FileWriter.FillPropertiesCSV(Config.PropertiesFilePath, list);
+            
+            List<ParagraphProperties> paragraphProperties = Corrector.GetAllParagraphsProperties();
+            FileWriter.FillPropertiesCSV(Config.PropertiesFilePath, paragraphProperties);
 
             Console.ReadLine();
         }  

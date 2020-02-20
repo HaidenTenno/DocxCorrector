@@ -27,7 +27,7 @@ namespace DocxCorrector.Services
             }
         }
 
-        // Записать свойства параграфов в CSV файл
+        // Записать свойства параграфов paragraphsInfo в CSV файл filePath
         public static void FillPropertiesCSV(string filePath, List<ParagraphProperties> paragraphsInfo)
         {
             try

@@ -64,6 +64,44 @@ namespace DocxCorrector.Services.Corrector
             Console.WriteLine($"Кернинг: {range.Font.Kerning}");
         }
 
+        private ParagraphProperties GetParagraphProperties(Word.Paragraph paragraph)
+        {
+            ParagraphProperties paragraphProperties = new ParagraphProperties
+            {
+                // Range
+                Text = paragraph.Range.Text,
+                FontName = paragraph.Range.Font.Name,
+                FontSize = paragraph.Range.Font.Size.ToString(),
+                Bold = paragraph.Range.Bold.ToString(),
+                Italic = paragraph.Range.Italic.ToString(),
+                FontTextColorRGB = paragraph.Range.Font.TextColor.RGB.ToString(),
+                FontUnderlineColor = paragraph.Range.Font.UnderlineColor.ToString(),
+                Underline = paragraph.Range.Underline.ToString(),
+                FontStrikeThrough = paragraph.Range.Font.StrikeThrough.ToString(),
+                FontSuperscript = paragraph.Range.Font.Superscript.ToString(),
+                FontSubscript = paragraph.Range.Font.Superscript.ToString(),
+                FontHidden = paragraph.Range.Font.Hidden.ToString(),
+                FontScaling = paragraph.Range.Font.Scaling.ToString(),
+                FontPosition = paragraph.Range.Font.Position.ToString(),
+                FontKerning = paragraph.Range.Font.Kerning.ToString(),
+                // Paragraph 
+                OutlineLevel = paragraph.OutlineLevel.ToString(),
+                Alignment = paragraph.Alignment.ToString(),
+                CharacterUnitLeftIndent = paragraph.CharacterUnitLeftIndent.ToString(),
+                LeftIndent = paragraph.LeftIndent.ToString(),
+                CharacterUnitRightIndent = paragraph.CharacterUnitLeftIndent.ToString(),
+                RightIndent = paragraph.RightIndent.ToString(),
+                CharacterUnitFirstLineIndent = paragraph.CharacterUnitFirstLineIndent.ToString(),
+                MirrorIndents = paragraph.MirrorIndents.ToString(),
+                LineSpacing = paragraph.LineSpacing.ToString(),
+                SpaceBefore = paragraph.SpaceBefore.ToString(),
+                SpaceAfter = paragraph.SpaceAfter.ToString(),
+                PageBreakBefore = paragraph.PageBreakBefore.ToString()
+            };
+
+            return paragraphProperties;
+        }
+
         // Corrector
         public override string GetMistakesJSON()
         {
@@ -83,6 +121,23 @@ namespace DocxCorrector.Services.Corrector
 
             string mistakesJSON = JSONMaker.MakeMistakesJSON(paragraphResults);
             return mistakesJSON;
+        }
+
+        public override List<ParagraphProperties> GetAllParagraphsProperties()
+        {
+            OpenWord();
+
+            List<ParagraphProperties> allParagraphsProperties = new List<ParagraphProperties>();
+
+            foreach (Word.Paragraph paragraph in Document.Paragraphs)
+            {
+                ParagraphProperties paragraphProperties = GetParagraphProperties(paragraph);
+                allParagraphsProperties.Add(paragraphProperties);
+            }
+
+            QuitWord();
+
+            return allParagraphsProperties;
         }
 
         public override void PrintAllParagraphs()

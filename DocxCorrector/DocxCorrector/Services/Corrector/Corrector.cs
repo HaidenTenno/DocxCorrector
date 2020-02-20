@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DocxCorrector.Services.Corrector
 {
@@ -14,6 +15,9 @@ namespace DocxCorrector.Services.Corrector
                 
         // Получение JSON-а со списком ошибок
         public abstract string GetMistakesJSON();
+
+        // Получить свойства всех параграфов
+        public abstract List<Models.ParagraphProperties> GetAllParagraphsProperties();
 
         // MARK: - Вспомогательные на момент разработки методы, котоые возможно подлежат удалению
         // Печать всех абзацев

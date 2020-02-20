@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DocxCorrector.Models;
+using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace DocxCorrector.Services.Corrector
@@ -12,6 +14,11 @@ namespace DocxCorrector.Services.Corrector
 
         // Corrector
         public override string GetMistakesJSON()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override List<ParagraphProperties> GetAllParagraphsProperties()
         {
             throw new NotImplementedException();
         }
