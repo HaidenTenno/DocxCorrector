@@ -18,7 +18,7 @@ namespace DocxCorrector.App
             List<ParagraphProperties> paragraphProperties = Corrector.GetAllParagraphsProperties();
             FileWriter.FillPropertiesCSV(Config.PropertiesFilePath, paragraphProperties);
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }  
     }
 }
