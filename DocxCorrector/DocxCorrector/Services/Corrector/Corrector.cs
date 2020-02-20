@@ -21,5 +21,7 @@ namespace DocxCorrector.Services.Corrector
 
         // Напечатать свойства первого параграфа
         public abstract void PrintFirstParagraphProperties();
+        // Напечатать свойства первых двух слов первого параграфа
+        public abstract void PrintFirstTwoWordsProperties();
     }
 }

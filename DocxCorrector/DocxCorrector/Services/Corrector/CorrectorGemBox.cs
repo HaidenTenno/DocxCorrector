@@ -25,5 +25,10 @@ namespace DocxCorrector.Services.Corrector
         {
             throw new NotImplementedException();
         }
+
+        public override void PrintFirstTwoWordsProperties()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

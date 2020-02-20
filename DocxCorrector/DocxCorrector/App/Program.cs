@@ -13,13 +13,17 @@ namespace DocxCorrector.App
             // Interop.Word version
             //string mistakesJSON = Corrector.GetMistakesJSON();
             //FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
-
             //Corrector.PrintAllParagraphs();
 
-            //Console.WriteLine();
-            Console.WriteLine("First paragraph properties:");
-            
-            Corrector.PrintFirstParagraphProperties();
+            // TODO: - Remove
+            System.Collections.Generic.List<Models.ParagraphProperties> list = new System.Collections.Generic.List<Models.ParagraphProperties>();
+            var properties = new Models.ParagraphProperties
+            {
+                ID = 1,
+                Text = "Test"
+            };
+            list.Add(properties);
+            FileWriter.FillPropertiesCSV(Config.PropertiesFilePath, list);
 
             Console.ReadLine();
         }  

@@ -29,6 +29,41 @@ namespace DocxCorrector.Services.Corrector
             App = null;
         }
 
+        private void PrintPropertiesOfParagraph(Word.Paragraph paragraph)
+        {
+            Console.WriteLine($"Уровень заголовка: {paragraph.OutlineLevel}");
+            Console.WriteLine($"Выравнивание: {paragraph.Alignment}");
+            Console.WriteLine($"Отступ слева (в знаках): {paragraph.CharacterUnitLeftIndent}");
+            Console.WriteLine($"Отступ слева (в пунктах): {paragraph.LeftIndent}");
+            Console.WriteLine($"Отступ справа (в знаках): {paragraph.CharacterUnitRightIndent}");
+            Console.WriteLine($"Отступ справа (в пунктах): {paragraph.RightIndent}");
+            Console.WriteLine($"Отступ первой строки: {paragraph.CharacterUnitFirstLineIndent}");
+            Console.WriteLine($"Зеркальность отступов: {paragraph.MirrorIndents}");
+            Console.WriteLine($"Междустрочный интервал: {paragraph.LineSpacing}");
+            Console.WriteLine($"Интервал перед: {paragraph.SpaceBefore}");
+            Console.WriteLine($"Интервал после: {paragraph.SpaceAfter}");
+            Console.WriteLine($"Интервал после: {paragraph.PageBreakBefore}");
+        }
+
+        private void PrintPropertiesOfRange(Word.Range range)
+        {
+            Console.WriteLine($"Текст: {range.Text}");
+            Console.WriteLine($"Имя шрифта: {range.Font.Name}");
+            Console.WriteLine($"Размер шрифта: {range.Font.Size}");
+            Console.WriteLine($"Жирный: {range.Bold}");
+            Console.WriteLine($"Курсив: {range.Italic}");
+            Console.WriteLine($"Цвет текста: {range.Font.TextColor.RGB}");
+            Console.WriteLine($"Цвет выделения: {range.Font.UnderlineColor}");
+            Console.WriteLine($"Подчеркнутый: {range.Underline}");
+            Console.WriteLine($"Зачеркнутый: {range.Font.StrikeThrough}");
+            Console.WriteLine($"Надстрочность: {range.Font.Superscript}");
+            Console.WriteLine($"Подстрочность: {range.Font.Subscript}");
+            Console.WriteLine($"Скрытый: {range.Font.Hidden}");
+            Console.WriteLine($"Масштаб: {range.Font.Scaling}");
+            Console.WriteLine($"Смещение: {range.Font.Position}");
+            Console.WriteLine($"Кернинг: {range.Font.Kerning}");
+        }
+
         // Corrector
         public override string GetMistakesJSON()
         {
@@ -68,35 +103,15 @@ namespace DocxCorrector.Services.Corrector
 
             Word.Paragraph paragraph = Document.Paragraphs.First;
 
-            Console.WriteLine($"Текст: {paragraph.Range.Text}");
-            Console.WriteLine($"Имя шрифта: {paragraph.Range.Font.Name}");
-            Console.WriteLine($"Размер шрифта: {paragraph.Range.Font.Size}");
-            Console.WriteLine($"Уровень заголовка: {paragraph.OutlineLevel}");
-            Console.WriteLine($"Жирный: {paragraph.Range.Bold}");
-            Console.WriteLine($"Курсив: {paragraph.Range.Italic}");
-            Console.WriteLine($"Цвет текста: {paragraph.Range.Font.TextColor.RGB}");
-            Console.WriteLine($"Цвет выделения: {paragraph.Range.Font.UnderlineColor}");
-            Console.WriteLine($"Подчеркнутый: {paragraph.Range.Underline}");
-            Console.WriteLine($"Зачеркнутый: {paragraph.Range.Font.StrikeThrough}");
-            Console.WriteLine($"Надстрочность: {paragraph.Range.Font.Superscript}");
-            Console.WriteLine($"Подстрочность: {paragraph.Range.Font.Subscript}");
-            Console.WriteLine($"Скрытый: {paragraph.Range.Font.Hidden}");
-            Console.WriteLine($"Масштаб: {paragraph.Range.Font.Scaling}");
-            Console.WriteLine($"Смещение: {paragraph.Range.Font.Position}");
-            Console.WriteLine($"Кернинг: {paragraph.Range.Font.Kerning}");
-            Console.WriteLine($"Выравнивание: {paragraph.Alignment}");
-            Console.WriteLine($"Отступ слева (в знаках): {paragraph.CharacterUnitLeftIndent}");
-            Console.WriteLine($"Отступ слева (в пунктах): {paragraph.LeftIndent}");
-            Console.WriteLine($"Отступ справа (в знаках): {paragraph.CharacterUnitRightIndent}");
-            Console.WriteLine($"Отступ справа (в пунктах): {paragraph.RightIndent}");
-            Console.WriteLine($"Отступ первой строки: {paragraph.CharacterUnitFirstLineIndent}");
-            Console.WriteLine($"Зеркальность отступов: {paragraph.MirrorIndents}");
-            Console.WriteLine($"Междустрочный интервал: {paragraph.LineSpacing}");
-            Console.WriteLine($"Интервал перед: {paragraph.SpaceBefore}");
-            Console.WriteLine($"Интервал после: {paragraph.SpaceAfter}");
-            Console.WriteLine($"Интервал после: {paragraph.PageBreakBefore}");
+            PrintPropertiesOfParagraph(paragraph);
+            PrintPropertiesOfRange(paragraph.Range);
 
             QuitWord();
+        }
+
+        public override void PrintFirstTwoWordsProperties()
+        {
+            throw new NotImplementedException();
         }
     }
 }
