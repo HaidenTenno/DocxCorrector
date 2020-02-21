@@ -2,16 +2,18 @@
 
 namespace DocxCorrector.Models
 {
+    // Тип параграфа
     public enum ElementType
     {
-        Paragraph,
-        Headline,
-        List,
-        SourcesList,
-        Image,
-        ImageSign
+        Paragraph, // Абзац
+        Headline, // Заголовок
+        List, // Список
+        SourcesList, // Список источников
+        Image, // Рисунок
+        ImageSign // Подпись к рисунку
     }
 
+    // Результат проверки для параграфа
     public sealed class ParagraphResult
     {
         // ID параграфа

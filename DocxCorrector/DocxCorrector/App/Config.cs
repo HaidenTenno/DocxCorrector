@@ -9,5 +9,7 @@ namespace DocxCorrector.App
         public const string MistakesFilePath = @"C:\Users\haide\Desktop\mistakes.json";
         // Файл для записи свойств параграфов
         public const string PropertiesFilePath = @"C:\Users\haide\Desktop\properties.csv";
+        // Корневая директория с файлами, из которых нужно вытянуть свойства
+        public const string FilesToInpectDirectoryPath = @"C:\Users\haide\Desktop\FilesToInspect";
     }
 }

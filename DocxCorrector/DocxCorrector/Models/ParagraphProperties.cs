@@ -2,6 +2,7 @@
 
 namespace DocxCorrector.Models
 {
+    // Свойства параграфа
     public class ParagraphProperties
     {
         // Range

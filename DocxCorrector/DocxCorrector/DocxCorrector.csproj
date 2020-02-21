@@ -89,6 +89,7 @@
     <Compile Include="Services\Corrector\Corrector.cs" />
     <Compile Include="Services\Corrector\CorrectorGemBox.cs" />
     <Compile Include="Services\Corrector\CorrectorInterop.cs" />
+    <Compile Include="Services\DirectoryIterator.cs" />
     <Compile Include="Services\FileWriter.cs" />
     <Compile Include="Services\JSONMaker.cs" />
   </ItemGroup>

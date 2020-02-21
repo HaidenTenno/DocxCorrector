@@ -6,7 +6,7 @@ namespace DocxCorrector.Services.Corrector
     public abstract class Corrector
     {
         // Путь к docx файлу
-        public string FilePath { get; }
+        public string FilePath { get; set; }
 
         public Corrector(string filePath)
         {
