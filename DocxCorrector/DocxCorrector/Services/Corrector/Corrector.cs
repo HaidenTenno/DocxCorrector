@@ -19,13 +19,11 @@ namespace DocxCorrector.Services.Corrector
         // Получить свойства всех параграфов
         public abstract List<Models.ParagraphProperties> GetAllParagraphsProperties();
 
+        // Получить нормализованные свойства параграфов (Для классификатора Ромы)
+        public abstract List<Models.NormalizedProperties> GetNormalizedProperties();
+
         // MARK: - Вспомогательные на момент разработки методы, котоые возможно подлежат удалению
         // Печать всех абзацев
         public abstract void PrintAllParagraphs();
-
-        // Напечатать свойства первого параграфа
-        public abstract void PrintFirstParagraphProperties();
-        // Напечатать свойства первых двух слов первого параграфа
-        public abstract void PrintFirstTwoWordsProperties();
     }
 }

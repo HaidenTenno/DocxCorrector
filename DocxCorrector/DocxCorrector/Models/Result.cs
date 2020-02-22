@@ -21,7 +21,7 @@ namespace DocxCorrector.Models
         // Тип параграфа
         public ElementType Type { get; set; }
         // Начало параграфа (20 символов)
-        public string Suffix { get; set; }
+        public string Prefix { get; set; }
         // Ошибки в параграфе
         public List<Mistake> Mistakes { get; set; }
     }

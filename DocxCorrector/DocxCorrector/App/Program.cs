@@ -12,6 +12,9 @@ namespace DocxCorrector.App
 
         static void Main(string[] args)
         {
+            // Напечатать все параграфы
+            //Corrector.PrintAllParagraphs();
+
             // Получить ошибки для файла
             //string mistakesJSON = Corrector.GetMistakesJSON();
             //FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
@@ -21,19 +24,34 @@ namespace DocxCorrector.App
             //FileWriter.FillPropertiesCSV(Config.PropertiesFilePath, paragraphProperties);
 
             // Пройтись по всем поддиректориям Config.FilesToInpectDirectoryPath и в каждой создать csv файл, где будут результаты для всех docx файлов в этой директории
+            //DirectoryIterator.IterateDir(Config.FilesToInpectDirectoryPath, (subDir) =>
+            //{
+            //    List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+
+            //    DirectoryIterator.IterateDocxFiles(subDir, (filepath) =>
+            //    {
+            //        Corrector.FilePath = filepath;
+            //        List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties();
+            //        propertiesForFile.Add(new ParagraphProperties());
+            //        propertiesForDir.AddRange(propertiesForFile);
+            //    });
+
+            //    FileWriter.FillPropertiesCSV(String.Concat(subDir, @"\results.csv"), propertiesForDir);
+            //});
+
+            // MARK: - Получение данных для программы Ромы
             DirectoryIterator.IterateDir(Config.FilesToInpectDirectoryPath, (subDir) =>
             {
-                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
-                
+                List<NormalizedProperties> normalizedPropertiesForDir = new List<NormalizedProperties>();
+
                 DirectoryIterator.IterateDocxFiles(subDir, (filepath) =>
                 {
                     Corrector.FilePath = filepath;
-                    List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties();
-                    propertiesForFile.Add(new ParagraphProperties());
-                    propertiesForDir.AddRange(propertiesForFile);
+                    List<NormalizedProperties> normalizedPropertiesForFile = Corrector.GetNormalizedProperties();
+                    normalizedPropertiesForDir.AddRange(normalizedPropertiesForFile);
                 });
 
-                FileWriter.FillPropertiesCSV(String.Concat(subDir, @"\results.csv"), propertiesForDir);
+                FileWriter.FillPropertiesCSV(String.Concat(subDir, @"\normalizedResults.csv"), normalizedPropertiesForDir);
             });
 
             Console.WriteLine("End of program");

@@ -28,7 +28,7 @@ namespace DocxCorrector.Services
         }
 
         // Записать свойства параграфов paragraphsInfo в CSV файл filePath
-        public static void FillPropertiesCSV(string filePath, List<ParagraphProperties> paragraphsInfo)
+        public static void FillPropertiesCSV<T>(string filePath, List<T> listData)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace DocxCorrector.Services
                 using (CsvWriter csv = new CsvWriter(sw, CultureInfo.InvariantCulture))
                 {
                     csv.Configuration.Delimiter = ";";
-                    csv.WriteRecords(paragraphsInfo);
+                    csv.WriteRecords(listData);
                 }
             }
             catch (Exception e)

@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="App\Config.cs" />
     <Compile Include="App\Program.cs" />
+    <Compile Include="Models\NormalizedProperties.cs" />
     <Compile Include="Models\ParagraphProperties.cs" />
     <Compile Include="Models\Result.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

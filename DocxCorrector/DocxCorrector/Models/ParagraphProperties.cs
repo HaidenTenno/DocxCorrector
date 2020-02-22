@@ -1,5 +1,4 @@
-﻿using Word = Microsoft.Office.Interop.Word;
-
+﻿
 namespace DocxCorrector.Models
 {
     // Свойства параграфа

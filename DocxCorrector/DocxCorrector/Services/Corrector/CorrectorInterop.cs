@@ -29,40 +29,40 @@ namespace DocxCorrector.Services.Corrector
             App = null;
         }
 
-        private void PrintPropertiesOfParagraph(Word.Paragraph paragraph)
-        {
-            Console.WriteLine($"Уровень заголовка: {paragraph.OutlineLevel}");
-            Console.WriteLine($"Выравнивание: {paragraph.Alignment}");
-            Console.WriteLine($"Отступ слева (в знаках): {paragraph.CharacterUnitLeftIndent}");
-            Console.WriteLine($"Отступ слева (в пунктах): {paragraph.LeftIndent}");
-            Console.WriteLine($"Отступ справа (в знаках): {paragraph.CharacterUnitRightIndent}");
-            Console.WriteLine($"Отступ справа (в пунктах): {paragraph.RightIndent}");
-            Console.WriteLine($"Отступ первой строки: {paragraph.CharacterUnitFirstLineIndent}");
-            Console.WriteLine($"Зеркальность отступов: {paragraph.MirrorIndents}");
-            Console.WriteLine($"Междустрочный интервал: {paragraph.LineSpacing}");
-            Console.WriteLine($"Интервал перед: {paragraph.SpaceBefore}");
-            Console.WriteLine($"Интервал после: {paragraph.SpaceAfter}");
-            Console.WriteLine($"Интервал после: {paragraph.PageBreakBefore}");
-        }
+        //private void PrintPropertiesOfParagraph(Word.Paragraph paragraph)
+        //{
+        //    Console.WriteLine($"Уровень заголовка: {paragraph.OutlineLevel}");
+        //    Console.WriteLine($"Выравнивание: {paragraph.Alignment}");
+        //    Console.WriteLine($"Отступ слева (в знаках): {paragraph.CharacterUnitLeftIndent}");
+        //    Console.WriteLine($"Отступ слева (в пунктах): {paragraph.LeftIndent}");
+        //    Console.WriteLine($"Отступ справа (в знаках): {paragraph.CharacterUnitRightIndent}");
+        //    Console.WriteLine($"Отступ справа (в пунктах): {paragraph.RightIndent}");
+        //    Console.WriteLine($"Отступ первой строки: {paragraph.CharacterUnitFirstLineIndent}");
+        //    Console.WriteLine($"Зеркальность отступов: {paragraph.MirrorIndents}");
+        //    Console.WriteLine($"Междустрочный интервал: {paragraph.LineSpacing}");
+        //    Console.WriteLine($"Интервал перед: {paragraph.SpaceBefore}");
+        //    Console.WriteLine($"Интервал после: {paragraph.SpaceAfter}");
+        //    Console.WriteLine($"Интервал после: {paragraph.PageBreakBefore}");
+        //}
 
-        private void PrintPropertiesOfRange(Word.Range range)
-        {
-            Console.WriteLine($"Текст: {range.Text}");
-            Console.WriteLine($"Имя шрифта: {range.Font.Name}");
-            Console.WriteLine($"Размер шрифта: {range.Font.Size}");
-            Console.WriteLine($"Жирный: {range.Bold}");
-            Console.WriteLine($"Курсив: {range.Italic}");
-            Console.WriteLine($"Цвет текста: {range.Font.TextColor.RGB}");
-            Console.WriteLine($"Цвет подчеркивания: {range.Font.UnderlineColor}");
-            Console.WriteLine($"Подчеркнутый: {range.Underline}");
-            Console.WriteLine($"Зачеркнутый: {range.Font.StrikeThrough}");
-            Console.WriteLine($"Надстрочность: {range.Font.Superscript}");
-            Console.WriteLine($"Подстрочность: {range.Font.Subscript}");
-            Console.WriteLine($"Скрытый: {range.Font.Hidden}");
-            Console.WriteLine($"Масштаб: {range.Font.Scaling}");
-            Console.WriteLine($"Смещение: {range.Font.Position}");
-            Console.WriteLine($"Кернинг: {range.Font.Kerning}");
-        }
+        //private void PrintPropertiesOfRange(Word.Range range)
+        //{
+        //    Console.WriteLine($"Текст: {range.Text}");
+        //    Console.WriteLine($"Имя шрифта: {range.Font.Name}");
+        //    Console.WriteLine($"Размер шрифта: {range.Font.Size}");
+        //    Console.WriteLine($"Жирный: {range.Bold}");
+        //    Console.WriteLine($"Курсив: {range.Italic}");
+        //    Console.WriteLine($"Цвет текста: {range.Font.TextColor.RGB}");
+        //    Console.WriteLine($"Цвет подчеркивания: {range.Font.UnderlineColor}");
+        //    Console.WriteLine($"Подчеркнутый: {range.Underline}");
+        //    Console.WriteLine($"Зачеркнутый: {range.Font.StrikeThrough}");
+        //    Console.WriteLine($"Надстрочность: {range.Font.Superscript}");
+        //    Console.WriteLine($"Подстрочность: {range.Font.Subscript}");
+        //    Console.WriteLine($"Скрытый: {range.Font.Hidden}");
+        //    Console.WriteLine($"Масштаб: {range.Font.Scaling}");
+        //    Console.WriteLine($"Смещение: {range.Font.Position}");
+        //    Console.WriteLine($"Кернинг: {range.Font.Kerning}");
+        //}
 
         private ParagraphProperties GetParagraphProperties(Word.Paragraph paragraph)
         {
@@ -242,6 +242,7 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Corrector
+        // Получение JSON-а со списком ошибок
         public override string GetMistakesJSON()
         {
             List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
@@ -251,7 +252,7 @@ namespace DocxCorrector.Services.Corrector
             {
                 ParagraphID = 0,
                 Type = ElementType.Paragraph,
-                Suffix = "TestParagraph",
+                Prefix = "TestParagraph",
                 Mistakes = new List<Mistake> { new Mistake { Message = "Not Implemented" } }
             };
             paragraphResults.Add(testResult);
@@ -262,6 +263,7 @@ namespace DocxCorrector.Services.Corrector
             return mistakesJSON;
         }
 
+        // Получить свойства всех параграфов
         public override List<ParagraphProperties> GetAllParagraphsProperties()
         {
             OpenWord();
@@ -279,6 +281,88 @@ namespace DocxCorrector.Services.Corrector
             return allParagraphsProperties;
         }
 
+        // Получить нормализованные свойства параграфов (Для классификатора Ромы)
+        public override List<NormalizedProperties> GetNormalizedProperties()
+        {
+            OpenWord();
+
+            List<NormalizedProperties> allNormalizedProperties = new List<NormalizedProperties>();
+
+            int iteration = 0;
+            foreach (Word.Paragraph paragraph in Document.Paragraphs)
+            {
+                int id = iteration;
+                float firstLineIndent = paragraph.FirstLineIndent;
+                NormalizedAligment aligment;
+                switch (paragraph.Alignment)
+                {
+                    case Word.WdParagraphAlignment.wdAlignParagraphLeft:
+                        aligment = NormalizedAligment.Left;
+                        break;
+                    case Word.WdParagraphAlignment.wdAlignParagraphCenter:
+                        aligment = NormalizedAligment.Center;
+                        break;
+                    case Word.WdParagraphAlignment.wdAlignParagraphRight:
+                        aligment = NormalizedAligment.Right;
+                        break;
+                    case Word.WdParagraphAlignment.wdAlignParagraphJustify:
+                        aligment = NormalizedAligment.Justify;
+                        break;
+                    default:
+                        aligment = NormalizedAligment.Other;
+                        break;
+                }
+                int prefixIsNumber = Char.IsDigit(paragraph.Range.Text[0]) ? 1 : 0;
+                int prefixIsLowercase = Char.IsLower(paragraph.Range.Text[0]) ? 1 : 0;
+                int prefixIsUppercase = Char.IsUpper(paragraph.Range.Text[0]) ? 1 : 0;
+
+                // TODO: - ВЫНЕСТИ ЭТО
+                string[] dashes = new string[] {"-", "־", "᠆", "‐", "‑", "‒", "–", "—", "―", "﹘", "﹣", "－" };
+                int prefixIsDash = Array.IndexOf(dashes, paragraph.Range.Text[0].ToString()) != -1 ? 1 : 0;
+                string[] endSigns = new string[] { ".", "!", "?" };
+                int suffixIsEndSign;
+                if (paragraph.Range.Text.Length > 0) 
+                {
+                    suffixIsEndSign = Array.IndexOf(endSigns, paragraph.Range.Text[paragraph.Range.Text.Length - 2].ToString()) != -1 ? 1 : 0;
+                } else
+                {
+                    suffixIsEndSign = 0;
+                }
+
+                NormalizedProperties normalizedParagraphProperties = new NormalizedProperties
+                {
+                    Id = id,
+                    FirstLineIndent = firstLineIndent,
+                    Aligment = (int)aligment,
+                    SymbolsCount = paragraph.Range.Text.Length,
+                    PrefixIsNumber = prefixIsNumber,
+                    PrefixIsLowercase = prefixIsLowercase,
+                    PrefixIsUppercase = prefixIsUppercase,
+                    PrefixIsDash = prefixIsDash,
+                    SuffixIsEndSign = suffixIsEndSign,
+                    SuffixIsSemicolon = 123,
+                    SuffixIsCommaOrSemicolon = 123,
+                    ContainsDash = 123,
+                    ContainsBracket = 123,
+                    FontSize = 123,
+                    LineSpacing = 123,
+                    LineSpacingRule = 123,
+                    Italic = 123,
+                    Bold = 123,
+                    BlackColor = 123
+
+                };
+                allNormalizedProperties.Add(normalizedParagraphProperties);
+                iteration++;
+            }
+
+            QuitWord();
+
+            return allNormalizedProperties;
+        }
+
+        // MARK: - Вспомогательные
+        // Печать всех абзацев
         public override void PrintAllParagraphs()
         {
             OpenWord();
@@ -289,23 +373,6 @@ namespace DocxCorrector.Services.Corrector
             }
 
             QuitWord();
-        }
-
-        public override void PrintFirstParagraphProperties()
-        {
-            OpenWord();
-
-            Word.Paragraph paragraph = Document.Paragraphs.First;
-
-            PrintPropertiesOfParagraph(paragraph);
-            PrintPropertiesOfRange(paragraph.Range);
-
-            QuitWord();
-        }
-
-        public override void PrintFirstTwoWordsProperties()
-        {
-            throw new NotImplementedException();
         }
     }
 }
