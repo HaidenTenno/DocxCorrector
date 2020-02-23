@@ -52,7 +52,7 @@ namespace DocxCorrector.Models
         // Суффикс - [".","!","?"]
         public int SuffixIsEndSign { get; set; }
         // Суффикс - двоеточие
-        public int SuffixIsSemicolon { get; set; }
+        public int SuffixIsColon { get; set; }
         // Суффикс - запятая или точка с запятой
         public int SuffixIsCommaOrSemicolon { get; set; }
         // Содержит - ["-", "־", "᠆", "‐", "‑", "‒", "–", "—", "―", "﹘", "﹣", "－"]

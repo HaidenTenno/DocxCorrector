@@ -241,9 +241,40 @@ namespace DocxCorrector.Services.Corrector
             return paragraphProperties;
         }
 
-        // Corrector
-        // Получение JSON-а со списком ошибок
-        public override string GetMistakesJSON()
+        // Проверить, что первый символ абзаца принадлежит множеству символов
+        private int CheckIfFirstSymbolOfParagraphIs(Word.Paragraph paragraph, string[] symbols)
+        {
+            return Array.IndexOf(symbols, paragraph.Range.Text[0].ToString()) != -1 ? 1 : 0;
+        }
+        
+        // Проверить, что последний символ абзаца принадлежит можнеству символов
+        private int CheckIfLastSymbolOfParagraphIs(Word.Paragraph paragraph, string[] symbols)
+        {
+            if (paragraph.Range.Text.Length > 1)
+            {
+                return Array.IndexOf(symbols, paragraph.Range.Text[paragraph.Range.Text.Length - 2].ToString()) != -1 ? 1 : 0;
+            }
+            else
+            {
+                return CheckIfFirstSymbolOfParagraphIs(paragraph, symbols);
+            }
+        }
+
+        private int CheckIfParagraphsContainsOneOf(Word.Paragraph paragraph, string[] symbols)
+        {
+            foreach (string symbol in symbols)
+            {
+                if (paragraph.Range.Text.Contains(symbol))
+                {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+
+// Corrector
+// Получение JSON-а со списком ошибок
+public override string GetMistakesJSON()
         {
             List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
             
@@ -315,19 +346,65 @@ namespace DocxCorrector.Services.Corrector
                 int prefixIsNumber = Char.IsDigit(paragraph.Range.Text[0]) ? 1 : 0;
                 int prefixIsLowercase = Char.IsLower(paragraph.Range.Text[0]) ? 1 : 0;
                 int prefixIsUppercase = Char.IsUpper(paragraph.Range.Text[0]) ? 1 : 0;
-
-                // TODO: - ВЫНЕСТИ ЭТО
-                string[] dashes = new string[] {"-", "־", "᠆", "‐", "‑", "‒", "–", "—", "―", "﹘", "﹣", "－" };
-                int prefixIsDash = Array.IndexOf(dashes, paragraph.Range.Text[0].ToString()) != -1 ? 1 : 0;
+                string[] dashes = new string[] { "-", "־", "᠆", "‐", "‑", "‒", "–", "—", "―", "﹘", "﹣", "－" };
+                int prefixIsDash = CheckIfFirstSymbolOfParagraphIs(paragraph, dashes);
                 string[] endSigns = new string[] { ".", "!", "?" };
-                int suffixIsEndSign;
-                if (paragraph.Range.Text.Length > 0) 
+                int suffixIsEndSign = CheckIfLastSymbolOfParagraphIs(paragraph, endSigns);
+                string[] colon = new string[] { ":" };
+                int suffixIsColon = CheckIfLastSymbolOfParagraphIs(paragraph, colon);
+                string[] commaAndSemicolon = new string[] { ",", ";" };
+                int suffixIsCommaOrSemicolon = CheckIfLastSymbolOfParagraphIs(paragraph, commaAndSemicolon);
+                int containsDash = CheckIfParagraphsContainsOneOf(paragraph, dashes);
+                string[] bracket = new string[] { ")" };
+                int containsBracket = CheckIfParagraphsContainsOneOf(paragraph, bracket);
+                float fontSize = paragraph.Range.Font.Size;
+                float lineSpacing = paragraph.LineSpacing;
+                LineSpacingRule lineSpacingRule;
+                switch (paragraph.LineSpacingRule)
                 {
-                    suffixIsEndSign = Array.IndexOf(endSigns, paragraph.Range.Text[paragraph.Range.Text.Length - 2].ToString()) != -1 ? 1 : 0;
-                } else
-                {
-                    suffixIsEndSign = 0;
+                    case Word.WdLineSpacing.wdLineSpaceSingle:
+                        lineSpacingRule = LineSpacingRule.Single;
+                        break;
+                    case Word.WdLineSpacing.wdLineSpace1pt5:
+                        lineSpacingRule = LineSpacingRule.OneAndHalf;
+                        break;
+                    case Word.WdLineSpacing.wdLineSpaceDouble:
+                        lineSpacingRule = LineSpacingRule.Double;
+                        break;
+                    case Word.WdLineSpacing.wdLineSpaceMultiple:
+                        lineSpacingRule = LineSpacingRule.Miltiply;
+                        break;
+                    default:
+                        lineSpacingRule = LineSpacingRule.Other;
+                        break;
                 }
+                ContainsStatus italic;
+                switch (paragraph.Range.Italic)
+                {
+                    case -1:
+                        italic = ContainsStatus.Full;
+                        break;
+                    case 0:
+                        italic = ContainsStatus.None;
+                        break;
+                    default:
+                        italic = ContainsStatus.Contains;
+                        break;
+                }
+                ContainsStatus bold;
+                switch (paragraph.Range.Bold)
+                {
+                    case -1:
+                        bold = ContainsStatus.Full;
+                        break;
+                    case 0:
+                        bold = ContainsStatus.None;
+                        break;
+                    default:
+                        bold = ContainsStatus.Contains;
+                        break;
+                }
+                int blackColor = (paragraph.Range.Font.Color == Word.WdColor.wdColorBlack) || (paragraph.Range.Font.Color == Word.WdColor.wdColorAutomatic) ? 1 : 0;
 
                 NormalizedProperties normalizedParagraphProperties = new NormalizedProperties
                 {
@@ -340,16 +417,16 @@ namespace DocxCorrector.Services.Corrector
                     PrefixIsUppercase = prefixIsUppercase,
                     PrefixIsDash = prefixIsDash,
                     SuffixIsEndSign = suffixIsEndSign,
-                    SuffixIsSemicolon = 123,
-                    SuffixIsCommaOrSemicolon = 123,
-                    ContainsDash = 123,
-                    ContainsBracket = 123,
-                    FontSize = 123,
-                    LineSpacing = 123,
-                    LineSpacingRule = 123,
-                    Italic = 123,
-                    Bold = 123,
-                    BlackColor = 123
+                    SuffixIsColon = suffixIsColon,
+                    SuffixIsCommaOrSemicolon = suffixIsCommaOrSemicolon,
+                    ContainsDash = containsDash,
+                    ContainsBracket = containsBracket,
+                    FontSize = fontSize,
+                    LineSpacing = lineSpacing,
+                    LineSpacingRule = (int)lineSpacingRule,
+                    Italic = (int)italic,
+                    Bold = (int)bold,
+                    BlackColor = blackColor
 
                 };
                 allNormalizedProperties.Add(normalizedParagraphProperties);
