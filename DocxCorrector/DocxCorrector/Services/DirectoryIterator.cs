@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DocxCorrector.Services
 {
@@ -23,7 +24,7 @@ namespace DocxCorrector.Services
         // Выполнить для каждого docx файла в директории path функцию action, принимающую строку
         public static void IterateDocxFiles(string path, Action<string> action)
         {
-            string[] files = Directory.GetFiles(path, "*.docx");
+            var files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".docx") || s.EndsWith(".doc"));
 
             foreach (string file in files)
             {
