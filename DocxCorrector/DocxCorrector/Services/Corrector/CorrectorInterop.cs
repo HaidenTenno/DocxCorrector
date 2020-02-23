@@ -6,64 +6,81 @@ using Word = Microsoft.Office.Interop.Word;
 
 namespace DocxCorrector.Services.Corrector
 {
+    class InteropExeption: Exception
+    {
+        public InteropExeption(string message) : base(message){ }
+    } 
+
     public sealed class CorrectorInterop : Corrector
     {
+        // Private
         private Word.Application App;
         private Word.Document Document;
 
-        public CorrectorInterop(string filePath) : base(filePath) { }
-
-        // Private
-        private void OpenWord()
+        // Приготовится к началу работы
+        private void OpenApp()
         {
-            App = new Word.Application();
-            App.Visible = false;
-            Document = App.Documents.Open(FilePath);
+            try
+            {
+                if (App != null) { CloseApp(); }
+                App = new Word.Application { Visible = false };
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+                CloseApp();
+#endif
+            }
         }
 
-        private void QuitWord()
+        // Приготовится к окончанию работы
+        private void CloseApp()
         {
-            App.Documents.Close();
-            Document = null;
-            App.Quit();
-            App = null;
+            try
+            {
+                if (App != null) { App.Quit(); }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+            }
         }
 
-        //private void PrintPropertiesOfParagraph(Word.Paragraph paragraph)
-        //{
-        //    Console.WriteLine($"Уровень заголовка: {paragraph.OutlineLevel}");
-        //    Console.WriteLine($"Выравнивание: {paragraph.Alignment}");
-        //    Console.WriteLine($"Отступ слева (в знаках): {paragraph.CharacterUnitLeftIndent}");
-        //    Console.WriteLine($"Отступ слева (в пунктах): {paragraph.LeftIndent}");
-        //    Console.WriteLine($"Отступ справа (в знаках): {paragraph.CharacterUnitRightIndent}");
-        //    Console.WriteLine($"Отступ справа (в пунктах): {paragraph.RightIndent}");
-        //    Console.WriteLine($"Отступ первой строки: {paragraph.CharacterUnitFirstLineIndent}");
-        //    Console.WriteLine($"Зеркальность отступов: {paragraph.MirrorIndents}");
-        //    Console.WriteLine($"Междустрочный интервал: {paragraph.LineSpacing}");
-        //    Console.WriteLine($"Интервал перед: {paragraph.SpaceBefore}");
-        //    Console.WriteLine($"Интервал после: {paragraph.SpaceAfter}");
-        //    Console.WriteLine($"Интервал после: {paragraph.PageBreakBefore}");
-        //}
+        // Открыть документ
+        private void OpenDocument()
+        {
+            try
+            {
+                Document = App.Documents.Open(FileName: FilePath, Visible: false);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+                throw new InteropExeption(message: "Can't open document");
+            }
+        }
 
-        //private void PrintPropertiesOfRange(Word.Range range)
-        //{
-        //    Console.WriteLine($"Текст: {range.Text}");
-        //    Console.WriteLine($"Имя шрифта: {range.Font.Name}");
-        //    Console.WriteLine($"Размер шрифта: {range.Font.Size}");
-        //    Console.WriteLine($"Жирный: {range.Bold}");
-        //    Console.WriteLine($"Курсив: {range.Italic}");
-        //    Console.WriteLine($"Цвет текста: {range.Font.TextColor.RGB}");
-        //    Console.WriteLine($"Цвет подчеркивания: {range.Font.UnderlineColor}");
-        //    Console.WriteLine($"Подчеркнутый: {range.Underline}");
-        //    Console.WriteLine($"Зачеркнутый: {range.Font.StrikeThrough}");
-        //    Console.WriteLine($"Надстрочность: {range.Font.Superscript}");
-        //    Console.WriteLine($"Подстрочность: {range.Font.Subscript}");
-        //    Console.WriteLine($"Скрытый: {range.Font.Hidden}");
-        //    Console.WriteLine($"Масштаб: {range.Font.Scaling}");
-        //    Console.WriteLine($"Смещение: {range.Font.Position}");
-        //    Console.WriteLine($"Кернинг: {range.Font.Kerning}");
-        //}
+        // Закрыть документ
+        private void CloseDocument()
+        {
+            try
+            {
+                if (Document != null) { App.Documents.Close(); }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+            }
+        }
 
+        // Получить свойства параграфа
         private ParagraphProperties GetParagraphProperties(Word.Paragraph paragraph)
         {
             ParagraphProperties paragraphProperties = new ParagraphProperties
@@ -237,7 +254,6 @@ namespace DocxCorrector.Services.Corrector
                 WindowControl = paragraph.WidowControl.ToString(),
                 WordWrap = paragraph.WordWrap.ToString()
             };
-
             return paragraphProperties;
         }
 
@@ -246,7 +262,7 @@ namespace DocxCorrector.Services.Corrector
         {
             return Array.IndexOf(symbols, paragraph.Range.Text[0].ToString()) != -1 ? 1 : 0;
         }
-        
+
         // Проверить, что последний символ абзаца принадлежит можнеству символов
         private int CheckIfLastSymbolOfParagraphIs(Word.Paragraph paragraph, string[] symbols)
         {
@@ -260,6 +276,7 @@ namespace DocxCorrector.Services.Corrector
             }
         }
 
+        // Проверить, что параграф содержит хотя бы один из символов
         private int CheckIfParagraphsContainsOneOf(Word.Paragraph paragraph, string[] symbols)
         {
             foreach (string symbol in symbols)
@@ -272,12 +289,26 @@ namespace DocxCorrector.Services.Corrector
             return 0;
         }
 
-// Corrector
-// Получение JSON-а со списком ошибок
-public override string GetMistakesJSON()
+        // Corrector
+        public CorrectorInterop(string filePath = null) : base(filePath) { }
+
+        // Получение JSON-а со списком ошибок
+        public override string GetMistakesJSON()
         {
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return "";
+            }
+
             List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
-            
+
             // TODO: - Remove
             ParagraphResult testResult = new ParagraphResult
             {
@@ -291,13 +322,26 @@ public override string GetMistakesJSON()
             // TODO: - Implement method
 
             string mistakesJSON = JSONMaker.MakeMistakesJSON(paragraphResults);
+
+            CloseApp();
+
             return mistakesJSON;
         }
 
         // Получить свойства всех параграфов
         public override List<ParagraphProperties> GetAllParagraphsProperties()
         {
-            OpenWord();
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return new List<ParagraphProperties>();
+            }
 
             List<ParagraphProperties> allParagraphsProperties = new List<ParagraphProperties>();
 
@@ -307,7 +351,7 @@ public override string GetMistakesJSON()
                 allParagraphsProperties.Add(paragraphProperties);
             }
 
-            QuitWord();
+            CloseApp();
 
             return allParagraphsProperties;
         }
@@ -315,7 +359,17 @@ public override string GetMistakesJSON()
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
         public override List<NormalizedProperties> GetNormalizedProperties()
         {
-            OpenWord();
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return new List<NormalizedProperties>();
+            }
 
             List<NormalizedProperties> allNormalizedProperties = new List<NormalizedProperties>();
 
@@ -433,23 +487,32 @@ public override string GetMistakesJSON()
                 iteration++;
             }
 
-            QuitWord();
+            CloseApp();
 
             return allNormalizedProperties;
         }
 
-        // MARK: - Вспомогательные
         // Печать всех абзацев
         public override void PrintAllParagraphs()
         {
-            OpenWord();
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return;
+            }
 
             foreach (Word.Paragraph paragraph in Document.Paragraphs)
             {
                 Console.WriteLine(paragraph.Range.Text);
             }
 
-            QuitWord();
+            CloseApp();
         }
     }
 }

@@ -8,38 +8,48 @@ namespace DocxCorrector.App
 {
     class Program
     {
-        public static Corrector Corrector = new CorrectorInterop(Config.DocFilePath);
+        public static Corrector Corrector = new CorrectorInterop();
 
         static void Main(string[] args)
         {
-            // Напечатать все параграфы
-            //Corrector.PrintAllParagraphs();
+            // Write your code here...
 
-            // Получить ошибки для файла
-            //string mistakesJSON = Corrector.GetMistakesJSON();
-            //FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
+            // Получение данных для программы Ромы
+            GenerateNormalizedCSVFiles();
 
-            // Получить свойства всех параграфов файла
-            //List<ParagraphProperties> paragraphProperties = Corrector.GetAllParagraphsProperties();
-            //FileWriter.FillPropertiesCSV(Config.PropertiesFilePath, paragraphProperties);
+            Console.WriteLine("End of program");
+            Console.ReadLine();
+        }
 
-            // Пройтись по всем поддиректориям Config.FilesToInpectDirectoryPath и в каждой создать csv файл, где будут результаты для всех docx файлов в этой директории
-            //DirectoryIterator.IterateDir(Config.FilesToInpectDirectoryPath, (subDir) =>
-            //{
-            //    List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+        // Создать JSON файл с ошибками
+        static void GenerateMistacesJSON()
+        {
+            string mistakesJSON = Corrector.GetMistakesJSON();
+            FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
+        }
 
-            //    DirectoryIterator.IterateDocxFiles(subDir, (filepath) =>
-            //    {
-            //        Corrector.FilePath = filepath;
-            //        List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties();
-            //        propertiesForFile.Add(new ParagraphProperties());
-            //        propertiesForDir.AddRange(propertiesForFile);
-            //    });
+        // Пройтись по всем поддиректориям Config.FilesToInpectDirectoryPath и в каждой создать csv файл, где будут результаты для всех docx файлов в этой директории
+        static void GenerateCSVFiles()
+        {
+            DirectoryIterator.IterateDir(Config.FilesToInpectDirectoryPath, (subDir) =>
+            {
+                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
 
-            //    FileWriter.FillPropertiesCSV(String.Concat(subDir, @"\results.csv"), propertiesForDir);
-            //});
+                DirectoryIterator.IterateDocxFiles(subDir, (filepath) =>
+                {
+                    Corrector.FilePath = filepath;
+                    List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties();
+                    propertiesForFile.Add(new ParagraphProperties());
+                    propertiesForDir.AddRange(propertiesForFile);
+                });
 
-            // MARK: - Получение данных для программы Ромы
+                FileWriter.FillPropertiesCSV(String.Concat(subDir, @"\results.csv"), propertiesForDir);
+            });
+        }
+
+        // Получение данных для программы Ромы
+        static void GenerateNormalizedCSVFiles()
+        {
             DirectoryIterator.IterateDir(Config.FilesToInpectDirectoryPath, (subDir) =>
             {
                 List<NormalizedProperties> normalizedPropertiesForDir = new List<NormalizedProperties>();
@@ -53,9 +63,6 @@ namespace DocxCorrector.App
 
                 FileWriter.FillPropertiesCSV(String.Concat(subDir, @"\normalizedResults.csv"), normalizedPropertiesForDir);
             });
-
-            Console.WriteLine("End of program");
-            Console.ReadLine();
         }
     }
 }

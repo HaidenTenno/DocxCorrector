@@ -6,13 +6,13 @@ namespace DocxCorrector.Services.Corrector
     public abstract class Corrector
     {
         // Путь к docx файлу
-        public string FilePath { get; set; }
+        public virtual string FilePath { get; set; }
 
-        public Corrector(string filePath)
+        public Corrector(string filePath = null)
         {
             FilePath = filePath;
         }
-                
+
         // Получение JSON-а со списком ошибок
         public abstract string GetMistakesJSON();
 
@@ -22,7 +22,7 @@ namespace DocxCorrector.Services.Corrector
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
         public abstract List<Models.NormalizedProperties> GetNormalizedProperties();
 
-        // MARK: - Вспомогательные на момент разработки методы, котоые возможно подлежат удалению
+        // Вспомогательные на момент разработки методы, котоые возможно подлежат удалению
         // Печать всех абзацев
         public abstract void PrintAllParagraphs();
     }
