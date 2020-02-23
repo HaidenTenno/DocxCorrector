@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
+using DocxCorrector.Models;
+using CsvHelper;
 
 namespace DocxCorrector.Services
 {
@@ -13,6 +17,26 @@ namespace DocxCorrector.Services
                 using (StreamWriter sw = new StreamWriter(filePath, false, System.Text.Encoding.Default))
                 {
                     sw.WriteLine(text);
+                }
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                Console.WriteLine(e.Message);
+#endif
+            }
+        }
+
+        // Записать свойства параграфов paragraphsInfo в CSV файл filePath
+        public static void FillPropertiesCSV<T>(string filePath, List<T> listData)
+        {
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(filePath))
+                using (CsvWriter csv = new CsvWriter(sw, CultureInfo.InvariantCulture))
+                {
+                    csv.Configuration.Delimiter = ";";
+                    csv.WriteRecords(listData);
                 }
             }
             catch (Exception e)
