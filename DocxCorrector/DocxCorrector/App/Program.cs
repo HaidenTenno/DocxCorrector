@@ -12,14 +12,10 @@ namespace DocxCorrector.App
 
         static void Main(string[] args)
         {
-            // Write your code here...
             Corrector.FilePath = Config.DocFilePath;
-            
-            var allPagesProperties = Corrector.GetAllPagesProperties();
-//            var json = Corrector.GetAllPagesPropertiesJSON(allPagesProperties);
-//            Console.WriteLine(json);
-            
-            
+
+            GeneratePagesPropertiesJSON();
+
             Console.WriteLine("End of program");
             Console.ReadLine();
         }
@@ -27,8 +23,16 @@ namespace DocxCorrector.App
         // Создать JSON файл с ошибками
         static void GenerateMistakesJSON()
         {
-            string mistakesJSON = Corrector.GetMistakesJSON();
+            List<ParagraphResult> mistakes = Corrector.GetMistakes();
+            string mistakesJSON = JSONMaker.MakeJSON(mistakes);
             FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
+        }
+
+        static void GeneratePagesPropertiesJSON()
+        {
+            List<PageProperties> pagesProperties = Corrector.GetAllPagesProperties();
+            string pagesPropertiesJSON = JSONMaker.MakeJSON(pagesProperties);
+            FileWriter.WriteToFile(Config.PagesPropertiesFilePath, pagesPropertiesJSON);
         }
 
         // Пройтись по всем поддиректориям Config.FilesToInpectDirectoryPath и в каждой создать csv файл, где будут результаты для всех docx файлов в этой директории

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DocxCorrector.Models;
-using DocxCorrector.Services;
 using Word = Microsoft.Office.Interop.Word;
-using Newtonsoft.Json;
 
 namespace DocxCorrector.Services.Corrector
 {
@@ -55,7 +53,7 @@ namespace DocxCorrector.Services.Corrector
         {
             try
             {
-                Document = App.Documents.Open(FileName: FilePath, Visible: false);
+                Document = App.Documents.Open(FileName: FilePath, Visible: true);
             }
             catch (Exception ex)
             {
@@ -81,7 +79,7 @@ namespace DocxCorrector.Services.Corrector
             }
         }
         
-        // Закрыть документ
+        // Закрыть документ без сохранения
         private void CloseDocumentWithoutSavingChanges()
         {
             try
@@ -274,9 +272,9 @@ namespace DocxCorrector.Services.Corrector
         }
         
         // Получить свойства страницы
-        private static PageProperties GetSinglePageProperties(Word.PageSetup pageSetup, int pageNumber)
+        private PageProperties GetSinglePageProperties(Word.PageSetup pageSetup, int pageNumber)
         {
-            var result = new PageProperties
+            PageProperties result = new PageProperties
             {
                 PageNumber = pageNumber,
                 BottomMargin = pageSetup.BottomMargin,
@@ -340,13 +338,7 @@ namespace DocxCorrector.Services.Corrector
         public CorrectorInterop(string filePath = null) : base(filePath) { }
 
         // Получение JSON-а со списком ошибок
-        public override string GetAllPagesPropertiesJSON(List<PageProperties> allPageProperties)
-        {
-            return JsonConvert.SerializeObject(allPageProperties);
-        }
-        
-        // Получение JSON-а со списком ошибок
-        public override string GetMistakesJSON()
+        public override List<ParagraphResult> GetMistakes()
         {
             try
             {
@@ -357,7 +349,7 @@ namespace DocxCorrector.Services.Corrector
             {
                 Console.WriteLine(ex.Message);
                 CloseApp();
-                return "";
+                return new List<ParagraphResult>();
             }
 
             List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
@@ -368,17 +360,15 @@ namespace DocxCorrector.Services.Corrector
                 ParagraphID = 0,
                 Type = ElementType.Paragraph,
                 Prefix = "TestParagraph",
-                Mistakes = new List<Mistake> { new Mistake { Message = "Not Implemented" } }
+                Mistakes = new List<Mistake> { new Mistake { Message = "Русские буквы" } }
             };
             paragraphResults.Add(testResult);
 
             // TODO: - Implement method
 
-            string mistakesJSON = JSONMaker.MakeMistakesJSON(paragraphResults);
-
             CloseApp();
 
-            return mistakesJSON;
+            return paragraphResults;
         }
 
         // Получить свойства всех параграфов
@@ -412,7 +402,7 @@ namespace DocxCorrector.Services.Corrector
         //Получить свойства всех страниц
         public override List<PageProperties> GetAllPagesProperties()
         {
-            var result = new List<PageProperties>();
+            List<PageProperties> result = new List<PageProperties>();
             try
             {
                 OpenApp();
@@ -424,11 +414,11 @@ namespace DocxCorrector.Services.Corrector
                 CloseApp();
             }
             
-            var totalPageNumber = Document.ComputeStatistics(Word.WdStatistic.wdStatisticPages);
-            for (var i = 1; i <= totalPageNumber; i++)
+            int totalPageNumber = Document.ComputeStatistics(Word.WdStatistic.wdStatisticPages);
+            for (int i = 1; i <= totalPageNumber; i++)
             {
-                var pageRange = Document.Range().GoTo(Word.WdGoToItem.wdGoToPage, Word.WdGoToDirection.wdGoToAbsolute, i);
-                var currentPageProperties = GetSinglePageProperties(pageRange.PageSetup, i);
+                Word.Range pageRange = Document.Range().GoTo(Word.WdGoToItem.wdGoToPage, Word.WdGoToDirection.wdGoToAbsolute, i);
+                PageProperties currentPageProperties = GetSinglePageProperties(pageRange.PageSetup, i);
                 result.Add(currentPageProperties);
             }
 

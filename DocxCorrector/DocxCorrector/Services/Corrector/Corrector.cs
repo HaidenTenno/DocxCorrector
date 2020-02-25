@@ -13,20 +13,18 @@ namespace DocxCorrector.Services.Corrector
         {
             FilePath = filePath;
         }
-        
-        // Получение JSON-а со свойствами абзацев
-        public abstract string GetAllPagesPropertiesJSON(List<PageProperties> allPageProperties);
 
-        // Получение JSON-а со списком ошибок
-        public abstract string GetMistakesJSON();
+        // Получение списка ошибок
+        public abstract List<ParagraphResult> GetMistakes();
 
         // Получить свойства всех параграфов
-        public abstract List<Models.ParagraphProperties> GetAllParagraphsProperties();
+        public abstract List<ParagraphProperties> GetAllParagraphsProperties();
 
-        public abstract List<Models.PageProperties> GetAllPagesProperties();
+        // Получить свойства страниц документа
+        public abstract List<PageProperties> GetAllPagesProperties();
 
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
-        public abstract List<Models.NormalizedProperties> GetNormalizedProperties();
+        public abstract List<NormalizedProperties> GetNormalizedProperties();
 
         // Вспомогательные на момент разработки методы, котоые возможно подлежат удалению
         // Печать всех абзацев
