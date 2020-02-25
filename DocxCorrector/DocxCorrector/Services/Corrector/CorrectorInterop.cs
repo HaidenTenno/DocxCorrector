@@ -524,7 +524,7 @@ namespace DocxCorrector.Services.Corrector
                 ParagraphID = 0,
                 Type = ElementType.Paragraph,
                 Prefix = "TestParagraph",
-                Mistakes = new List<Mistake> { new Mistake { Message = "Русские буквы" } }
+                Mistakes = new List<Mistake> { new Mistake(message: "Русские буквы") }
             };
             paragraphResults.Add(testResult);
 
