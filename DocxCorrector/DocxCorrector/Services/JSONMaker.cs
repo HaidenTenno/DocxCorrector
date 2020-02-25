@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using DocxCorrector.Models;
+using Newtonsoft.Json;
 
 namespace DocxCorrector.Services
 {
     public static class JSONMaker
     {
-        // Создать JSON строку из списка ошибок mistakes
-        public static string MakeMistakesJSON(List<ParagraphResult> results)
+        // Создать JSON строку из объекта
+        public static string MakeJSON<T>(List<T> results)
         {
-            string jsonString = JsonSerializer.Serialize(results);
-            return jsonString;
+            return JsonConvert.SerializeObject(results, Formatting.Indented);
         }
     }
 }

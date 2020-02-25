@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
-using DocxCorrector.Models;
 using CsvHelper;
 
 namespace DocxCorrector.Services
@@ -14,7 +13,7 @@ namespace DocxCorrector.Services
         {
             try
             {
-                using (StreamWriter sw = new StreamWriter(filePath, false, System.Text.Encoding.Default))
+                using (StreamWriter sw = new StreamWriter(filePath, false, System.Text.Encoding.UTF8))
                 {
                     sw.WriteLine(text);
                 }

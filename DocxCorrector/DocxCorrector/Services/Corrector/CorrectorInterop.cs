@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using DocxCorrector.Models;
-using DocxCorrector.Services;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace DocxCorrector.Services.Corrector
@@ -54,7 +53,7 @@ namespace DocxCorrector.Services.Corrector
         {
             try
             {
-                Document = App.Documents.Open(FileName: FilePath, Visible: false);
+                Document = App.Documents.Open(FileName: FilePath, Visible: true);
             }
             catch (Exception ex)
             {
@@ -71,6 +70,21 @@ namespace DocxCorrector.Services.Corrector
             try
             {
                 if (Document != null) { App.Documents.Close(); }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+            }
+        }
+        
+        // Закрыть документ без сохранения
+        private void CloseDocumentWithoutSavingChanges()
+        {
+            try
+            {
+                if (Document != null) { Document.Close(Word.WdSaveOptions.wdDoNotSaveChanges); }
             }
             catch (Exception ex)
             {
@@ -420,6 +434,37 @@ namespace DocxCorrector.Services.Corrector
             };
             return paragraphProperties;
         }
+        
+        // Получить свойства страницы
+        private PageProperties GetSinglePageProperties(Word.PageSetup pageSetup, int pageNumber)
+        {
+            PageProperties result = new PageProperties
+            {
+                PageNumber = pageNumber,
+                BottomMargin = pageSetup.BottomMargin,
+                DifferentFirstPageHeaderFooter = Convert.ToBoolean(pageSetup.DifferentFirstPageHeaderFooter),
+                FooterDistance = pageSetup.FooterDistance,
+                Gutter = pageSetup.Gutter,
+                HeaderDistance = pageSetup.HeaderDistance,
+                LeftMargin = pageSetup.LeftMargin,
+                LineNumbering = Convert.ToBoolean(pageSetup.LineNumbering.Active),
+                MirrorMargins = Convert.ToBoolean(pageSetup.MirrorMargins),
+                OddAndEvenPagesHeaderFooter = Convert.ToBoolean(pageSetup.OddAndEvenPagesHeaderFooter),
+                Orientation = Convert.ToString(pageSetup.Orientation),
+                PageHeight = pageSetup.PageHeight,
+                PageWidth = pageSetup.PageWidth,
+                PaperSize = Convert.ToString(pageSetup.PaperSize),
+                RightMargin = pageSetup.RightMargin,
+                SectionDirection = Convert.ToString(pageSetup.SectionDirection),
+                SectionStart = Convert.ToString(pageSetup.SectionStart),
+                TextColumns = pageSetup.TextColumns.Count,
+                TopMargin = pageSetup.TopMargin,
+                TwoPagesOnOne = pageSetup.TwoPagesOnOne,
+                VerticalAlignment = Convert.ToString(pageSetup.VerticalAlignment)
+            };
+            
+            return result;
+        }
 
         // Проверить, что первый символ абзаца принадлежит множеству символов
         private int CheckIfFirstSymbolOfParagraphIs(Word.Paragraph paragraph, string[] symbols)
@@ -457,7 +502,7 @@ namespace DocxCorrector.Services.Corrector
         public CorrectorInterop(string filePath = null) : base(filePath) { }
 
         // Получение JSON-а со списком ошибок
-        public override string GetMistakesJSON()
+        public override List<ParagraphResult> GetMistakes()
         {
             try
             {
@@ -468,7 +513,7 @@ namespace DocxCorrector.Services.Corrector
             {
                 Console.WriteLine(ex.Message);
                 CloseApp();
-                return "";
+                return new List<ParagraphResult>();
             }
 
             List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
@@ -479,17 +524,15 @@ namespace DocxCorrector.Services.Corrector
                 ParagraphID = 0,
                 Type = ElementType.Paragraph,
                 Prefix = "TestParagraph",
-                Mistakes = new List<Mistake> { new Mistake(message: "Not Implemented") }
+                Mistakes = new List<Mistake> { new Mistake { Message = "Русские буквы" } }
             };
             paragraphResults.Add(testResult);
 
             // TODO: - Implement method
 
-            string mistakesJSON = JSONMaker.MakeMistakesJSON(paragraphResults);
-
             CloseApp();
 
-            return mistakesJSON;
+            return paragraphResults;
         }
 
         // Получить свойства всех параграфов
@@ -518,6 +561,34 @@ namespace DocxCorrector.Services.Corrector
             CloseApp();
 
             return allParagraphsProperties;
+        }
+        
+        //Получить свойства всех страниц
+        public override List<PageProperties> GetAllPagesProperties()
+        {
+            List<PageProperties> result = new List<PageProperties>();
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+            }
+            
+            int totalPageNumber = Document.ComputeStatistics(Word.WdStatistic.wdStatisticPages);
+            for (int i = 1; i <= totalPageNumber; i++)
+            {
+                Word.Range pageRange = Document.Range().GoTo(Word.WdGoToItem.wdGoToPage, Word.WdGoToDirection.wdGoToAbsolute, i);
+                PageProperties currentPageProperties = GetSinglePageProperties(pageRange.PageSetup, i);
+                result.Add(currentPageProperties);
+            }
+
+            CloseDocumentWithoutSavingChanges();
+            CloseApp();
+            return result;
         }
 
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
