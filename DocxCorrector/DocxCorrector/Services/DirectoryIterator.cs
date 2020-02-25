@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DocxCorrector.Services
 {
@@ -9,7 +10,18 @@ namespace DocxCorrector.Services
         // Выполнить в каждой из поддиректории директории directoryPath функцию action, принимающую строку
         public static void IterateDir(string directoryPath, Action<string> action)
         {
-            string[] subDirs = Directory.GetDirectories(directoryPath);
+            string[] subDirs;
+            try
+            {
+                subDirs = Directory.GetDirectories(directoryPath);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+                return;
+            }
 
             foreach (string subDir in subDirs)
             {
@@ -23,7 +35,18 @@ namespace DocxCorrector.Services
         // Выполнить для каждого docx файла в директории path функцию action, принимающую строку
         public static void IterateDocxFiles(string path, Action<string> action)
         {
-            string[] files = Directory.GetFiles(path, "*.docx");
+            IEnumerable<string> files;
+            try
+            {
+                files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".docx") || s.EndsWith(".doc"));
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+                return;
+            }
 
             foreach (string file in files)
             {

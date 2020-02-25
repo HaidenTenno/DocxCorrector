@@ -1,244 +1,469 @@
 ﻿using System;
 using System.Collections.Generic;
 using DocxCorrector.Models;
-using DocxCorrector.Services;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace DocxCorrector.Services.Corrector
 {
+    class InteropExeption : Exception
+    {
+        public InteropExeption(string message) : base(message) { }
+    }
+
     public sealed class CorrectorInterop : Corrector
     {
+        // Private
         private Word.Application App;
         private Word.Document Document;
 
-        public CorrectorInterop(string filePath) : base(filePath) { }
-
-        // Private
-        private void OpenWord()
+        // Приготовится к началу работы
+        private void OpenApp()
         {
-            App = new Word.Application();
-            App.Visible = false;
-            Document = App.Documents.Open(FilePath);
+            try
+            {
+                if (App != null) { CloseApp(); }
+                App = new Word.Application { Visible = false };
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+                CloseApp();
+#endif
+            }
         }
 
-        private void QuitWord()
+        // Приготовится к окончанию работы
+        private void CloseApp()
         {
-            App.Documents.Close();
-            Document = null;
-            App.Quit();
-            App = null;
+            try
+            {
+                if (App != null) { App.Quit(); }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+            }
         }
 
-        //private void PrintPropertiesOfParagraph(Word.Paragraph paragraph)
-        //{
-        //    Console.WriteLine($"Уровень заголовка: {paragraph.OutlineLevel}");
-        //    Console.WriteLine($"Выравнивание: {paragraph.Alignment}");
-        //    Console.WriteLine($"Отступ слева (в знаках): {paragraph.CharacterUnitLeftIndent}");
-        //    Console.WriteLine($"Отступ слева (в пунктах): {paragraph.LeftIndent}");
-        //    Console.WriteLine($"Отступ справа (в знаках): {paragraph.CharacterUnitRightIndent}");
-        //    Console.WriteLine($"Отступ справа (в пунктах): {paragraph.RightIndent}");
-        //    Console.WriteLine($"Отступ первой строки: {paragraph.CharacterUnitFirstLineIndent}");
-        //    Console.WriteLine($"Зеркальность отступов: {paragraph.MirrorIndents}");
-        //    Console.WriteLine($"Междустрочный интервал: {paragraph.LineSpacing}");
-        //    Console.WriteLine($"Интервал перед: {paragraph.SpaceBefore}");
-        //    Console.WriteLine($"Интервал после: {paragraph.SpaceAfter}");
-        //    Console.WriteLine($"Интервал после: {paragraph.PageBreakBefore}");
-        //}
+        // Открыть документ
+        private void OpenDocument()
+        {
+            try
+            {
+                Document = App.Documents.Open(FileName: FilePath, Visible: true);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+                throw new InteropExeption(message: "Can't open document");
+            }
+        }
 
-        //private void PrintPropertiesOfRange(Word.Range range)
-        //{
-        //    Console.WriteLine($"Текст: {range.Text}");
-        //    Console.WriteLine($"Имя шрифта: {range.Font.Name}");
-        //    Console.WriteLine($"Размер шрифта: {range.Font.Size}");
-        //    Console.WriteLine($"Жирный: {range.Bold}");
-        //    Console.WriteLine($"Курсив: {range.Italic}");
-        //    Console.WriteLine($"Цвет текста: {range.Font.TextColor.RGB}");
-        //    Console.WriteLine($"Цвет подчеркивания: {range.Font.UnderlineColor}");
-        //    Console.WriteLine($"Подчеркнутый: {range.Underline}");
-        //    Console.WriteLine($"Зачеркнутый: {range.Font.StrikeThrough}");
-        //    Console.WriteLine($"Надстрочность: {range.Font.Superscript}");
-        //    Console.WriteLine($"Подстрочность: {range.Font.Subscript}");
-        //    Console.WriteLine($"Скрытый: {range.Font.Hidden}");
-        //    Console.WriteLine($"Масштаб: {range.Font.Scaling}");
-        //    Console.WriteLine($"Смещение: {range.Font.Position}");
-        //    Console.WriteLine($"Кернинг: {range.Font.Kerning}");
-        //}
+        // Закрыть документ
+        private void CloseDocument()
+        {
+            try
+            {
+                if (Document != null) { App.Documents.Close(); }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+            }
+        }
+        
+        // Закрыть документ без сохранения
+        private void CloseDocumentWithoutSavingChanges()
+        {
+            try
+            {
+                if (Document != null) { Document.Close(Word.WdSaveOptions.wdDoNotSaveChanges); }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+            }
+        }
 
+        // Получить свойства параграфа
         private ParagraphProperties GetParagraphProperties(Word.Paragraph paragraph)
         {
+            var Text = paragraph.Range.Text.ToString();
+            var Underline = paragraph.Range.Underline.ToString();
+            var Bold = paragraph.Range.Bold.ToString();
+            var Italic = paragraph.Range.Italic.ToString();
+            var BoldBi = paragraph.Range.BoldBi.ToString();
+            var Bookmarks = paragraph.Range.Bookmarks.ToString();
+            var Borders = paragraph.Range.Borders.ToString();
+            var Case = paragraph.Range.Case.ToString();
+            var Characters = paragraph.Range.Characters.ToString();
+            var CharacterWidth = paragraph.Range.CharacterWidth.ToString();
+            var CombineCharacters = paragraph.Range.CombineCharacters.ToString();
+            var ContentControls = paragraph.Range.ContentControls.ToString();
+            var Creator = paragraph.Range.Creator.ToString();
+            var DisableCharacterSpaceGrid = paragraph.Range.DisableCharacterSpaceGrid.ToString();
+            var Document = paragraph.Range.Document.ToString();
+            var Duplicate = paragraph.Range.Duplicate.ToString();
+            var Editors = paragraph.Range.Editors.ToString();
+            var EmpasisMark = paragraph.Range.EmphasisMark.ToString();
+            var End = paragraph.Range.End.ToString();
+            var EndnoteOptions = paragraph.Range.EndnoteOptions.ToString();
+            var Endnotes = paragraph.Range.Endnotes.ToString();
+            var Fields = paragraph.Range.Fields.ToString();
+            var Find = paragraph.Range.Find.ToString();
+            var FitTextWidth = paragraph.Range.FitTextWidth.ToString();
+            var Footnotes = paragraph.Range.Footnotes.ToString();
+            var FormattedText = paragraph.Range.FormattedText.ToString();
+            var FormFields = paragraph.Range.FormFields.ToString();
+            var Frames = paragraph.Range.Frames.ToString();
+            var GrammarChecked = paragraph.Range.GrammarChecked.ToString();
+            var GrammaticalErrors = paragraph.Range.GrammaticalErrors.ToString();
+            var HighlightColorIndex = paragraph.Range.HighlightColorIndex.ToString();
+            var HorizontallnVertical = paragraph.Range.HorizontalInVertical.ToString();
+            var HTMLDicisions = paragraph.Range.HTMLDivisions.ToString();
+            var Hyperlinks = paragraph.Range.Hyperlinks.ToString();
+            var InlineShapes = paragraph.Range.InlineShapes.ToString();
+            var IsEndOfMark = paragraph.Range.IsEndOfRowMark.ToString();
+            var ItalicBi = paragraph.Range.ItalicBi.ToString();
+            var Kana = paragraph.Range.Kana.ToString();
+            var LanguageDetected = paragraph.Range.LanguageDetected.ToString();
+            var LanguageID = paragraph.Range.LanguageID.ToString();
+            var LanguageIDFarEst = paragraph.Range.LanguageIDFarEast.ToString();
+            var LanguageIDOther = paragraph.Range.LanguageIDOther.ToString();
+            var ListFormat = paragraph.Range.ListFormat.ToString();
+            var ListParagraphs = paragraph.Range.ListParagraphs.ToString();
+            var NoProofing = paragraph.Range.NoProofing.ToString();
+            var OMaths = paragraph.Range.OMaths.ToString();
+            var Orientation = paragraph.Range.Orientation.ToString();
+            var PageSetup = paragraph.Range.PageSetup.ToString();
+            var ParagraphFormat = paragraph.Range.ParagraphFormat.ToString();
+            var Paragraphs = paragraph.Range.Paragraphs.ToString();
+            var PreviousBookmarkID = paragraph.Range.PreviousBookmarkID.ToString();
+            var ReadabilityStatistics = paragraph.Range.ReadabilityStatistics.ToString();
+            var Revisions = paragraph.Range.Revisions.ToString();
+            var Sections = paragraph.Range.Sections.ToString();
+            var Sentenses = paragraph.Range.Sentences.ToString();
+            var Shading = paragraph.Range.Shading.ToString();
+            var ShapeRange = paragraph.Range.ShapeRange.ToString();
+            var ShowAll = paragraph.Range.ShowAll.ToString();
+            var SmartTags = paragraph.Range.SmartTags.ToString();
+            var SpellingChecked = paragraph.Range.SpellingChecked.ToString();
+            var SpellingErrors = paragraph.Range.SpellingErrors.ToString();
+            var Subdocuments = paragraph.Range.Subdocuments.ToString();
+            var SynonymInfo = paragraph.Range.SynonymInfo.ToString();
+            var Tables = paragraph.Range.Tables.ToString();
+            var TextRetrievalMode = paragraph.Range.TextRetrievalMode.ToString();
+            var TextVisibleOnScreen = paragraph.Range.TextVisibleOnScreen.ToString();
+            var TopLevelTables = paragraph.Range.TopLevelTables.ToString();
+            var TwoLinesInOne = paragraph.Range.TwoLinesInOne.ToString();
+            var Words = paragraph.Range.Words.ToString();
+            var FontName = paragraph.Range.Font.Name.ToString();
+            var FontSize = paragraph.Range.Font.Size.ToString();
+            //var FontTextColorRGB = paragraph.Range.Font.TextColor.RGB.ToString();
+            var FontUnderlineColor = paragraph.Range.Font.UnderlineColor.ToString();
+            var FontStrikeThrough = paragraph.Range.Font.StrikeThrough.ToString();
+            var FontSuperscript = paragraph.Range.Font.Superscript.ToString();
+            var FontSubscript = paragraph.Range.Font.Superscript.ToString();
+            var FontHidden = paragraph.Range.Font.Hidden.ToString();
+            var FontScaling = paragraph.Range.Font.Scaling.ToString();
+            var FontPosition = paragraph.Range.Font.Position.ToString();
+            var FontKerning = paragraph.Range.Font.Kerning.ToString();
+            var FontApplication = paragraph.Range.Font.Application.ToString();
+            var FontBoldBi = paragraph.Range.Font.BoldBi.ToString();
+            var FontBorders = paragraph.Range.Font.Borders.ToString();
+            var FontColor = paragraph.Range.Font.Color.ToString();
+            var FontColorIndex = paragraph.Range.Font.ColorIndex.ToString();
+            var FontColorIndexBi = paragraph.Range.Font.ColorIndexBi.ToString();
+            var FontContextualAlternates = paragraph.Range.Font.ContextualAlternates.ToString();
+            var FontCreator = paragraph.Range.Font.Creator.ToString();
+            var FontDiacriricColor = paragraph.Range.Font.DiacriticColor.ToString();
+            var FontDoubleStrikeThrough = paragraph.Range.Font.DoubleStrikeThrough.ToString();
+            var FontDuplicate = paragraph.Range.Font.Duplicate.ToString();
+            var FontEmboss = paragraph.Range.Font.Emboss.ToString();
+            var FontEmphasisMark = paragraph.Range.Font.EmphasisMark.ToString();
+            var FontEngrave = paragraph.Range.Font.Engrave.ToString();
+            // Обратить внимание
+            //var FontFill = paragraph.Range.Font.Fill.ForeColor.RGB.ToString();
+            //var FontGlow = paragraph.Range.Font.Glow.ToString();
+            var FontItalic = paragraph.Range.Font.Italic.ToString();
+            var FontItalicBi = paragraph.Range.Font.ItalicBi.ToString();
+            var FontLigatures = paragraph.Range.Font.Ligatures.ToString();
+            var FontNameAscii = paragraph.Range.Font.NameAscii.ToString();
+            var FontNameBi = paragraph.Range.Font.NameBi.ToString();
+            var FontNameFarEast = paragraph.Range.Font.NameFarEast.ToString();
+            var FontNameOther = paragraph.Range.Font.NameOther.ToString();
+            var FontNumberForm = paragraph.Range.Font.NumberForm.ToString();
+            var FontNumberSpacing = paragraph.Range.Font.NumberSpacing.ToString();
+            var FontOutline = paragraph.Range.Font.Outline.ToString();
+            var FontParent = paragraph.Range.Font.Parent.ToString();
+            //var FontReflection = paragraph.Range.Font.Reflection.ToString();
+            var FontShading = paragraph.Range.Font.Shading.ToString();
+            var FontShadow = paragraph.Range.Font.Shadow.ToString();
+            var FontSizeBi = paragraph.Range.Font.SizeBi.ToString();
+            var FontSmallCaps = paragraph.Range.Font.SmallCaps.ToString();
+            var FontStylisticSet = paragraph.Range.Font.StylisticSet.ToString();
+            //var FontTextShadow = paragraph.Range.Font.TextShadow.ToString();
+            //var FontThreeD = paragraph.Range.Font.ThreeD.ToString();
+            var FontUnderline = paragraph.Range.Font.Underline.ToString();
+            // Paragraph 
+            var OutlineLevel = paragraph.OutlineLevel.ToString();
+            var Alignment = paragraph.Alignment.ToString();
+            var CharacterUnitLeftIndent = paragraph.CharacterUnitLeftIndent.ToString();
+            var LeftIndent = paragraph.LeftIndent.ToString();
+            var CharacterUnitRightIndent = paragraph.CharacterUnitLeftIndent.ToString();
+            var RightIndent = paragraph.RightIndent.ToString();
+            var CharacterUnitFirstLineIndent = paragraph.CharacterUnitFirstLineIndent.ToString();
+            var MirrorIndents = paragraph.MirrorIndents.ToString();
+            var LineSpacing = paragraph.LineSpacing.ToString();
+            var SpaceBefore = paragraph.SpaceBefore.ToString();
+            var SpaceAfter = paragraph.SpaceAfter.ToString();
+            var PageBreakBefore = paragraph.PageBreakBefore.ToString();
+            var AddSpaceBetweenFarEastAndAlpha = paragraph.AddSpaceBetweenFarEastAndAlpha.ToString();
+            var AddSpaceBetweenFarEastAndDigit = paragraph.AddSpaceBetweenFarEastAndDigit.ToString();
+            var Application = paragraph.Application.ToString();
+            var AutoAdjustRightIndent = paragraph.AutoAdjustRightIndent.ToString();
+            var BaseLineAlignment = paragraph.BaseLineAlignment.ToString();
+            var ParagraphBorders = paragraph.Borders.ToString();
+            var CollapsedState = paragraph.CollapsedState.ToString();
+            var CollapseHEadingByDefault = paragraph.CollapseHeadingByDefault.ToString();
+            var ParagraphCreator = paragraph.Creator.ToString();
+            var DisableLineHeightGrid = paragraph.DisableLineHeightGrid.ToString();
+            var DropCap = paragraph.DropCap.ToString();
+            var FarEastLineBreakControl = paragraph.FarEastLineBreakControl.ToString();
+            var FirstLineIndent = paragraph.FirstLineIndent.ToString();
+            var HalfWidthPunctuationOnTopOfLine = paragraph.HalfWidthPunctuationOnTopOfLine.ToString();
+            var HalfWidthPunctuation = paragraph.HalfWidthPunctuationOnTopOfLine.ToString();
+            var Hyphenation = paragraph.Hyphenation.ToString();
+            var IsStyleSeparator = paragraph.IsStyleSeparator.ToString();
+            var KeepTogether = paragraph.KeepTogether.ToString();
+            var KeepWithNext = paragraph.KeepWithNext.ToString();
+            var LineSpacingRule = paragraph.LineSpacingRule.ToString();
+            var LineUnitAfter = paragraph.LineUnitAfter.ToString();
+            var LineUnitBefore = paragraph.LineUnitBefore.ToString();
+            var NoLineNumber = paragraph.NoLineNumber.ToString();
+            var ParagraphParent = paragraph.Parent.ToString();
+            var ReadingOrder = paragraph.ReadingOrder.ToString();
+            var ParagraphShading = paragraph.Shading.ToString();
+            var SpaceAfterAuto = paragraph.SpaceAfter.ToString();
+            var ParagraphStyle = paragraph.get_Style().ToString();
+            var TabStops = paragraph.TabStops.ToString();
+            var TextboxTightWrap = paragraph.TextboxTightWrap.ToString();
+            var TextID = paragraph.TextID.ToString();
+            var WindowControl = paragraph.WidowControl.ToString();
+            var WordWrap = paragraph.WordWrap.ToString();
+
             ParagraphProperties paragraphProperties = new ParagraphProperties
             {
                 // Range
-                Text = paragraph.Range.Text.ToString(),
-                Underline = paragraph.Range.Underline.ToString(),
-                Bold = paragraph.Range.Bold.ToString(),
-                Italic = paragraph.Range.Italic.ToString(),
-                BoldBi = paragraph.Range.BoldBi.ToString(),
-                Bookmarks = paragraph.Range.Bookmarks.ToString(),
-                Borders = paragraph.Range.Borders.ToString(),
-                Case = paragraph.Range.Case.ToString(),
-                Characters = paragraph.Range.Characters.ToString(),
-                CharacterWidth = paragraph.Range.CharacterWidth.ToString(),
-                CombineCharacters = paragraph.Range.CombineCharacters.ToString(),
-                ContentControls = paragraph.Range.ContentControls.ToString(),
-                Creator = paragraph.Range.Creator.ToString(),
-                DisableCharacterSpaceGrid = paragraph.Range.DisableCharacterSpaceGrid.ToString(),
-                Document = paragraph.Range.Document.ToString(),
-                Duplicate = paragraph.Range.Duplicate.ToString(),
-                Editors = paragraph.Range.Editors.ToString(),
-                EmpasisMark = paragraph.Range.EmphasisMark.ToString(),
-                End = paragraph.Range.End.ToString(),
-                EndnoteOptions = paragraph.Range.EndnoteOptions.ToString(),
-                Endnotes = paragraph.Range.Endnotes.ToString(),
-                Fields = paragraph.Range.Fields.ToString(),
-                Find = paragraph.Range.Find.ToString(),
-                FitTextWidth = paragraph.Range.FitTextWidth.ToString(),
-                Footnotes = paragraph.Range.Footnotes.ToString(),
-                FormattedText = paragraph.Range.FormattedText.ToString(),
-                FormFields = paragraph.Range.FormFields.ToString(),
-                Frames = paragraph.Range.Frames.ToString(),
-                GrammarChecked = paragraph.Range.GrammarChecked.ToString(),
-                GrammaticalErrors = paragraph.Range.GrammaticalErrors.ToString(),
-                HighlightColorIndex = paragraph.Range.HighlightColorIndex.ToString(),
-                HorizontallnVertical = paragraph.Range.HorizontalInVertical.ToString(),
-                HTMLDicisions = paragraph.Range.HTMLDivisions.ToString(),
-                Hyperlinks = paragraph.Range.Hyperlinks.ToString(),
-                InlineShapes = paragraph.Range.InlineShapes.ToString(),
-                IsEndOfMark = paragraph.Range.IsEndOfRowMark.ToString(),
-                ItalicBi = paragraph.Range.ItalicBi.ToString(),
-                Kana = paragraph.Range.Kana.ToString(),
-                LanguageDetected = paragraph.Range.LanguageDetected.ToString(),
-                LanguageID = paragraph.Range.LanguageID.ToString(),
-                LanguageIDFarEst = paragraph.Range.LanguageIDFarEast.ToString(),
-                LanguageIDOther = paragraph.Range.LanguageIDOther.ToString(),
-                ListFormat = paragraph.Range.ListFormat.ToString(),
-                ListParagraphs = paragraph.Range.ListParagraphs.ToString(),
-                NoProofing = paragraph.Range.NoProofing.ToString(),
-                OMaths = paragraph.Range.OMaths.ToString(),
-                Orientation = paragraph.Range.Orientation.ToString(),
-                PageSetup = paragraph.Range.PageSetup.ToString(),
-                ParagraphFormat = paragraph.Range.ParagraphFormat.ToString(),
-                Paragraphs = paragraph.Range.Paragraphs.ToString(),
-                PreviousBookmarkID = paragraph.Range.PreviousBookmarkID.ToString(),
-                ReadabilityStatistics = paragraph.Range.ReadabilityStatistics.ToString(),
-                Revisions = paragraph.Range.Revisions.ToString(),
-                Sections = paragraph.Range.Sections.ToString(),
-                Sentenses = paragraph.Range.Sentences.ToString(),
-                Shading = paragraph.Range.Shading.ToString(),
-                ShapeRange = paragraph.Range.ShapeRange.ToString(),
-                ShowAll = paragraph.Range.ShowAll.ToString(),
-                SmartTags = paragraph.Range.SmartTags.ToString(),
-                SpellingChecked = paragraph.Range.SpellingChecked.ToString(),
-                SpellingErrors = paragraph.Range.SpellingErrors.ToString(),
-                Subdocuments = paragraph.Range.Subdocuments.ToString(),
-                SynonymInfo = paragraph.Range.SynonymInfo.ToString(),
-                Tables = paragraph.Range.Tables.ToString(),
-                TextRetrievalMode = paragraph.Range.TextRetrievalMode.ToString(),
-                TextVisibleOnScreen = paragraph.Range.TextVisibleOnScreen.ToString(),
-                TopLevelTables = paragraph.Range.TopLevelTables.ToString(),
-                TwoLinesInOne = paragraph.Range.TwoLinesInOne.ToString(),
-                //WordOpenXML = paragraph.Range.WordOpenXML.ToString(),
-                Words = paragraph.Range.Words.ToString(),
-                //XML = paragraph.Range.XML.ToString(),
-                //XMLNodes = paragraph.Range.XMLNodes.ToString(),
+                Text = Text,
+                Underline = Underline,
+                Bold = Bold,
+                Italic = Italic,
+                BoldBi = BoldBi,
+                Bookmarks = Bookmarks,
+                Borders = Borders,
+                Case = Case,
+                Characters = Characters,
+                CharacterWidth = CharacterWidth,
+                CombineCharacters = CombineCharacters,
+                ContentControls = ContentControls,
+                Creator = Creator,
+                DisableCharacterSpaceGrid = DisableCharacterSpaceGrid,
+                Document = Document,
+                Duplicate = Duplicate,
+                Editors = Editors,
+                EmpasisMark = EmpasisMark,
+                End = End,
+                EndnoteOptions = EndnoteOptions,
+                Endnotes = Endnotes,
+                Fields = Fields,
+                Find = Find,
+                FitTextWidth = FitTextWidth,
+                Footnotes = Footnotes,
+                FormattedText = FormattedText,
+                FormFields = FormFields,
+                Frames = Frames,
+                GrammarChecked = GrammarChecked,
+                GrammaticalErrors = GrammaticalErrors,
+                HighlightColorIndex = HighlightColorIndex,
+                HorizontallnVertical = HorizontallnVertical,
+                HTMLDicisions = HTMLDicisions,
+                Hyperlinks = Hyperlinks,
+                InlineShapes = InlineShapes,
+                IsEndOfMark = IsEndOfMark,
+                ItalicBi = ItalicBi,
+                Kana = Kana,
+                LanguageDetected = LanguageDetected,
+                LanguageID = LanguageID,
+                LanguageIDFarEst = LanguageIDFarEst,
+                LanguageIDOther = LanguageIDOther,
+                ListFormat = ListFormat,
+                ListParagraphs = ListParagraphs,
+                NoProofing = NoProofing,
+                OMaths = OMaths,
+                Orientation = Orientation,
+                PageSetup = PageSetup,
+                ParagraphFormat = ParagraphFormat,
+                Paragraphs = Paragraphs,
+                PreviousBookmarkID = PreviousBookmarkID,
+                ReadabilityStatistics = ReadabilityStatistics,
+                Revisions = Revisions,
+                Sections = Sections,
+                Sentenses = Sentenses,
+                Shading = Shading,
+                ShapeRange = ShapeRange,
+                ShowAll = ShowAll,
+                SmartTags = SmartTags,
+                SpellingChecked = SpellingChecked,
+                SpellingErrors = SpellingErrors,
+                Subdocuments = Subdocuments,
+                SynonymInfo = SynonymInfo,
+                Tables = Tables,
+                TextRetrievalMode = TextRetrievalMode,
+                TextVisibleOnScreen = TextVisibleOnScreen,
+                TopLevelTables = TopLevelTables,
+                TwoLinesInOne = TwoLinesInOne,
+                //WordOpenXML = WordOpenXML,
+                Words = Words,
+                //XML = XML,
+                //XMLNodes = XMLNodes,
                 // Font
-                FontName = paragraph.Range.Font.Name.ToString(),
-                FontSize = paragraph.Range.Font.Size.ToString(),
-                FontTextColorRGB = paragraph.Range.Font.TextColor.RGB.ToString(),
-                FontUnderlineColor = paragraph.Range.Font.UnderlineColor.ToString(),
-                FontStrikeThrough = paragraph.Range.Font.StrikeThrough.ToString(),
-                FontSuperscript = paragraph.Range.Font.Superscript.ToString(),
-                FontSubscript = paragraph.Range.Font.Superscript.ToString(),
-                FontHidden = paragraph.Range.Font.Hidden.ToString(),
-                FontScaling = paragraph.Range.Font.Scaling.ToString(),
-                FontPosition = paragraph.Range.Font.Position.ToString(),
-                FontKerning = paragraph.Range.Font.Kerning.ToString(),
-                FontApplication = paragraph.Range.Font.Application.ToString(),
-                FontBoldBi = paragraph.Range.Font.BoldBi.ToString(),
-                FontBorders = paragraph.Range.Font.Borders.ToString(),
-                FontColor = paragraph.Range.Font.Color.ToString(),
-                FontColorIndex = paragraph.Range.Font.ColorIndex.ToString(),
-                FontColorIndexBi = paragraph.Range.Font.ColorIndexBi.ToString(),
-                FontContextualAlternates = paragraph.Range.Font.ContextualAlternates.ToString(),
-                FontCreator = paragraph.Range.Font.Creator.ToString(),
-                FontDiacriricColor = paragraph.Range.Font.DiacriticColor.ToString(),
-                FontDoubleStrikeThrough = paragraph.Range.Font.DoubleStrikeThrough.ToString(),
-                FontDuplicate = paragraph.Range.Font.Duplicate.ToString(),
-                FontEmboss = paragraph.Range.Font.Emboss.ToString(),
-                FontEmphasisMark = paragraph.Range.Font.EmphasisMark.ToString(),
-                FontEngrave = paragraph.Range.Font.Engrave.ToString(),
+                FontName = FontName,
+                FontSize = FontSize,
+                //FontTextColorRGB = FontTextColorRGB,
+                FontUnderlineColor = FontUnderlineColor,
+                FontStrikeThrough = FontStrikeThrough,
+                FontSuperscript = FontSuperscript,
+                FontSubscript = FontSuperscript,
+                FontHidden = FontHidden,
+                FontScaling = FontScaling,
+                FontPosition = FontPosition,
+                FontKerning = FontKerning,
+                FontApplication = FontApplication,
+                FontBoldBi = FontBoldBi,
+                FontBorders = FontBorders,
+                FontColor = FontColor,
+                FontColorIndex = FontColorIndex,
+                FontColorIndexBi = FontColorIndexBi,
+                FontContextualAlternates = FontContextualAlternates,
+                FontCreator = FontCreator,
+                FontDiacriricColor = FontDiacriricColor,
+                FontDoubleStrikeThrough = FontDoubleStrikeThrough,
+                FontDuplicate = FontDuplicate,
+                FontEmboss = FontEmboss,
+                FontEmphasisMark = FontEmphasisMark,
+                FontEngrave = FontEngrave,
                 // Обратить внимание
-                FontFill = paragraph.Range.Font.Fill.ForeColor.RGB.ToString(),
-                FontGlow = paragraph.Range.Font.Glow.ToString(),
-                FontItalic = paragraph.Range.Font.Italic.ToString(),
-                FontItalicBi = paragraph.Range.Font.ItalicBi.ToString(),
-                FontLigatures = paragraph.Range.Font.Ligatures.ToString(),
-                FontNameAscii = paragraph.Range.Font.NameAscii.ToString(),
-                FontNameBi = paragraph.Range.Font.NameBi.ToString(),
-                FontNameFarEast = paragraph.Range.Font.NameFarEast.ToString(),
-                FontNameOther = paragraph.Range.Font.NameOther.ToString(),
-                FontNumberForm = paragraph.Range.Font.NumberForm.ToString(),
-                FontNumberSpacing = paragraph.Range.Font.NumberSpacing.ToString(),
-                FontOutline = paragraph.Range.Font.Outline.ToString(),
-                FontParent = paragraph.Range.Font.Parent.ToString(),
-                FontReflection = paragraph.Range.Font.Reflection.ToString(),
-                FontShading = paragraph.Range.Font.Shading.ToString(),
-                FontShadow = paragraph.Range.Font.Shadow.ToString(),
-                FontSizeBi = paragraph.Range.Font.SizeBi.ToString(),
-                FontSmallCaps = paragraph.Range.Font.SmallCaps.ToString(),
-                FontStylisticSet = paragraph.Range.Font.StylisticSet.ToString(),
-                FontTextShadow = paragraph.Range.Font.TextShadow.ToString(),
-                FontThreeD = paragraph.Range.Font.ThreeD.ToString(),
-                FontUnderline = paragraph.Range.Font.Underline.ToString(),
+                //FontFill = FontFill,
+                //FontGlow = FontGlow,
+                FontItalic = FontItalic,
+                FontItalicBi = FontItalicBi,
+                FontLigatures = FontLigatures,
+                FontNameAscii = FontNameAscii,
+                FontNameBi = FontNameBi,
+                FontNameFarEast = FontNameFarEast,
+                FontNameOther = FontNameOther,
+                FontNumberForm = FontNumberForm,
+                FontNumberSpacing = FontNumberSpacing,
+                FontOutline = FontOutline,
+                FontParent = FontParent,
+                //FontReflection = FontReflection,
+                FontShading = FontShading,
+                FontShadow = FontShadow,
+                FontSizeBi = FontSizeBi,
+                FontSmallCaps = FontSmallCaps,
+                FontStylisticSet = FontStylisticSet,
+                //FontTextShadow = FontTextShadow,
+                //FontThreeD = FontThreeD,
+                FontUnderline = FontUnderline,
                 // Paragraph 
-                OutlineLevel = paragraph.OutlineLevel.ToString(),
-                Alignment = paragraph.Alignment.ToString(),
-                CharacterUnitLeftIndent = paragraph.CharacterUnitLeftIndent.ToString(),
-                LeftIndent = paragraph.LeftIndent.ToString(),
-                CharacterUnitRightIndent = paragraph.CharacterUnitLeftIndent.ToString(),
-                RightIndent = paragraph.RightIndent.ToString(),
-                CharacterUnitFirstLineIndent = paragraph.CharacterUnitFirstLineIndent.ToString(),
-                MirrorIndents = paragraph.MirrorIndents.ToString(),
-                LineSpacing = paragraph.LineSpacing.ToString(),
-                SpaceBefore = paragraph.SpaceBefore.ToString(),
-                SpaceAfter = paragraph.SpaceAfter.ToString(),
-                PageBreakBefore = paragraph.PageBreakBefore.ToString(),
-                AddSpaceBetweenFarEastAndAlpha = paragraph.AddSpaceBetweenFarEastAndAlpha.ToString(),
-                AddSpaceBetweenFarEastAndDigit = paragraph.AddSpaceBetweenFarEastAndDigit.ToString(),
-                Application = paragraph.Application.ToString(),
-                AutoAdjustRightIndent = paragraph.AutoAdjustRightIndent.ToString(),
-                BaseLineAlignment = paragraph.BaseLineAlignment.ToString(),
-                ParagraphBorders = paragraph.Borders.ToString(),
-                CollapsedState = paragraph.CollapsedState.ToString(),
-                CollapseHEadingByDefault = paragraph.CollapseHeadingByDefault.ToString(),
-                ParagraphCreator = paragraph.Creator.ToString(),
-                DisableLineHeightGrid = paragraph.DisableLineHeightGrid.ToString(),
-                DropCap = paragraph.DropCap.ToString(),
-                FarEastLineBreakControl = paragraph.FarEastLineBreakControl.ToString(),
-                FirstLineIndent = paragraph.FirstLineIndent.ToString(),
-                HalfWidthPunctuationOnTopOfLine = paragraph.HalfWidthPunctuationOnTopOfLine.ToString(),
-                HalfWidthPunctuation = paragraph.HalfWidthPunctuationOnTopOfLine.ToString(),
-                Hyphenation = paragraph.Hyphenation.ToString(),
-                IsStyleSeparator = paragraph.IsStyleSeparator.ToString(),
-                KeepTogether = paragraph.KeepTogether.ToString(),
-                KeepWithNext = paragraph.KeepWithNext.ToString(),
-                LineSpacingRule = paragraph.LineSpacingRule.ToString(),
-                LineUnitAfter = paragraph.LineUnitAfter.ToString(),
-                LineUnitBefore = paragraph.LineUnitBefore.ToString(),
-                NoLineNumber = paragraph.NoLineNumber.ToString(),
-                ParagraphParent = paragraph.Parent.ToString(),
-                ReadingOrder = paragraph.ReadingOrder.ToString(),
-                ParagraphShading = paragraph.Shading.ToString(),
-                SpaceAfterAuto = paragraph.SpaceAfter.ToString(),
-                ParagraphStyle = paragraph.get_Style().ToString(),
-                TabStops = paragraph.TabStops.ToString(),
-                TextboxTightWrap = paragraph.TextboxTightWrap.ToString(),
-                TextID = paragraph.TextID.ToString(),
-                WindowControl = paragraph.WidowControl.ToString(),
-                WordWrap = paragraph.WordWrap.ToString()
+                OutlineLevel = OutlineLevel,
+                Alignment = Alignment,
+                CharacterUnitLeftIndent = CharacterUnitLeftIndent,
+                LeftIndent = LeftIndent,
+                CharacterUnitRightIndent = CharacterUnitLeftIndent,
+                RightIndent = RightIndent,
+                CharacterUnitFirstLineIndent = CharacterUnitFirstLineIndent,
+                MirrorIndents = MirrorIndents,
+                LineSpacing = LineSpacing,
+                SpaceBefore = SpaceBefore,
+                SpaceAfter = SpaceAfter,
+                PageBreakBefore = PageBreakBefore,
+                AddSpaceBetweenFarEastAndAlpha = AddSpaceBetweenFarEastAndAlpha,
+                AddSpaceBetweenFarEastAndDigit = AddSpaceBetweenFarEastAndDigit,
+                Application = Application,
+                AutoAdjustRightIndent = AutoAdjustRightIndent,
+                BaseLineAlignment = BaseLineAlignment,
+                ParagraphBorders = Borders,
+                CollapsedState = CollapsedState,
+                CollapseHEadingByDefault = CollapseHEadingByDefault,
+                ParagraphCreator = Creator,
+                DisableLineHeightGrid = DisableLineHeightGrid,
+                DropCap = DropCap,
+                FarEastLineBreakControl = FarEastLineBreakControl,
+                FirstLineIndent = FirstLineIndent,
+                HalfWidthPunctuationOnTopOfLine = HalfWidthPunctuationOnTopOfLine,
+                HalfWidthPunctuation = HalfWidthPunctuationOnTopOfLine,
+                Hyphenation = Hyphenation,
+                IsStyleSeparator = IsStyleSeparator,
+                KeepTogether = KeepTogether,
+                KeepWithNext = KeepWithNext,
+                LineSpacingRule = LineSpacingRule,
+                LineUnitAfter = LineUnitAfter,
+                LineUnitBefore = LineUnitBefore,
+                NoLineNumber = NoLineNumber,
+                ParagraphParent = ParagraphParent,
+                ReadingOrder = ReadingOrder,
+                ParagraphShading = Shading,
+                SpaceAfterAuto = SpaceAfter,
+                ParagraphStyle = ParagraphStyle,
+                TabStops = TabStops,
+                TextboxTightWrap = TextboxTightWrap,
+                TextID = TextID,
+                WindowControl = WindowControl,
+                WordWrap = WordWrap
             };
-
             return paragraphProperties;
+        }
+        
+        // Получить свойства страницы
+        private PageProperties GetSinglePageProperties(Word.PageSetup pageSetup, int pageNumber)
+        {
+            PageProperties result = new PageProperties
+            {
+                PageNumber = pageNumber,
+                BottomMargin = pageSetup.BottomMargin,
+                DifferentFirstPageHeaderFooter = Convert.ToBoolean(pageSetup.DifferentFirstPageHeaderFooter),
+                FooterDistance = pageSetup.FooterDistance,
+                Gutter = pageSetup.Gutter,
+                HeaderDistance = pageSetup.HeaderDistance,
+                LeftMargin = pageSetup.LeftMargin,
+                LineNumbering = Convert.ToBoolean(pageSetup.LineNumbering.Active),
+                MirrorMargins = Convert.ToBoolean(pageSetup.MirrorMargins),
+                OddAndEvenPagesHeaderFooter = Convert.ToBoolean(pageSetup.OddAndEvenPagesHeaderFooter),
+                Orientation = Convert.ToString(pageSetup.Orientation),
+                PageHeight = pageSetup.PageHeight,
+                PageWidth = pageSetup.PageWidth,
+                PaperSize = Convert.ToString(pageSetup.PaperSize),
+                RightMargin = pageSetup.RightMargin,
+                SectionDirection = Convert.ToString(pageSetup.SectionDirection),
+                SectionStart = Convert.ToString(pageSetup.SectionStart),
+                TextColumns = pageSetup.TextColumns.Count,
+                TopMargin = pageSetup.TopMargin,
+                TwoPagesOnOne = pageSetup.TwoPagesOnOne,
+                VerticalAlignment = Convert.ToString(pageSetup.VerticalAlignment)
+            };
+            
+            return result;
         }
 
         // Проверить, что первый символ абзаца принадлежит множеству символов
@@ -246,7 +471,7 @@ namespace DocxCorrector.Services.Corrector
         {
             return Array.IndexOf(symbols, paragraph.Range.Text[0].ToString()) != -1 ? 1 : 0;
         }
-        
+
         // Проверить, что последний символ абзаца принадлежит можнеству символов
         private int CheckIfLastSymbolOfParagraphIs(Word.Paragraph paragraph, string[] symbols)
         {
@@ -260,6 +485,7 @@ namespace DocxCorrector.Services.Corrector
             }
         }
 
+        // Проверить, что параграф содержит хотя бы один из символов
         private int CheckIfParagraphsContainsOneOf(Word.Paragraph paragraph, string[] symbols)
         {
             foreach (string symbol in symbols)
@@ -272,32 +498,57 @@ namespace DocxCorrector.Services.Corrector
             return 0;
         }
 
-// Corrector
-// Получение JSON-а со списком ошибок
-public override string GetMistakesJSON()
+        // Corrector
+        public CorrectorInterop(string filePath = null) : base(filePath) { }
+
+        // Получение JSON-а со списком ошибок
+        public override List<ParagraphResult> GetMistakes()
         {
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return new List<ParagraphResult>();
+            }
+
             List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
-            
+
             // TODO: - Remove
             ParagraphResult testResult = new ParagraphResult
             {
                 ParagraphID = 0,
                 Type = ElementType.Paragraph,
                 Prefix = "TestParagraph",
-                Mistakes = new List<Mistake> { new Mistake { Message = "Not Implemented" } }
+                Mistakes = new List<Mistake> { new Mistake(message: "Русские буквы") }
             };
             paragraphResults.Add(testResult);
 
             // TODO: - Implement method
 
-            string mistakesJSON = JSONMaker.MakeMistakesJSON(paragraphResults);
-            return mistakesJSON;
+            CloseApp();
+
+            return paragraphResults;
         }
 
         // Получить свойства всех параграфов
         public override List<ParagraphProperties> GetAllParagraphsProperties()
         {
-            OpenWord();
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return new List<ParagraphProperties>();
+            }
 
             List<ParagraphProperties> allParagraphsProperties = new List<ParagraphProperties>();
 
@@ -307,15 +558,53 @@ public override string GetMistakesJSON()
                 allParagraphsProperties.Add(paragraphProperties);
             }
 
-            QuitWord();
+            CloseApp();
 
             return allParagraphsProperties;
+        }
+        
+        //Получить свойства всех страниц
+        public override List<PageProperties> GetAllPagesProperties()
+        {
+            List<PageProperties> result = new List<PageProperties>();
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+            }
+            
+            int totalPageNumber = Document.ComputeStatistics(Word.WdStatistic.wdStatisticPages);
+            for (int i = 1; i <= totalPageNumber; i++)
+            {
+                Word.Range pageRange = Document.Range().GoTo(Word.WdGoToItem.wdGoToPage, Word.WdGoToDirection.wdGoToAbsolute, i);
+                PageProperties currentPageProperties = GetSinglePageProperties(pageRange.PageSetup, i);
+                result.Add(currentPageProperties);
+            }
+
+            CloseDocumentWithoutSavingChanges();
+            CloseApp();
+            return result;
         }
 
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
         public override List<NormalizedProperties> GetNormalizedProperties()
         {
-            OpenWord();
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return new List<NormalizedProperties>();
+            }
 
             List<NormalizedProperties> allNormalizedProperties = new List<NormalizedProperties>();
 
@@ -433,23 +722,32 @@ public override string GetMistakesJSON()
                 iteration++;
             }
 
-            QuitWord();
+            CloseApp();
 
             return allNormalizedProperties;
         }
 
-        // MARK: - Вспомогательные
         // Печать всех абзацев
         public override void PrintAllParagraphs()
         {
-            OpenWord();
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return;
+            }
 
             foreach (Word.Paragraph paragraph in Document.Paragraphs)
             {
                 Console.WriteLine(paragraph.Range.Text);
             }
 
-            QuitWord();
+            CloseApp();
         }
     }
 }
