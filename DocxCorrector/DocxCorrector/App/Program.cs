@@ -12,10 +12,11 @@ namespace DocxCorrector.App
 
         static void Main(string[] args)
         {
-            // Write your code here...
+            // Выбирать документ
+            Corrector.FilePath = Config.DocFilePath;
 
-            // Получение данных для программы Ромы
-            GenerateNormalizedCSVFiles();
+            // Проверить выбранный документ
+            CheckParagraphs();
 
             Console.WriteLine("End of program");
             Console.ReadLine();
@@ -63,6 +64,38 @@ namespace DocxCorrector.App
 
                 FileWriter.FillPropertiesCSV(String.Concat(subDir, @"\normalizedResults.csv"), normalizedPropertiesForDir);
             });
+        }
+
+        // Получить JSON со списком ошибок для выбранного документа, с учетом того, что все параграфы в нем определенного типа
+        static void CheckParagraphs()
+        {
+            Console.WriteLine("Введите тип проверяемых параграфов:\n0 - абзац\n1 - элемент списка\n2 - подпись к рисунку");
+            string userAnswer = Console.ReadLine();
+            int userAnserInt;
+            bool result = int.TryParse(userAnswer, out userAnserInt);  
+
+            if (!result)
+            {
+                Console.WriteLine("Недопустимый ответ");
+                return;
+            }
+
+            string resultJSON;
+
+            switch ((ElementType)userAnserInt)
+            {
+                case ElementType.Paragraph:
+                case ElementType.List:
+                case ElementType.ImageSign:
+                    resultJSON = Corrector.GetMistakesJSONForElementType(elementType: (ElementType)userAnserInt);
+                    break;
+
+                default:
+                    Console.WriteLine("Ответ не поддерживается");
+                    return;
+            }
+
+            FileWriter.WriteToFile(Config.MistakesFilePath, resultJSON);
         }
     }
 }

@@ -6,11 +6,11 @@ namespace DocxCorrector.Models
     public enum ElementType
     {
         Paragraph, // Абзац
-        Headline, // Заголовок
         List, // Список
+        ImageSign, // Подпись к рисунку
+        Headline, // Заголовок
         SourcesList, // Список источников
-        Image, // Рисунок
-        ImageSign // Подпись к рисунку
+        Image // Рисунок
     }
 
     // Результат проверки для параграфа

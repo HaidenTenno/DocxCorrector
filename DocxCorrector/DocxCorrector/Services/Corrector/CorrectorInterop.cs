@@ -9,7 +9,7 @@ namespace DocxCorrector.Services.Corrector
     class InteropExeption: Exception
     {
         public InteropExeption(string message) : base(message){ }
-    } 
+    }
 
     public sealed class CorrectorInterop : Corrector
     {
@@ -289,6 +289,51 @@ namespace DocxCorrector.Services.Corrector
             return 0;
         }
 
+        // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок АБЗАЦА
+        private ParagraphResult GetMistakesSimpleParagraph(int paragraphNum)
+        {
+            // ПРИМЕР СОЗДАНИЯ РЕЗУЛЬТАТА
+
+            // ЕСЛИ НАЙДЕНА ОШИБКА
+            Mistake mistake = new Mistake
+            {
+                Message = "Выбран неверный шрифт"
+            };
+
+            string prefixOfParagraph;
+
+            if (Document.Paragraphs[paragraphNum].Range.Text.Length > 20)
+            {
+                prefixOfParagraph = Document.Paragraphs[paragraphNum].Range.Text.ToString().Substring(0, 20);
+            }
+            else
+            {
+                prefixOfParagraph = Document.Paragraphs[paragraphNum].Range.Text.ToString();
+            }
+
+            ParagraphResult result = new ParagraphResult
+            {
+                ParagraphID = paragraphNum,
+                Type = ElementType.Paragraph,
+                Prefix = prefixOfParagraph,
+                Mistakes = new List<Mistake> { mistake }
+            };
+
+            return result;
+        }
+
+        // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок ЭЛЕМЕНТА СПИСКА
+        private ParagraphResult GetMistakesListElement(int paragraphNum)
+        {
+            return null;
+        }
+
+        // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок ПОДПИСИ К РИСУНКУ
+        private ParagraphResult GetMistakesImageSign(int paragraphNum)
+        {
+            return null;
+        }
+
         // Corrector
         public CorrectorInterop(string filePath = null) : base(filePath) { }
 
@@ -513,6 +558,63 @@ namespace DocxCorrector.Services.Corrector
             }
 
             CloseApp();
+        }
+
+        // Получить JSON со списком ошибок для выбранного документа, с учетом того, что все параграфы в нем типа elementType
+        public override string GetMistakesJSONForElementType(ElementType elementType)
+        {
+            string result = "";
+
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return result;
+            }
+
+            List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
+
+            int iteration = 1;
+            foreach (Word.Paragraph paragraph in Document.Paragraphs)
+            {
+                ParagraphResult currentParagraphResult = null;
+                switch (elementType)
+                {
+                    case ElementType.Paragraph:
+                        currentParagraphResult = GetMistakesSimpleParagraph(paragraphNum: iteration);
+                        break;
+
+                    case ElementType.List:
+                        currentParagraphResult = GetMistakesListElement(paragraphNum: iteration);
+                        break;
+
+                    case ElementType.ImageSign:
+                        currentParagraphResult = GetMistakesImageSign(paragraphNum: iteration);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                // Если ошибки параграфа найдены добавить их в общий список
+                if (currentParagraphResult != null)
+                {
+                    paragraphResults.Add(currentParagraphResult);
+                }
+
+                iteration++;
+            }
+
+            string mistakesJSON = JSONMaker.MakeMistakesJSON(paragraphResults);
+
+            CloseApp();
+
+            return mistakesJSON;
         }
     }
 }

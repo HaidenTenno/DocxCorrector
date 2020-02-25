@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
 using DocxCorrector.Models;
 
 namespace DocxCorrector.Services
@@ -11,7 +12,13 @@ namespace DocxCorrector.Services
         // Создать JSON строку из списка ошибок mistakes
         public static string MakeMistakesJSON(List<ParagraphResult> results)
         {
-            string jsonString = JsonSerializer.Serialize(results);
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            string jsonString =  JsonSerializer.Serialize(results, options);
+
             return jsonString;
         }
     }

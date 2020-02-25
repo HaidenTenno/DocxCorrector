@@ -25,5 +25,8 @@ namespace DocxCorrector.Services.Corrector
         // Вспомогательные на момент разработки методы, котоые возможно подлежат удалению
         // Печать всех абзацев
         public abstract void PrintAllParagraphs();
+
+        // Получить JSON со списком ошибок для выбранного документа, с учетом того, что все параграфы в нем типа elementType
+        public abstract string GetMistakesJSONForElementType(Models.ElementType elementType);
     }
 }
