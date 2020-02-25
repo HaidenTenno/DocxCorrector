@@ -29,5 +29,10 @@ namespace DocxCorrector.Models
     {
         // Сообщение об ошибке
         public string Message { get; set; }
+
+        public Mistake(string message)
+        {
+            Message = message;
+        }
     }
 }

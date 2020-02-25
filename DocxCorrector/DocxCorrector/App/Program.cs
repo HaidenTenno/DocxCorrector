@@ -15,7 +15,8 @@ namespace DocxCorrector.App
             // Write your code here...
 
             // Получение данных для программы Ромы
-            GenerateNormalizedCSVFiles();
+            //GenerateNormalizedCSVFiles();
+            GenerateCSVFiles();
 
             Console.WriteLine("End of program");
             Console.ReadLine();
