@@ -13,16 +13,19 @@ namespace DocxCorrector.App
         static void Main(string[] args)
         {
             // Write your code here...
-
-            // Получение данных для программы Ромы
-            GenerateNormalizedCSVFiles();
-
+            Corrector.FilePath = Config.DocFilePath;
+            
+            var allPagesProperties = Corrector.GetAllPagesProperties();
+//            var json = Corrector.GetAllPagesPropertiesJSON(allPagesProperties);
+//            Console.WriteLine(json);
+            
+            
             Console.WriteLine("End of program");
             Console.ReadLine();
         }
 
         // Создать JSON файл с ошибками
-        static void GenerateMistacesJSON()
+        static void GenerateMistakesJSON()
         {
             string mistakesJSON = Corrector.GetMistakesJSON();
             FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
