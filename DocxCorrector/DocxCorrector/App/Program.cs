@@ -46,7 +46,7 @@ namespace DocxCorrector.App
                 {
                     Corrector.FilePath = filepath;
                     List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties();
-                    propertiesForFile.Add(new ParagraphProperties());
+                    propertiesForFile.Add(new ParagraphProperties(paragraph: null));
                     propertiesForDir.AddRange(propertiesForFile);
                 });
 
