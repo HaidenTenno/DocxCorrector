@@ -26,8 +26,11 @@ namespace DocxCorrector.Services.Corrector
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
         public abstract List<NormalizedProperties> GetNormalizedProperties();
 
-        // Вспомогательные на момент разработки методы, котоые возможно подлежат удалению
+        // Вспомогательные на момент разработки методы, которые, возможно, подлежат удалению
         // Печать всех абзацев
         public abstract void PrintAllParagraphs();
+
+        // Получить спискок ошибок для выбранного документа, с учетом того, что все параграфы в нем типа elementType
+        public abstract List<ParagraphResult> GetMistakesForElementType(ElementType elementType);
     }
 }
