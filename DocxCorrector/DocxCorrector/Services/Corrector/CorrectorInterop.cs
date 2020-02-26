@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using DocxCorrector.Models;
 using DocxCorrector.Services;
@@ -14,8 +15,8 @@ namespace DocxCorrector.Services.Corrector
     public sealed class CorrectorInterop : Corrector
     {
         // Private
-        private Word.Application App;
-        private Word.Document Document;
+        private Word.Application? App;
+        private Word.Document? Document;
 
         // Приготовится к началу работы
         private void OpenApp()
@@ -54,7 +55,7 @@ namespace DocxCorrector.Services.Corrector
         {
             try
             {
-                Document = App.Documents.Open(FileName: FilePath, Visible: true);
+                Document = App!.Documents.Open(FileName: FilePath, Visible: true);
             }
             catch (Exception ex)
             {
@@ -70,7 +71,7 @@ namespace DocxCorrector.Services.Corrector
         {
             try
             {
-                if (Document != null) { App.Documents.Close(); }
+                if (Document != null) { App!.Documents.Close(); }
             }
             catch (Exception ex)
             {
@@ -96,8 +97,10 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок АБЗАЦА
-        private ParagraphResult GetMistakesSimpleParagraph(int paragraphNum)
+        private ParagraphResult? GetMistakesSimpleParagraph(int paragraphNum)
         {
+            if (Document == null) { return null; }
+
             Word.Paragraph paragraph = Document.Paragraphs[paragraphNum];
             
             string prefixOfParagraph;
@@ -214,8 +217,10 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок ЭЛЕМЕНТА СПИСКА
-        private ParagraphResult GetMistakesListElement(int paragraphNum)
+        private ParagraphResult? GetMistakesListElement(int paragraphNum)
         {
+            if (Document == null) { return null; }
+
             Word.Paragraph paragraph = Document.Paragraphs[paragraphNum];
 
             string prefixOfParagraph;
@@ -362,8 +367,10 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок ПОДПИСИ К РИСУНКУ
-        private ParagraphResult GetMistakesImageSign(int paragraphNum)
+        private ParagraphResult? GetMistakesImageSign(int paragraphNum)
         {
+            if (Document == null) { return null; }
+
             Word.Paragraph paragraph = Document.Paragraphs[paragraphNum];
 
             string prefixOfParagraph;
@@ -477,7 +484,7 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Corrector
-        public CorrectorInterop(string filePath = null) : base(filePath) { }
+        public CorrectorInterop(string? filePath = null) : base(filePath) { }
 
         // Получение JSON-а со списком ошибок
         public override List<ParagraphResult> GetMistakes()
@@ -530,7 +537,7 @@ namespace DocxCorrector.Services.Corrector
 
             List<ParagraphProperties> allParagraphsProperties = new List<ParagraphProperties>();
 
-            foreach (Word.Paragraph paragraph in Document.Paragraphs)
+            foreach (Word.Paragraph paragraph in Document!.Paragraphs)
             {
                 ParagraphProperties paragraphProperties = new ParagraphProperties(paragraph);
                 allParagraphsProperties.Add(paragraphProperties);
@@ -558,7 +565,7 @@ namespace DocxCorrector.Services.Corrector
 
             List<PageProperties> result = new List<PageProperties>();
 
-            int totalPageNumber = Document.ComputeStatistics(Word.WdStatistic.wdStatisticPages);
+            int totalPageNumber = Document!.ComputeStatistics(Word.WdStatistic.wdStatisticPages);
             for (int pageNumber = 1; pageNumber <= totalPageNumber; pageNumber++)
             {
                 Word.Range pageRange = Document.Range().GoTo(Word.WdGoToItem.wdGoToPage, Word.WdGoToDirection.wdGoToAbsolute, pageNumber);
@@ -589,7 +596,7 @@ namespace DocxCorrector.Services.Corrector
             List<NormalizedProperties> allNormalizedProperties = new List<NormalizedProperties>();
 
             int iteration = 0;
-            foreach (Word.Paragraph paragraph in Document.Paragraphs)
+            foreach (Word.Paragraph paragraph in Document!.Paragraphs)
             {
                 NormalizedProperties normalizedParagraphProperties = new NormalizedProperties(paragraph: paragraph, paragraphId: iteration);
                 allNormalizedProperties.Add(normalizedParagraphProperties);
@@ -616,7 +623,7 @@ namespace DocxCorrector.Services.Corrector
                 return;
             }
 
-            foreach (Word.Paragraph paragraph in Document.Paragraphs)
+            foreach (Word.Paragraph paragraph in Document!.Paragraphs)
             {
                 Console.WriteLine(paragraph.Range.Text);
             }
@@ -636,32 +643,24 @@ namespace DocxCorrector.Services.Corrector
             {
                 Console.WriteLine(ex.Message);
                 CloseApp();
-                return null;
+                return new List<ParagraphResult>();
             }
 
             List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
 
             int iteration = 1;
-            foreach (Word.Paragraph paragraph in Document.Paragraphs)
+            foreach (Word.Paragraph paragraph in Document!.Paragraphs)
             {
-                ParagraphResult currentParagraphResult = null;
-                switch (elementType)
+                ParagraphResult? currentParagraphResult;
+
+                currentParagraphResult = elementType switch
                 {
-                    case ElementType.Paragraph:
-                        currentParagraphResult = GetMistakesSimpleParagraph(paragraphNum: iteration);
-                        break;
+                    ElementType.Paragraph => GetMistakesSimpleParagraph(paragraphNum: iteration),
+                    ElementType.List => GetMistakesListElement(paragraphNum: iteration),
+                    ElementType.ImageSign => currentParagraphResult = GetMistakesImageSign(paragraphNum: iteration),
+                    _ => null
+                };
 
-                    case ElementType.List:
-                        currentParagraphResult = GetMistakesListElement(paragraphNum: iteration);
-                        break;
-
-                    case ElementType.ImageSign:
-                        currentParagraphResult = GetMistakesImageSign(paragraphNum: iteration);
-                        break;
-
-                    default:
-                        break;
-                }
 
                 // Если ошибки параграфа найдены добавить их в общий список
                 if (currentParagraphResult != null)

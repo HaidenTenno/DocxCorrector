@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using DocxCorrector.Models;
 
@@ -7,9 +8,9 @@ namespace DocxCorrector.Services.Corrector
     public abstract class Corrector
     {
         // Путь к docx файлу
-        public virtual string FilePath { get; set; }
+        public virtual string? FilePath { get; set; }
 
-        public Corrector(string filePath = null)
+        public Corrector(string? filePath = null)
         {
             FilePath = filePath;
         }

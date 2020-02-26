@@ -48,7 +48,6 @@ namespace DocxCorrector.App
                 {
                     Corrector.FilePath = filepath;
                     List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties();
-                    propertiesForFile.Add(new ParagraphProperties(paragraph: null));
                     propertiesForDir.AddRange(propertiesForFile);
                 });
 
@@ -103,7 +102,6 @@ namespace DocxCorrector.App
                     return;
             }
 
-            if (paragraphResults == null) { return; }
             string resultJSON = JSONMaker.MakeJSON(results: paragraphResults);
             FileWriter.WriteToFile(Config.MistakesFilePath, resultJSON);
         }
