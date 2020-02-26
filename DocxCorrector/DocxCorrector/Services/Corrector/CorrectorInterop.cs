@@ -101,8 +101,19 @@ namespace DocxCorrector.Services.Corrector
         {
             if (Document == null) { return null; }
 
-            Word.Paragraph paragraph = Document.Paragraphs[paragraphNum];
-            
+            Word.Paragraph paragraph;
+            try
+            {
+                paragraph = Document.Paragraphs[paragraphNum];
+            } 
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+                return null;
+            }
+
             string prefixOfParagraph;
 
             if (Document.Paragraphs[paragraphNum].Range.Text.Length > 20)
@@ -221,7 +232,18 @@ namespace DocxCorrector.Services.Corrector
         {
             if (Document == null) { return null; }
 
-            Word.Paragraph paragraph = Document.Paragraphs[paragraphNum];
+            Word.Paragraph paragraph;
+            try
+            {
+                paragraph = Document.Paragraphs[paragraphNum];
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+                return null;
+            }
 
             string prefixOfParagraph;
 
@@ -371,7 +393,18 @@ namespace DocxCorrector.Services.Corrector
         {
             if (Document == null) { return null; }
 
-            Word.Paragraph paragraph = Document.Paragraphs[paragraphNum];
+            Word.Paragraph paragraph;
+            try
+            {
+                paragraph = Document.Paragraphs[paragraphNum];
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+                return null;
+            }
 
             string prefixOfParagraph;
 
