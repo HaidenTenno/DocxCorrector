@@ -96,6 +96,7 @@
     <Compile Include="Services\Corrector\CorrectorInterop.cs" />
     <Compile Include="Services\DirectoryIterator.cs" />
     <Compile Include="Services\FileWriter.cs" />
+    <Compile Include="Services\InteropHelper.cs" />
     <Compile Include="Services\JSONMaker.cs" />
   </ItemGroup>
   <ItemGroup>
