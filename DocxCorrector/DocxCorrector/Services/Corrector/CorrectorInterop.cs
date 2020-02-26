@@ -292,14 +292,8 @@ namespace DocxCorrector.Services.Corrector
         // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок АБЗАЦА
         private ParagraphResult GetMistakesSimpleParagraph(int paragraphNum)
         {
-            // ПРИМЕР СОЗДАНИЯ РЕЗУЛЬТАТА
-
-            // ЕСЛИ НАЙДЕНА ОШИБКА
-            Mistake mistake = new Mistake
-            {
-                Message = "Выбран неверный шрифт"
-            };
-
+            Word.Paragraph paragraph = Document.Paragraphs[paragraphNum];
+            
             string prefixOfParagraph;
 
             if (Document.Paragraphs[paragraphNum].Range.Text.Length > 20)
@@ -316,8 +310,132 @@ namespace DocxCorrector.Services.Corrector
                 ParagraphID = paragraphNum,
                 Type = ElementType.Paragraph,
                 Prefix = prefixOfParagraph,
-                Mistakes = new List<Mistake> { mistake }
+                Mistakes = new List<Mistake>()
             };
+
+            //Условия возникновения ошибок в АБЗАЦЕ
+
+            //Проверка центровки параграфа по ширине страницы
+            if (paragraph.Alignment != Word.WdParagraphAlignment.wdAlignParagraphJustify)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong paragraph alignment (must be justify)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка отступа сверху
+            if (paragraph.SpaceBefore != 0 )
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Space before the paragraph must be 0"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка отступа снизу
+            if (paragraph.SpaceAfter != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Space after the paragraph must be 0"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка наличия заглавной буквы в начале абзаца
+            if (prefixOfParagraph[0] != prefixOfParagraph.ToUpper()[0])
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Starting capital letter missed"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка 1.5-ого межстрочного интервала
+            if (paragraph.LineSpacingRule != Word.WdLineSpacing.wdLineSpace1pt5)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong line spacing (not 1.5 lines)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка размера шрифта
+            if (paragraph.Range.Font.Size != 14.0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong font size (must be 14 pt)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка типа шрифта
+            if (paragraph.Range.Font.Name.ToString() != "Times New Roman")
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong font type (must be Times New Roman)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка наличия красной строки
+            if (paragraph.FirstLineIndent != (float)35.45)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "There is no first line indent in this paragraph"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка наличия лишних стилей (лучше FontStyle)
+            if (paragraph.Range.Italic != 0 & paragraph.Range.Bold != 0 & paragraph.Range.Underline != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Font style of paragraph must be regular"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка цвета текста
+            if (paragraph.Range.Font.TextColor.RGB != -16777216 & paragraph.Range.Font.TextColor.RGB != -587137025 & paragraph.Range.Font.TextColor.RGB != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Font color must be neutral (black)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка конечных знаков препинания
+            if (paragraph.Range.Text.Length > 1)
+            {
+                if (paragraph.Range.Text[paragraph.Range.Text.Length - 2].ToString() != "." &
+                    paragraph.Range.Text[paragraph.Range.Text.Length - 2].ToString() != ":" &
+                    paragraph.Range.Text[paragraph.Range.Text.Length - 2].ToString() != "!" &
+                    paragraph.Range.Text[paragraph.Range.Text.Length - 2].ToString() != "?")
+                {
+                    Mistake mistake = new Mistake
+                    {
+                        Message = "Wrong ending of paragraph (proper punctuation mark expected)"
+                    };
+                    result.Mistakes.Add(mistake);
+                }
+
+            }
+
+            if (result.Mistakes.Count == 0)
+            { 
+                return null;
+            }
 
             return result;
         }
@@ -325,13 +443,333 @@ namespace DocxCorrector.Services.Corrector
         // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок ЭЛЕМЕНТА СПИСКА
         private ParagraphResult GetMistakesListElement(int paragraphNum)
         {
-            return null;
+            Word.Paragraph paragraph = Document.Paragraphs[paragraphNum];
+
+            string prefixOfParagraph;
+
+            if (Document.Paragraphs[paragraphNum].Range.Text.Length > 5)
+            {
+                prefixOfParagraph = Document.Paragraphs[paragraphNum].Range.Text.ToString().Substring(0, 5);
+            }
+            else
+            {
+                prefixOfParagraph = Document.Paragraphs[paragraphNum].Range.Text.ToString();
+            }
+
+            ParagraphResult result = new ParagraphResult
+            {
+                ParagraphID = paragraphNum,
+                Type = ElementType.Paragraph,
+                Prefix = prefixOfParagraph,
+                Mistakes = new List<Mistake>()
+            };
+
+            //Условия возникновения ошибок в ЭЛЕМЕНТЕ СПИСКА
+
+            //Проверка центровки элемента списка по ширине страницы
+            if (paragraph.Alignment != Word.WdParagraphAlignment.wdAlignParagraphJustify & paragraph.Alignment != Word.WdParagraphAlignment.wdAlignParagraphLeft)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong list element alignment (must be justify or left)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка отступа сверху
+            if (paragraph.SpaceBefore != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Space before the paragraph must be 0"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка отступа снизу
+            if (paragraph.SpaceAfter != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Space after the paragraph must be 0"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка наличия заглавной буквы в начале абзаца
+            if (prefixOfParagraph[2] != prefixOfParagraph.ToLower()[2])
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong starting letter (capital letters are not allowed)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка 1.5-ого межстрочного интервала
+            if (paragraph.LineSpacingRule != Word.WdLineSpacing.wdLineSpace1pt5)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong line spacing (not 1.5 lines)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка размера шрифта
+            if (paragraph.Range.Font.Size != 14.0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong font size (must be 14 pt)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка типа шрифта
+            if (paragraph.Range.Font.Name.ToString() != "Times New Roman")
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong font type (must be Times New Roman)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка наличия красной строки
+            if (paragraph.FirstLineIndent == (float)35.45)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "There is no first line indent needed in list element"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка наличия лишних стилей (лучше FontStyle)
+            if (paragraph.Range.Italic != 0 & paragraph.Range.Bold != 0 & paragraph.Range.Underline != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Font style of list element must be regular"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка цвета текста
+            if (paragraph.Range.Font.TextColor.RGB != -16777216 & paragraph.Range.Font.TextColor.RGB != -587137025 & paragraph.Range.Font.TextColor.RGB != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Font color must be neutral (black)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка конечных знаков препинания
+            if (paragraph.Range.Text.Length > 1)
+            {
+                if (paragraph.Range.Text[paragraph.Range.Text.Length - 2].ToString() != ";" & 
+                    paragraph.Range.Text[paragraph.Range.Text.Length - 2].ToString() != ".")
+                {
+                    Mistake mistake = new Mistake
+                    {
+                        Message = "Wrong ending of list element (proper punctuation mark expected)"
+                    };
+                    result.Mistakes.Add(mistake);
+                }
+
+            }
+
+            //Проверка начальных знаков препинания
+            if (paragraph.Range.Text.Length > 1)
+            {
+                if (paragraph.Range.Text[0].ToString() != "-" &
+                    paragraph.Range.Text[0].ToString() != "־" &
+                    paragraph.Range.Text[0].ToString() != "᠆" &
+                    paragraph.Range.Text[0].ToString() != "‐" &
+                    paragraph.Range.Text[0].ToString() != "‑" &
+                    paragraph.Range.Text[0].ToString() != "‒" &
+                    paragraph.Range.Text[0].ToString() != "–" &
+                    paragraph.Range.Text[0].ToString() != "—" &
+                    paragraph.Range.Text[0].ToString() != "―" &
+                    paragraph.Range.Text[0].ToString() != "﹘" &
+                    paragraph.Range.Text[0].ToString() != "﹣" &
+                    paragraph.Range.Text[0].ToString() != "－" &
+                    paragraph.Range.Text[0].ToString() != "1" &
+                    paragraph.Range.Text[0].ToString() != "2" &
+                    paragraph.Range.Text[0].ToString() != "3" &
+                    paragraph.Range.Text[0].ToString() != "4" &
+                    paragraph.Range.Text[0].ToString() != "5" &
+                    paragraph.Range.Text[0].ToString() != "6" &
+                    paragraph.Range.Text[0].ToString() != "7" &
+                    paragraph.Range.Text[0].ToString() != "8" &
+                    paragraph.Range.Text[0].ToString() != "9")
+                    
+                {
+                    Mistake mistake = new Mistake
+                    {
+                        Message = "Wrong starting of list element (proper punctuation mark expected)"
+                    };
+                    result.Mistakes.Add(mistake);
+                }
+
+            }
+
+            if (result.Mistakes.Count == 0)
+            {
+                return null;
+            }
+
+            return result;
         }
 
         // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок ПОДПИСИ К РИСУНКУ
         private ParagraphResult GetMistakesImageSign(int paragraphNum)
         {
-            return null;
+            Word.Paragraph paragraph = Document.Paragraphs[paragraphNum];
+
+            string prefixOfParagraph;
+
+            if (Document.Paragraphs[paragraphNum].Range.Text.Length > 10)
+            {
+                prefixOfParagraph = Document.Paragraphs[paragraphNum].Range.Text.ToString().Substring(0, 10);
+            }
+            else
+            {
+                prefixOfParagraph = Document.Paragraphs[paragraphNum].Range.Text.ToString();
+            }
+
+            ParagraphResult result = new ParagraphResult
+            {
+                ParagraphID = paragraphNum,
+                Type = ElementType.Paragraph,
+                Prefix = prefixOfParagraph,
+                Mistakes = new List<Mistake>()
+            };
+
+            //Условия возникновения ошибок в ПОДПИСИ К КАРТИНКЕ
+
+            //Проверка центровки подписи к картинке по центру
+            if (paragraph.Alignment != Word.WdParagraphAlignment.wdAlignParagraphCenter)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong image sign alignment (must be center)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка отступа сверху
+            if (paragraph.SpaceBefore != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Space before image sign must be 0"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка отступа снизу
+            if (paragraph.SpaceAfter != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Space after image sign must be 0"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка наличия заглавной буквы в начале абзаца
+            if (prefixOfParagraph[0] != prefixOfParagraph.ToUpper()[0])
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong starting letter (must be capital)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка 1.5-ого межстрочного интервала
+            if (paragraph.LineSpacingRule != Word.WdLineSpacing.wdLineSpace1pt5)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong line spacing (not 1.5 lines)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка размера шрифта
+            if (paragraph.Range.Font.Size != 14.0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong font size (must be 14 pt)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка типа шрифта
+            if (paragraph.Range.Font.Name.ToString() != "Times New Roman")
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Wrong font type (must be Times New Roman)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка наличия красной строки
+            if (paragraph.FirstLineIndent == (float)35.45)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "There is no first line indent needed in image sign"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка наличия лишних стилей (лучше FontStyle)
+            if (paragraph.Range.Italic != 0 & paragraph.Range.Bold != 0 & paragraph.Range.Underline != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Font style of image sign must be regular"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка цвета текста
+            if (paragraph.Range.Font.TextColor.RGB != -16777216 & paragraph.Range.Font.TextColor.RGB != -587137025 & paragraph.Range.Font.TextColor.RGB != 0)
+            {
+                Mistake mistake = new Mistake
+                {
+                    Message = "Font color must be neutral (black)"
+                };
+                result.Mistakes.Add(mistake);
+            }
+
+            //Проверка конечных знаков препинания
+            if (paragraph.Range.Text.Length > 1)
+            {
+                if (Char.IsLetter(paragraph.Range.Text[paragraph.Range.Text.Length - 2]))
+                {
+                    Mistake mistake = new Mistake
+                    {
+                        Message = "Wrong ending of image sign (No exclamation mark is required)"
+                    };
+                    result.Mistakes.Add(mistake);
+                }
+
+            }
+
+            if (result.Mistakes.Count == 0)
+            {
+                return null;
+            }
+
+            return result;
         }
 
         // Corrector
