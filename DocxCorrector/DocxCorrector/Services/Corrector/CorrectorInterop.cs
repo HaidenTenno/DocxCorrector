@@ -96,6 +96,7 @@ namespace DocxCorrector.Services.Corrector
             }
         }
 
+        // TODO: - Использовать методы InteropHelper и сократить код
         // Проверить параграф под номером paragraphNum в выбранном документе на наличие ошибок АБЗАЦА
         private ParagraphResult? GetMistakesSimpleParagraph(int paragraphNum)
         {
@@ -572,7 +573,7 @@ namespace DocxCorrector.Services.Corrector
 
             foreach (Word.Paragraph paragraph in Document!.Paragraphs)
             {
-                ParagraphProperties paragraphProperties = new ParagraphProperties(paragraph);
+                ParagraphProperties paragraphProperties = new ParagraphPropertiesInterop(paragraph);
                 allParagraphsProperties.Add(paragraphProperties);
             }
 
@@ -602,7 +603,7 @@ namespace DocxCorrector.Services.Corrector
             for (int pageNumber = 1; pageNumber <= totalPageNumber; pageNumber++)
             {
                 Word.Range pageRange = Document.Range().GoTo(Word.WdGoToItem.wdGoToPage, Word.WdGoToDirection.wdGoToAbsolute, pageNumber);
-                PageProperties currentPageProperties = new PageProperties(pageSetup: pageRange.PageSetup, pageNumber: pageNumber);
+                PageProperties currentPageProperties = new PagePropertiesInterop(pageSetup: pageRange.PageSetup, pageNumber: pageNumber);
                 result.Add(currentPageProperties);
             }
 
@@ -631,7 +632,7 @@ namespace DocxCorrector.Services.Corrector
             int iteration = 0;
             foreach (Word.Paragraph paragraph in Document!.Paragraphs)
             {
-                NormalizedProperties normalizedParagraphProperties = new NormalizedProperties(paragraph: paragraph, paragraphId: iteration);
+                NormalizedProperties normalizedParagraphProperties = new NormalizedPropertiesInterop(paragraph: paragraph, paragraphId: iteration);
                 allNormalizedProperties.Add(normalizedParagraphProperties);
                 iteration++;
             }

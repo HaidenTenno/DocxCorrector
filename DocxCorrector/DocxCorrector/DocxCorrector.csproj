@@ -92,12 +92,16 @@
   <ItemGroup>
     <Compile Include="App\Config.cs" />
     <Compile Include="App\Program.cs" />
-    <Compile Include="Models\NormalizedProperties.cs" />
-    <Compile Include="Models\PageProperties.cs" />
-    <Compile Include="Models\ParagraphProperties.cs" />
-    <Compile Include="Models\Result.cs" />
+    <Compile Include="Models\NormalizedProperties\NormalizedProperties.cs" />
+    <Compile Include="Models\NormalizedProperties\NormalizedPropertiesInterop.cs" />
+    <Compile Include="Models\PageProperties\PageProperties.cs" />
+    <Compile Include="Models\PageProperties\PagePropertiesInterop.cs" />
+    <Compile Include="Models\ParagraphProperties\ParagraphProperties.cs" />
+    <Compile Include="Models\ParagraphProperties\ParagraphPropertiesInterop.cs" />
+    <Compile Include="Models\ParagraphResult\ParagraphResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Corrector\Corrector.cs" />
+    <Compile Include="Services\Corrector\CorrectorGemBox.cs" />
     <Compile Include="Services\Corrector\CorrectorInterop.cs" />
     <Compile Include="Services\DirectoryIterator.cs" />
     <Compile Include="Services\FileWriter.cs" />
@@ -108,5 +112,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using DocxCorrector.Models;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace DocxCorrector.Services
