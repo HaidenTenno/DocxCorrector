@@ -36,5 +36,11 @@ namespace DocxCorrector.Services
             }
             return 0;
         }
+
+        // Получить первые prefixLength символов параграфа paragraph (если длина меньшье, то вернуть весь параграф)
+        internal static string GetParagraphPrefix(Word.Paragraph paragraph, int prefixLength)
+        {
+            return paragraph.Range.Text.Length > prefixLength ? paragraph.Range.Text.ToString().Substring(0, prefixLength) : paragraph.Range.Text.ToString();
+        }
     }
 }
