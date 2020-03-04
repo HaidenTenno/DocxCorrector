@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using DocxCorrector.Services.Corrector;
 using DocxCorrector.Services;
 using DocxCorrector.Models;
-using System.Threading.Tasks;
 
 namespace DocxCorrector.App
 {
@@ -14,6 +13,7 @@ namespace DocxCorrector.App
 
         static void Main(string[] args)
         {
+            TimeCounter.CountTime(() => GenerateCSVFiles());
             TimeCounter.CountTime(() => GenerateCSVFilesAsync());
 
             Console.WriteLine("End of program");

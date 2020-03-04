@@ -25,7 +25,6 @@ namespace DocxCorrector.Services.Corrector
         {
             try
             {
-                if (App != null) { CloseApp(); }
                 App = new Word.Application { Visible = false };
             }
             catch (Exception ex)
@@ -42,7 +41,7 @@ namespace DocxCorrector.Services.Corrector
         {
             try
             {
-                if (App != null) { App.Quit(); }
+                App?.Quit();
             }
             catch (Exception ex)
             {
@@ -73,7 +72,7 @@ namespace DocxCorrector.Services.Corrector
         {
             try
             {
-                if (Document != null) { App!.Documents.Close(); }
+                App!.Documents?.Close();
             }
             catch (Exception ex)
             {
@@ -88,7 +87,7 @@ namespace DocxCorrector.Services.Corrector
         {
             try
             {
-                if (Document != null) { Document.Close(Word.WdSaveOptions.wdDoNotSaveChanges); }
+                Document?.Close(Word.WdSaveOptions.wdDoNotSaveChanges);
             }
             catch (Exception ex)
             {
