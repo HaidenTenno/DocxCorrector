@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using DocxCorrector.Services.Corrector;
 using DocxCorrector.Services;
 using DocxCorrector.Models;
+using System.Threading.Tasks;
 
 namespace DocxCorrector.App
 {
     class Program
     {
-        public static Corrector Corrector = new CorrectorInterop();
+        public static ICorrecorAsync AsyncCorrector = new CorrectorInterop(filePath: Config.DocFilePath);
+        public static Corrector Corrector = AsyncCorrector.Corrector;
 
         static void Main(string[] args)
         {
-            // Выбирать документ
-            Corrector.FilePath = Config.DocFilePath;
-
-            // Проверить выбранный документ
-            CheckParagraphs();
+            TimeCounter.CountTime(() => GenerateCSVFilesAsync());
 
             Console.WriteLine("End of program");
             Console.ReadLine();
@@ -79,7 +77,7 @@ namespace DocxCorrector.App
             Console.WriteLine("Введите тип проверяемых параграфов:\n0 - абзац\n1 - элемент списка\n2 - подпись к рисунку");
             string userAnswer = Console.ReadLine();
             int userAnserInt;
-            bool result = int.TryParse(userAnswer, out userAnserInt);  
+            bool result = int.TryParse(userAnswer, out userAnserInt);
 
             if (!result)
             {
@@ -104,6 +102,24 @@ namespace DocxCorrector.App
 
             string resultJSON = JSONMaker.MakeJSON(results: paragraphResults);
             FileWriter.WriteToFile(Config.MistakesFilePath, resultJSON);
+        }
+
+        // GenerateCSVFiles, основанный на асинхронном методе
+        static void GenerateCSVFilesAsync()
+        {
+            DirectoryIterator.IterateDir(Config.FilesToInpectDirectoryPath, (subDir) =>
+            {
+                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+
+                DirectoryIterator.IterateDocxFiles(subDir, (filepath) =>
+                {
+                    Corrector.FilePath = filepath;
+                    List<ParagraphProperties> propertiesForFile = AsyncCorrector.GetAllParagraphsPropertiesAsync().Result;
+                    propertiesForDir.AddRange(propertiesForFile);
+                });
+
+                FileWriter.FillPropertiesCSV(String.Concat(subDir, @"\results.csv"), propertiesForDir);
+            });
         }
     }
 }

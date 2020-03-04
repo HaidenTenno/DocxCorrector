@@ -1,9 +1,11 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DocxCorrector.Models;
 using DocxCorrector.Services;
 using Word = Microsoft.Office.Interop.Word;
+using System.Linq;
 
 namespace DocxCorrector.Services.Corrector
 {
@@ -12,7 +14,7 @@ namespace DocxCorrector.Services.Corrector
         public CorrectorInteropExeption(string message) : base(message) { }
     }
 
-    public sealed class CorrectorInterop : Corrector
+    public sealed class CorrectorInterop : Corrector, ICorrecorAsync
     {
         // Private
         private Word.Application? App;
@@ -385,7 +387,7 @@ namespace DocxCorrector.Services.Corrector
 
             return allParagraphsProperties;
         }
-        
+
         //Получить свойства всех страниц
         public override List<PageProperties> GetAllPagesProperties()
         {
@@ -505,6 +507,47 @@ namespace DocxCorrector.Services.Corrector
             CloseApp();
 
             return paragraphResults;
+        }
+
+        // ICorrectorAsync
+        // Private
+        private Task<ParagraphProperties> GetParagraphPropertiesAsync(Word.Paragraph paragraph)
+        {
+            return Task.Run(() => (ParagraphProperties)new ParagraphPropertiesInterop(paragraph));
+        }
+
+        // Public
+        public Corrector Corrector => this;
+
+        public async Task<List<ParagraphProperties>> GetAllParagraphsPropertiesAsync()
+        {
+            try
+            {
+                OpenApp();
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                CloseApp();
+                return await Task.Run(() => new List<ParagraphProperties>());
+            }
+
+            List<Task<ParagraphProperties>> listOfTasks = new List<Task<ParagraphProperties>>();
+
+            foreach (Word.Paragraph paragraph in Document!.Paragraphs)
+            {
+                listOfTasks.Add(GetParagraphPropertiesAsync(paragraph));
+            }
+
+            var result = await Task.WhenAll(listOfTasks);
+            CloseApp();
+            return result.ToList();
+        }
+
+        public async Task<List<NormalizedProperties>> GetNormalizedPropertiesAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
