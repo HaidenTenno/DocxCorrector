@@ -11,7 +11,6 @@ namespace DocxCorrector.Models
         Other
     }
 
-    // TODO: - Naming
     // Для проверки на наличия слов, оформленных жирным, курсивом и т. д.
     public enum ContainsStatus: int
     {

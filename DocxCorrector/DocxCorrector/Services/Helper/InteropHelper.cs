@@ -1,7 +1,7 @@
 ﻿using System;
 using Word = Microsoft.Office.Interop.Word;
 
-namespace DocxCorrector.Services
+namespace DocxCorrector.Services.Helper
 {
     internal static class InteropHelper
     {

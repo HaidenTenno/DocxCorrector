@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DocxCorrector.Models;
 using Word = GemBox.Document;
 
@@ -15,7 +16,8 @@ namespace DocxCorrector.Services.Corrector
     {
         // Private
         private Word.DocumentModel? Document;
-
+        
+        // Ввод лицензионного ключа
         private void SetLicense()
         {
             Word.ComponentInfo.SetLicense("FREE-LIMITED-KEY");
@@ -64,29 +66,52 @@ namespace DocxCorrector.Services.Corrector
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
         public override List<NormalizedProperties> GetNormalizedProperties()
         {
-            throw new NotImplementedException();
+            try
+            {
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<NormalizedProperties>();
+            }
+
+            List<NormalizedProperties> allNormalizedProperties = new List<NormalizedProperties>();
+
+            int iteration = 0;
+            foreach (Word.Paragraph paragraph in Document!.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
+            {
+                NormalizedProperties normalizedParagraphProperties = new NormalizedPropertiesGemBox(paragraph: paragraph, paragraphId: iteration);
+                allNormalizedProperties.Add(normalizedParagraphProperties);
+                iteration++;
+            }
+
+            return allNormalizedProperties;
         }
 
         // Печать всех абзацев
         public override void PrintAllParagraphs()
         {
-            if (Document == null)
+            try
             {
-                try
-                {
-                    OpenDocument();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    return;
-                }
+                OpenDocument();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
             }
 
             foreach (Word.Paragraph paragraph in Document!.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
             {
-                string text = paragraph.Content.ToString();
-                Console.WriteLine(text);
+                int elementWitDifferentStyleCount = paragraph.GetChildElements(true, Word.ElementType.Run).Count();
+                Console.WriteLine($"В этом параграфе {elementWitDifferentStyleCount} элемент(ов) с разным оформлением");
+                foreach (Word.Run run in paragraph.GetChildElements(recursively: true, filterElements: Word.ElementType.Run)) 
+                {
+                    string text = run.Text;
+                    Console.WriteLine(text);
+                }
+                Console.WriteLine();
             }
         }
 

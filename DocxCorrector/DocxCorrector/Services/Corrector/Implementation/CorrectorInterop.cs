@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DocxCorrector.Models;
-using DocxCorrector.Services;
+using DocxCorrector.Services.Helper;
 using Word = Microsoft.Office.Interop.Word;
 using System.Linq;
 

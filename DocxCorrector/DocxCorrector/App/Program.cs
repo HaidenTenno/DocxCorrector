@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using DocxCorrector.Services.Corrector;
 using DocxCorrector.Services;
@@ -8,13 +9,13 @@ namespace DocxCorrector.App
 {
     class Program
     {
-        public static ICorrecorAsync AsyncCorrector = new CorrectorInterop(filePath: Config.DocFilePath);
-        public static Corrector Corrector = AsyncCorrector.Corrector;
+        public static Corrector Corrector = new CorrectorGemBox(filePath: Config.DocFilePath);
+        //public static Corrector Corrector = new CorrectorInterop(filePath: Config.DocFilePath);
 
+        // Точка входа
         static void Main(string[] args)
         {
-            TimeCounter.CountTime(() => GenerateCSVFiles());
-            TimeCounter.CountTime(() => GenerateCSVFilesAsync());
+            GenerateNormalizedCSVFiles();
 
             Console.WriteLine("End of program");
             Console.ReadLine();
@@ -28,6 +29,7 @@ namespace DocxCorrector.App
             FileWriter.WriteToFile(Config.MistakesFilePath, mistakesJSON);
         }
 
+        // Создать JSON файл со свойствами страниц документа
         static void GeneratePagesPropertiesJSON()
         {
             List<PageProperties> pagesProperties = Corrector.GetAllPagesProperties();
@@ -71,7 +73,7 @@ namespace DocxCorrector.App
             });
         }
 
-        // Получить JSON со списком ошибок для выбранного документа, с учетом того, что все параграфы в нем определенного типа
+        // Создать JSON со списком ошибок для выбранного документа, с учетом того, что все параграфы в нем определенного типа
         static void CheckParagraphs()
         {
             Console.WriteLine("Введите тип проверяемых параграфов:\n0 - абзац\n1 - элемент списка\n2 - подпись к рисунку");
@@ -107,6 +109,10 @@ namespace DocxCorrector.App
         // GenerateCSVFiles, основанный на асинхронном методе
         static void GenerateCSVFilesAsync()
         {
+            ICorrecorAsync? asyncCorretor = Corrector as ICorrecorAsync;
+
+            if (asyncCorretor == null) { return; }
+
             DirectoryIterator.IterateDir(Config.FilesToInpectDirectoryPath, (subDir) =>
             {
                 List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
@@ -114,7 +120,7 @@ namespace DocxCorrector.App
                 DirectoryIterator.IterateDocxFiles(subDir, (filepath) =>
                 {
                     Corrector.FilePath = filepath;
-                    List<ParagraphProperties> propertiesForFile = AsyncCorrector.GetAllParagraphsPropertiesAsync().Result;
+                    List<ParagraphProperties> propertiesForFile = asyncCorretor.GetAllParagraphsPropertiesAsync().Result;
                     propertiesForDir.AddRange(propertiesForFile);
                 });
 

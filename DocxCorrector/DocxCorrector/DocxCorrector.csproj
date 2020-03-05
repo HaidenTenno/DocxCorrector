@@ -93,6 +93,7 @@
     <Compile Include="App\Config.cs" />
     <Compile Include="App\Program.cs" />
     <Compile Include="Models\NormalizedProperties\NormalizedProperties.cs" />
+    <Compile Include="Models\NormalizedProperties\NormalizedPropertiesGemBox.cs" />
     <Compile Include="Models\NormalizedProperties\NormalizedPropertiesInterop.cs" />
     <Compile Include="Models\PageProperties\PageProperties.cs" />
     <Compile Include="Models\PageProperties\PagePropertiesInterop.cs" />
@@ -106,7 +107,8 @@
     <Compile Include="Services\Corrector\ICorrecorAsync.cs" />
     <Compile Include="Services\DirectoryIterator.cs" />
     <Compile Include="Services\FileWriter.cs" />
-    <Compile Include="Services\InteropHelper.cs" />
+    <Compile Include="Services\Helper\GemBoxHelper.cs" />
+    <Compile Include="Services\Helper\InteropHelper.cs" />
     <Compile Include="Services\JSONMaker.cs" />
     <Compile Include="Services\TimeCounter.cs" />
   </ItemGroup>

@@ -1,5 +1,5 @@
 ﻿using System;
-using DocxCorrector.Services;
+using DocxCorrector.Services.Helper;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace DocxCorrector.Models
