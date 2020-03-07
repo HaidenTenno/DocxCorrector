@@ -11,9 +11,9 @@ namespace DocxCorrector.Services.Corrector
         public Corrector Corrector { get; }
 
         // Асинхронно получить свойства всех параграфов
-        public Task<List<ParagraphProperties>> GetAllParagraphsPropertiesAsync();
+        public Task<List<ParagraphProperties>> GetAllParagraphsPropertiesAsync(string filePath);
 
         // Асинхронно получить нормализованные свойства параграфов (Для классификатора Ромы)
-        public Task<List<NormalizedProperties>> GetNormalizedPropertiesAsync();
+        public Task<List<NormalizedProperties>> GetNormalizedPropertiesAsync(string filePath);
     }
 }

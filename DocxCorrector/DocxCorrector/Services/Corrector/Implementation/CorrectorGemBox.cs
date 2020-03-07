@@ -7,16 +7,9 @@ using Word = GemBox.Document;
 
 namespace DocxCorrector.Services.Corrector
 {
-    class CorrectorGemBoxExeption : Exception
-    {
-        public CorrectorGemBoxExeption(string message) : base(message) { }
-    }
-
     public sealed class CorrectorGemBox : Corrector
     {
         // Private
-        private Word.DocumentModel? Document;
-        
         // Ввод лицензионного ключа
         private void SetLicense()
         {
@@ -24,62 +17,52 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Открыть документ
-        private void OpenDocument()
+        private Word.DocumentModel? OpenDocument(string filePath)
         {
             try
             {
-                Document = Word.DocumentModel.Load(FilePath);
+                Word.DocumentModel document = Word.DocumentModel.Load(filePath);
+                return document;
             }
             catch (Exception ex)
             {
 #if DEBUG
                 Console.WriteLine(ex.Message);
 #endif
-                throw new CorrectorGemBoxExeption(message: "Can't open document");
+                Console.WriteLine("Can't open document");
+                return null;
             }
         }
 
+        // Public
         // Corrector
-        public CorrectorGemBox(string? filePath = null) : base(filePath)
+        public CorrectorGemBox()
         {
             SetLicense();
         }
 
-        // Получение JSON-а со списком ошибок
-        public override List<ParagraphResult> GetMistakes()
-        {
-            throw new NotImplementedException();
-        }
-
         // Получить свойства всех параграфов
-        public override List<ParagraphProperties> GetAllParagraphsProperties()
+        public override List<ParagraphProperties> GetAllParagraphsProperties(string filePath)
         {
             throw new NotImplementedException();
         }
 
         //Получить свойства всех страниц
-        public override List<PageProperties> GetAllPagesProperties()
+        public override List<PageProperties> GetAllPagesProperties(string filePath)
         {
             throw new NotImplementedException();
         }
 
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
-        public override List<NormalizedProperties> GetNormalizedProperties()
+        public override List<NormalizedProperties> GetNormalizedProperties(string filePath)
         {
-            try
-            {
-                OpenDocument();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return new List<NormalizedProperties>();
-            }
+            Word.DocumentModel? document = OpenDocument(filePath: filePath);
+            if (document == null) { return new List<NormalizedProperties>(); }
 
             List<NormalizedProperties> allNormalizedProperties = new List<NormalizedProperties>();
 
             int iteration = 0;
-            foreach (Word.Paragraph paragraph in Document!.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
+            foreach (Word.Paragraph paragraph in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
             {
                 NormalizedProperties normalizedParagraphProperties = new NormalizedPropertiesGemBox(paragraph: paragraph, paragraphId: iteration);
                 allNormalizedProperties.Add(normalizedParagraphProperties);
@@ -90,19 +73,12 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Печать всех абзацев
-        public override void PrintAllParagraphs()
+        public override void PrintAllParagraphs(string filePath)
         {
-            try
-            {
-                OpenDocument();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return;
-            }
+            Word.DocumentModel? document = OpenDocument(filePath: filePath);
+            if (document == null) { return; }
 
-            foreach (Word.Paragraph paragraph in Document!.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
+            foreach (Word.Paragraph paragraph in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
             {
                 int elementWitDifferentStyleCount = paragraph.GetChildElements(true, Word.ElementType.Run).Count();
                 Console.WriteLine($"В этом параграфе {elementWitDifferentStyleCount} элемент(ов) с разным оформлением");
@@ -116,7 +92,7 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Получить списк ошибок для выбранного документа, с учетом того, что все параграфы в нем типа elementType
-        public override List<ParagraphResult> GetMistakesForElementType(ElementType elementType)
+        public override List<ParagraphResult> GetMistakesForElementType(string filePath, ElementType elementType)
         {
             throw new NotImplementedException();
         }

@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using DocxCorrector.Models;
 using CsvHelper;
 
 namespace DocxCorrector.Services
@@ -26,8 +28,8 @@ namespace DocxCorrector.Services
             }
         }
 
-        // Записать свойства параграфов paragraphsInfo в CSV файл filePath
-        public static void FillPropertiesCSV<T>(string filePath, List<T> listData)
+        // Записать в CSV файл filePath объекты из списка listData
+        public static void FillCSV<T>(string filePath, List<T> listData)
         {
             try
             {
@@ -45,5 +47,28 @@ namespace DocxCorrector.Services
 #endif
             }
         }
+
+        // Преобразование типов
+        // Заполнить CSV файл для свойств параграфов
+        public static void FillCSV(string filePath, List<ParagraphProperties> listData)
+        {
+            List<ParagraphPropertiesInterop> listDataInterop = listData.OfType<ParagraphPropertiesInterop>().ToList();
+            if (listDataInterop != null)
+            {
+                FillCSV(filePath: filePath, listData: listDataInterop);
+                return;
+            }
+
+            List<ParagraphPropertiesGemBox> listDataGemBox= listData.OfType<ParagraphPropertiesGemBox>().ToList();
+            if (listDataGemBox != null)
+            {
+                FillCSV(filePath: filePath, listData: listDataGemBox);
+                return;
+            }
+
+            FillCSV(filePath: filePath, listData: listData);
+        }
+
+        // TODO: - Описать аналогичные перегрузки для: NormalizedProperties, PageProperties
     }
 }
