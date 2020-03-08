@@ -1,11 +1,10 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using DocxCorrector.Models;
 
 namespace DocxCorrector.Services.Corrector
 {
-    public abstract class Corrector
+    public abstract class Corrector : IDisposable
     {
         // Получить свойства всех параграфов документа filePath
         public abstract List<ParagraphProperties> GetAllParagraphsProperties(string filePath);
@@ -22,5 +21,8 @@ namespace DocxCorrector.Services.Corrector
 
         // Получить спискок ошибок для документа filePath, с учетом того, что все параграфы в нем типа elementType
         public abstract List<ParagraphResult> GetMistakesForElementType(string filePath, ElementType elementType);
+
+        // IDisposable
+        public abstract void Dispose();
     }
 }

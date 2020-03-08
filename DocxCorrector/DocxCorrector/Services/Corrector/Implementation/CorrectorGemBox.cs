@@ -35,6 +35,8 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Public
+        // IDisposable
+        public override void Dispose() { }
         // Corrector
         public CorrectorGemBox()
         {

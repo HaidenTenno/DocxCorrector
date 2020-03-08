@@ -1,6 +1,8 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.IO;
 using DocxCorrector.Services.Corrector;
 using DocxCorrector.Services;
 using DocxCorrector.Models;
@@ -41,6 +43,11 @@ namespace DocxCorrector.App
             }
 
             return Instance;
+        }
+
+        public void PrintParagraphs(string filePath)
+        {
+            Corrector.PrintAllParagraphs(filePath: filePath);
         }
 
         // Проанализировать документ filePath и Создать JSON файл resultFilePath со свойствами его страниц
@@ -131,9 +138,34 @@ namespace DocxCorrector.App
 
                 DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
+                    Console.WriteLine($"Started {Path.GetFileName(filePath)}");
                     List<ParagraphProperties> propertiesForFile = asyncCorretor.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
+                    Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 });
+
+                FileWriter.FillCSV(String.Concat(subDir, resultFileName), propertiesForDir);
+            });
+        }
+
+        // GenerateCSVFiles, основанный на асинхронном методе
+        public void GenerateCSVFilesAsync1(string rootDir, string resultFileName)
+        {
+            ICorrecorAsync? asyncCorretor = Corrector as ICorrecorAsync;
+
+            if (asyncCorretor == null) { return; }
+
+            DirectoryIterator.IterateDir(rootDir, (subDir) =>
+            {
+                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+
+                Task.WaitAll(DirectoryIterator.IterateDocxFilesAsync(subDir, (filePath) =>
+                {
+                    Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+                    List<ParagraphProperties> propertiesForFile = asyncCorretor.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
+                    Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+                    propertiesForDir.AddRange(propertiesForFile);
+                }));
 
                 FileWriter.FillCSV(String.Concat(subDir, resultFileName), propertiesForDir);
             });

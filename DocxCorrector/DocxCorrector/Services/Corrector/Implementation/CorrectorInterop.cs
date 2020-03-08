@@ -6,14 +6,17 @@ using DocxCorrector.Models;
 using DocxCorrector.Services.Helper;
 using Word = Microsoft.Office.Interop.Word;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace DocxCorrector.Services.Corrector
 {
     public sealed class CorrectorInterop : Corrector, ICorrecorAsync
     {
         // Private
+        private Word.Application? Application = OpenApp();
+
         // Приготовится к началу работы
-        private Word.Application? OpenApp()
+        private static Word.Application? OpenApp()
         {
             try
             {
@@ -31,11 +34,11 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Приготовится к окончанию работы
-        private void CloseApp(Word.Application application)
+        private void CloseApp()
         {
             try
             {
-                application.Quit();
+                Application?.Quit();
             }
             catch (Exception ex)
             {
@@ -44,14 +47,20 @@ namespace DocxCorrector.Services.Corrector
 #endif
                 Console.WriteLine("Failure during app close");
             }
+            finally
+            {
+                if (Application != null ) Marshal.ReleaseComObject(Application);
+                Application = null;
+                GC.Collect();
+            }
         }
 
         // Открыть документ
-        private Word.Document? OpenDocument(Word.Application application, string filePath)
+        private Word.Document? OpenDocument(string filePath)
         {
             try
             {
-                Word.Document document = application.Documents.Open(FileName: filePath);
+                Word.Document? document = Application?.Documents.Open(FileName: filePath);
                 return document;
             }
             catch (Exception ex)
@@ -65,11 +74,13 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Закрыть документ
-        private void CloseDocument(Word.Application application)
+        private void CloseDocument(ref Word.Document? document)
         {
             try
             {
-                application.Documents.Close();
+                document?.Close();
+                Marshal.ReleaseComObject(document);
+
             }
             catch (Exception ex)
             {
@@ -78,14 +89,24 @@ namespace DocxCorrector.Services.Corrector
 #endif
                 Console.WriteLine("Failure during document close");
             }
+            finally
+            {
+                if (document != null) Marshal.ReleaseComObject(document);
+                document = null;
+                GC.Collect();
+#if DEBUG
+                Console.WriteLine("Document closed");
+#endif
+            }
         }
         
         // Закрыть документ без сохранения
-        private void CloseDocumentWithoutSavingChanges(Word.Application application)
+        private void CloseDocumentWithoutSavingChanges(ref Word.Document? document)
         {
             try
             {
-                application.Documents.Close(Word.WdSaveOptions.wdDoNotSaveChanges);
+                document?.Close(Word.WdSaveOptions.wdDoNotSaveChanges);
+
             }
             catch (Exception ex)
             {
@@ -93,6 +114,15 @@ namespace DocxCorrector.Services.Corrector
                 Console.WriteLine(ex.Message);
 #endif
                 Console.WriteLine("Failure during document close (without saving)");
+            }
+            finally
+            {
+                if (document != null) Marshal.ReleaseComObject(document);
+                document = null;
+                GC.Collect();
+#if DEBUG
+                Console.WriteLine("Document closed");
+#endif
             }
         }
 
@@ -320,14 +350,25 @@ namespace DocxCorrector.Services.Corrector
         }
 
         // Public
+        // IDisposable
+        public override void Dispose()
+        {
+            DisposeManagedResources();
+        }
+        private void DisposeManagedResources()
+        {
+            CloseApp();
+        }
+        ~CorrectorInterop()
+        {
+            DisposeManagedResources();
+        }
+
         // Corrector
         // Получить свойства всех параграфов
         public override List<ParagraphProperties> GetAllParagraphsProperties(string filePath)
         {
-            Word.Application? application = OpenApp();
-            if (application == null) { return new List<ParagraphProperties>(); }
-
-            Word.Document? document = OpenDocument(application: application, filePath: filePath);
+            Word.Document? document = OpenDocument(filePath: filePath);
             if (document == null) { return new List<ParagraphProperties>(); }
 
             List<ParagraphProperties> allParagraphsProperties = new List<ParagraphProperties>();
@@ -338,17 +379,14 @@ namespace DocxCorrector.Services.Corrector
                 allParagraphsProperties.Add(paragraphProperties);
             }
 
-            CloseApp(application: application);
+            CloseDocument(ref document);
             return allParagraphsProperties;
         }
 
         //Получить свойства всех страниц
         public override List<PageProperties> GetAllPagesProperties(string filePath)
         {
-            Word.Application? application = OpenApp();
-            if (application == null) { return new List<PageProperties>(); }
-
-            Word.Document? document = OpenDocument(application: application, filePath: filePath);
+            Word.Document? document = OpenDocument(filePath: filePath);
             if (document == null) { return new List<PageProperties>(); }
 
             List<PageProperties> result = new List<PageProperties>();
@@ -361,18 +399,14 @@ namespace DocxCorrector.Services.Corrector
                 result.Add(currentPageProperties);
             }
 
-            CloseDocumentWithoutSavingChanges(application: application);
-            CloseApp(application: application);
+            CloseDocumentWithoutSavingChanges(ref document);
             return result;
         }
 
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
         public override List<NormalizedProperties> GetNormalizedProperties(string filePath)
         {
-            Word.Application? application = OpenApp();
-            if (application == null) { return new List<NormalizedProperties>(); }
-
-            Word.Document? document = OpenDocument(application: application, filePath: filePath);
+            Word.Document? document = OpenDocument(filePath: filePath);
             if (document == null) { return new List<NormalizedProperties>(); }
 
             List<NormalizedProperties> allNormalizedProperties = new List<NormalizedProperties>();
@@ -385,17 +419,14 @@ namespace DocxCorrector.Services.Corrector
                 iteration++;
             }
 
-            CloseApp(application: application);
+            CloseDocument(ref document);
             return allNormalizedProperties;
         }
 
         // Печать всех абзацев
         public override void PrintAllParagraphs(string filePath)
         {
-            Word.Application? application = OpenApp();
-            if (application == null) { return; }
-
-            Word.Document? document = OpenDocument(application: application, filePath: filePath);
+            Word.Document? document = OpenDocument(filePath: filePath);
             if (document == null) { return; }
 
             foreach (Word.Paragraph paragraph in document.Paragraphs)
@@ -403,16 +434,13 @@ namespace DocxCorrector.Services.Corrector
                 Console.WriteLine(paragraph.Range.Text);
             }
 
-            CloseApp(application: application);
+            CloseDocument(ref document);
         }
 
         // Получить списк ошибок для выбранного документа, с учетом того, что все параграфы в нем типа elementType
         public override List<ParagraphResult> GetMistakesForElementType(string filePath, ElementType elementType)
         {
-            Word.Application? application = OpenApp();
-            if (application == null) { return new List<ParagraphResult>(); }
-
-            Word.Document? document = OpenDocument(application: application, filePath: filePath);
+            Word.Document? document = OpenDocument(filePath: filePath);
             if (document == null) { return new List<ParagraphResult>(); }
 
             List<ParagraphResult> paragraphResults = new List<ParagraphResult>();
@@ -433,7 +461,7 @@ namespace DocxCorrector.Services.Corrector
                 iteration++;
             }
 
-            CloseApp(application: application);
+            CloseDocument(ref document);
             return paragraphResults;
         }
 
@@ -449,11 +477,8 @@ namespace DocxCorrector.Services.Corrector
 
         public async Task<List<ParagraphProperties>> GetAllParagraphsPropertiesAsync(string filePath)
         {
-            Word.Application? application = OpenApp();
-            if (application == null) { return await Task.Run(() => new List<ParagraphProperties>()); }
-
-            Word.Document? document = OpenDocument(application: application, filePath: filePath);
-            if (document == null) { return await Task.Run(() => new List<ParagraphProperties>()); }
+            Word.Document? document = OpenDocument(filePath: filePath);
+            if (document == null) { return new List<ParagraphProperties>(); }
 
             List<Task<ParagraphProperties>> listOfTasks = new List<Task<ParagraphProperties>>();
 
@@ -463,7 +488,7 @@ namespace DocxCorrector.Services.Corrector
             }
 
             var result = await Task.WhenAll(listOfTasks);
-            CloseApp(application: application);
+            CloseDocument(ref document);
             return result.ToList();
         }
 
