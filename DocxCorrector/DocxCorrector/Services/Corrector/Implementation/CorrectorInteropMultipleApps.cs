@@ -477,9 +477,15 @@ namespace DocxCorrector.Services.Corrector
             return Task.Run(() => (ParagraphProperties)new ParagraphPropertiesInterop(paragraph));
         }
 
+        private Task<NormalizedProperties> GetNormalizedPropertiesAsync(Word.Paragraph paragraph, int paragraphId)
+        {
+            return Task.Run(() => (NormalizedProperties)new NormalizedPropertiesInterop(paragraph, paragraphId));
+        }
+
         // Public
         public Corrector Corrector => this;
 
+        // Асинхронно получить свойства всех параграфов
         public async Task<List<ParagraphProperties>> GetAllParagraphsPropertiesAsync(string filePath)
         {
             Word.Application? application = OpenApp();
@@ -502,10 +508,28 @@ namespace DocxCorrector.Services.Corrector
             return result.ToList();
         }
 
-        // TODO: - Implement
-        public Task<List<NormalizedProperties>> GetNormalizedPropertiesAsync(string filePath)
+        // Асинхронно получить нормализованные свойства параграфов (Для классификатора Ромы)
+        public async Task<List<NormalizedProperties>> GetNormalizedPropertiesAsync(string filePath)
         {
-            throw new NotImplementedException();
+            Word.Application? application = OpenApp();
+            if (application == null) { return new List<NormalizedProperties>(); }
+
+            Word.Document? document = OpenDocument(filePath: filePath, application: application);
+            if (document == null) { CloseApp(ref application); return new List<NormalizedProperties>(); }
+
+            List<Task<NormalizedProperties>> listOfTasks = new List<Task<NormalizedProperties>>();
+
+            int iteration = 0;
+            foreach (Word.Paragraph paragraph in document.Paragraphs)
+            {
+                listOfTasks.Add(GetNormalizedPropertiesAsync(paragraph, iteration));
+                iteration++;
+            }
+
+            var result = await Task.WhenAll(listOfTasks);
+            CloseDocument(ref document);
+            CloseApp(ref application);
+            return result.ToList();
         }
     }
 }

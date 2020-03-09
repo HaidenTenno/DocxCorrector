@@ -67,9 +67,11 @@ namespace DocxCorrector.App
             {
                 List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
 
-                DirectoryIterator.IterateDocxFiles(subDir, (filepath) =>
+                DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
-                    List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties(filePath: filepath);
+                    Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+                    List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties(filePath: filePath);
+                    Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 });
 
@@ -84,9 +86,11 @@ namespace DocxCorrector.App
             {
                 List<NormalizedProperties> normalizedPropertiesForDir = new List<NormalizedProperties>();
 
-                DirectoryIterator.IterateDocxFiles(subDir, (filepath) =>
+                DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
-                    List<NormalizedProperties> normalizedPropertiesForFile = Corrector.GetNormalizedProperties(filePath: filepath);
+                    Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+                    List<NormalizedProperties> normalizedPropertiesForFile = Corrector.GetNormalizedProperties(filePath: filePath);
+                    Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     normalizedPropertiesForDir.AddRange(normalizedPropertiesForFile);
                 });
 
@@ -170,6 +174,29 @@ namespace DocxCorrector.App
                 }));
 
                 FileWriter.FillCSV(String.Concat(subDir, resultFileName), propertiesForDir);
+            });
+        }
+
+        // GenerateNormalizedCSVFiles, основанный на асинхнонном методе
+        public void GenerateNormalizedCSVFilesAsync(string rootDir, string resultFileName)
+        {
+            ICorrecorAsync? asyncCorretor = Corrector as ICorrecorAsync;
+
+            if (asyncCorretor == null) { return; }
+
+            DirectoryIterator.IterateDir(rootDir, (subDir) =>
+            {
+                List<NormalizedProperties> normalizedPropertiesForDir = new List<NormalizedProperties>();
+
+                DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
+                {
+                    Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+                    List<NormalizedProperties> normalizedPropertiesForFile = asyncCorretor.GetNormalizedPropertiesAsync(filePath: filePath).Result;
+                    Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+                    normalizedPropertiesForDir.AddRange(normalizedPropertiesForFile);
+                });
+
+                FileWriter.FillCSV(String.Concat(subDir, resultFileName), normalizedPropertiesForDir);
             });
         }
     }

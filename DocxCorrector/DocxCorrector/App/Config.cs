@@ -15,7 +15,8 @@ namespace DocxCorrector.App
         public const string ParagraphPropertiesFileName = @"\properties.csv";
         // Название для файла с нормализованными свойствами параграфа
         public const string NormalizedPropertiesFileName = @"\normalizedProperties.csv";
-        // Называние csv файла для тестирования асинхронных методов
+        // Называния csv файлов для тестирования асинхронных методов
         public const string ParagraphPropertiesFileNameAsync = @"\propertiesAsync.csv";
+        public const string NormalizedPropertiesFileNameAstnc = @"\normalizedPropertiesAsync.csv";
     }
 }

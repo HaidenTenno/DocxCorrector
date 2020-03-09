@@ -11,9 +11,9 @@ namespace DocxCorrector.App
             FeaturesProvider featuresProvider = FeaturesProvider.GetInstance(type: FeaturesProviderType.InteropMultipleApp);
 
             Console.WriteLine("OLD");
-            TimeCounter.CountTime(() => featuresProvider.GenerateCSVFilesAsync(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileName));
+            TimeCounter.CountTime(() => featuresProvider.GenerateNormalizedCSVFiles(Config.FilesToInpectDirectoryPath, Config.NormalizedPropertiesFileName));
             Console.WriteLine("\nNEW");
-            TimeCounter.CountTime(() => featuresProvider.GenerateCSVFilesAsyncWithAsyncFilesIteration(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileNameAsync));
+            TimeCounter.CountTime(() => featuresProvider.GenerateNormalizedCSVFilesAsync(Config.FilesToInpectDirectoryPath, Config.NormalizedPropertiesFileNameAstnc));
 
             Console.WriteLine("End of program");
             Console.ReadLine();
