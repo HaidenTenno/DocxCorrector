@@ -12,7 +12,8 @@ namespace DocxCorrector.App
     public enum FeaturesProviderType
     {
         Interop,
-        GemBox
+        GemBox,
+        InteropMultipleApp
     }
 
     // Функции программы, доступные глобально
@@ -38,6 +39,7 @@ namespace DocxCorrector.App
                 {
                     FeaturesProviderType.Interop => new FeaturesProvider(corrector: new CorrectorInterop()),
                     FeaturesProviderType.GemBox => new FeaturesProvider(corrector: new CorrectorGemBox()),
+                    FeaturesProviderType.InteropMultipleApp => new FeaturesProvider(corrector: new CorrectorInteropMultipleApps()),
                     _ => throw new NotImplementedException()
                 };
             }
@@ -148,8 +150,8 @@ namespace DocxCorrector.App
             });
         }
 
-        // GenerateCSVFiles, основанный на асинхронном методе
-        public void GenerateCSVFilesAsync1(string rootDir, string resultFileName)
+        // GenerateCSVFiles, основанный на асинхронном методе с асинхронным анализом файлов
+        public void GenerateCSVFilesAsyncWithAsyncFilesIteration(string rootDir, string resultFileName)
         {
             ICorrecorAsync? asyncCorretor = Corrector as ICorrecorAsync;
 

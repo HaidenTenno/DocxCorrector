@@ -107,6 +107,7 @@
     <Compile Include="Services\Corrector\Implementation\CorrectorGemBox.cs" />
     <Compile Include="Services\Corrector\Implementation\CorrectorInterop.cs" />
     <Compile Include="Services\Corrector\ICorrecorAsync.cs" />
+    <Compile Include="Services\Corrector\Implementation\CorrectorInteropMultipleApps.cs" />
     <Compile Include="Services\DirectoryIterator.cs" />
     <Compile Include="Services\FileWriter.cs" />
     <Compile Include="Services\Helper\GemBoxHelper.cs" />
