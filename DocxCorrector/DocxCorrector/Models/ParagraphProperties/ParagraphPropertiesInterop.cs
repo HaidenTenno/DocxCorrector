@@ -1,9 +1,11 @@
-﻿using Word = Microsoft.Office.Interop.Word;
+﻿using System;
+using Word = Microsoft.Office.Interop.Word;
 
 namespace DocxCorrector.Models
 {
-    // Свойства параграфа
-    public class ParagraphProperties
+    // TODO: Убрать лишние поля и понять какие нужно раскрыть
+
+    public sealed class ParagraphPropertiesInterop : ParagraphProperties
     {
         // Range
         public string Text { get; set; }
@@ -78,7 +80,7 @@ namespace DocxCorrector.Models
         // Font
         public string FontName { get; set; }
         public string FontSize { get; set; }
-        public string FontUnderlineColor { get; set; }        
+        public string FontUnderlineColor { get; set; }
         public string FontStrikeThrough { get; set; }
         public string FontSuperscript { get; set; }
         public string FontSubscript { get; set; }
@@ -164,7 +166,7 @@ namespace DocxCorrector.Models
         public string WindowControl { get; set; }
         public string WordWrap { get; set; }
 
-        public ParagraphProperties (Word.Paragraph paragraph)
+        public ParagraphPropertiesInterop(Word.Paragraph paragraph)
         {
             if (paragraph == null) { return; }
 

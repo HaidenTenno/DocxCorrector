@@ -4,33 +4,25 @@ using DocxCorrector.Models;
 
 namespace DocxCorrector.Services.Corrector
 {
-    public abstract class Corrector
+    public abstract class Corrector : IDisposable
     {
-        // Путь к docx файлу
-        public virtual string FilePath { get; set; }
+        // Получить свойства всех параграфов документа filePath
+        public abstract List<ParagraphProperties> GetAllParagraphsProperties(string filePath);
 
-        public Corrector(string filePath = null)
-        {
-            FilePath = filePath;
-        }
+        // Получить свойства страниц документа filePath
+        public abstract List<PageProperties> GetAllPagesProperties(string filePath);
 
-        // Получение списка ошибок
-        public abstract List<ParagraphResult> GetMistakes();
-
-        // Получить свойства всех параграфов
-        public abstract List<ParagraphProperties> GetAllParagraphsProperties();
-
-        // Получить свойства страниц документа
-        public abstract List<PageProperties> GetAllPagesProperties();
-
-        // Получить нормализованные свойства параграфов (Для классификатора Ромы)
-        public abstract List<NormalizedProperties> GetNormalizedProperties();
+        // Получить нормализованные свойства параграфов документа filePath (Для классификатора Ромы)
+        public abstract List<NormalizedProperties> GetNormalizedProperties(string filePath);
 
         // Вспомогательные на момент разработки методы, которые, возможно, подлежат удалению
-        // Печать всех абзацев
-        public abstract void PrintAllParagraphs();
+        // Печать всех абзацев документа filePath
+        public abstract void PrintAllParagraphs(string filePath);
 
-        // Получить спискок ошибок для выбранного документа, с учетом того, что все параграфы в нем типа elementType
-        public abstract List<ParagraphResult> GetMistakesForElementType(ElementType elementType);
+        // Получить спискок ошибок для документа filePath, с учетом того, что все параграфы в нем типа elementType
+        public abstract List<ParagraphResult> GetMistakesForElementType(string filePath, ElementType elementType);
+
+        // IDisposable
+        public abstract void Dispose();
     }
 }
