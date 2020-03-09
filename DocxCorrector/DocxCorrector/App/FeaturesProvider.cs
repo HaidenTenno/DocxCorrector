@@ -154,6 +154,25 @@ namespace DocxCorrector.App
             });
         }
 
+        // GenerateCSVFiles с асинхронным анализом файлов
+        public void GenerateCSVFilesWithAsyncFilesIteration(string rootDir, string resultFileName)
+        {
+            DirectoryIterator.IterateDir(rootDir, (subDir) =>
+            {
+                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+
+                Task.WaitAll(DirectoryIterator.IterateDocxFilesAsync(subDir, (filePath) =>
+                {
+                    Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+                    List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties(filePath: filePath);
+                    Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+                    propertiesForDir.AddRange(propertiesForFile);
+                }));
+
+                FileWriter.FillCSV(String.Concat(subDir, resultFileName), propertiesForDir);
+            });
+        }
+
         // GenerateCSVFiles, основанный на асинхронном методе с асинхронным анализом файлов
         public void GenerateCSVFilesAsyncWithAsyncFilesIteration(string rootDir, string resultFileName)
         {

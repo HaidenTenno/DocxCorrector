@@ -168,8 +168,6 @@ namespace DocxCorrector.Models
 
         public ParagraphPropertiesInterop(Word.Paragraph paragraph)
         {
-            if (paragraph == null) { return; }
-
             Text = paragraph.Range.Text.ToString();
             Underline = paragraph.Range.Underline.ToString();
             Bold = paragraph.Range.Bold.ToString();
