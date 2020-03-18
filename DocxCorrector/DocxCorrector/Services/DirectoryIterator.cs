@@ -55,6 +55,7 @@ namespace DocxCorrector.Services
             }
         }
 
+        // Асинхронный вариант IterateDocxFiles
         public static async Task IterateDocxFilesAsync(string path, Action<string> action)
         {
             IEnumerable<string> files;

@@ -47,6 +47,7 @@ namespace DocxCorrector.App
             return Instance;
         }
 
+        // Напечатать содержимое всех параграфов документа filePath
         public void PrintParagraphs(string filePath)
         {
             Corrector.PrintAllParagraphs(filePath: filePath);
@@ -217,6 +218,19 @@ namespace DocxCorrector.App
 
                 FileWriter.FillCSV(String.Concat(subDir, resultFileName), normalizedPropertiesForDir);
             });
+        }
+
+        // Тест скорости работы синхронных и асинхронных методов при вытигивании свойств из документов
+        public void TestCorrectorSpeed(string rootDir)
+        {
+            Console.WriteLine("Синхронный анализ параграфов, синхронный проход по директории");
+            TimeCounter.CountTime(() => GenerateCSVFiles(rootDir, Config.SyncParagraphsSyncIteration));
+            Console.WriteLine("\nАсинхронный анализ параграфов, синхронный проход по директории");
+            TimeCounter.CountTime(() => GenerateCSVFilesAsync(rootDir, Config.AsyncParagraphsSyncIteration));
+            Console.WriteLine("\nCинхронный анализ параграфов, асинхронный проход по директории");
+            TimeCounter.CountTime(() => GenerateCSVFilesWithAsyncFilesIteration(rootDir, Config.SyncParagraphsAsyncIteration));
+            Console.WriteLine("\nАсинхронный анализ параграфов, асинхронный проход по директории");
+            TimeCounter.CountTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir, Config.AsyncParagraphsAsyncIteration));
         }
     }
 }

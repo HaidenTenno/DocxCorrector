@@ -61,6 +61,10 @@
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.7.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
@@ -94,6 +98,13 @@
     <Compile Include="App\Config.cs" />
     <Compile Include="App\FeaturesProvider.cs" />
     <Compile Include="App\Program.cs" />
+    <Compile Include="Models\ElementsObjectModel\DocumentElement.cs" />
+    <Compile Include="Models\ElementsObjectModel\ImageSign\ImageSign.cs" />
+    <Compile Include="Models\ElementsObjectModel\IRegexSupportable.cs" />
+    <Compile Include="Models\ElementsObjectModel\List\ListElementLast.cs" />
+    <Compile Include="Models\ElementsObjectModel\List\ListElement.cs" />
+    <Compile Include="Models\ElementsObjectModel\Paragraph\ParagraphBeforeList.cs" />
+    <Compile Include="Models\ElementsObjectModel\Paragraph\Paragraph.cs" />
     <Compile Include="Models\NormalizedProperties\NormalizedProperties.cs" />
     <Compile Include="Models\NormalizedProperties\NormalizedPropertiesGemBox.cs" />
     <Compile Include="Models\NormalizedProperties\NormalizedPropertiesInterop.cs" />
@@ -120,6 +131,8 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Models\ElementsObjectModel\Headline\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
