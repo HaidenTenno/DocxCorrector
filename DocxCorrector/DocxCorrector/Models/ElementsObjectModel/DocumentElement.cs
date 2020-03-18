@@ -47,7 +47,7 @@ namespace DocxCorrector.Models.ElementsObjectModel
         public virtual bool Bold => false;
 
         // Подчеркнутость
-        public virtual bool Ubderline => false;
+        public virtual bool Underline => false;
 
         // Зачеркнутость
         public virtual bool StrikeThrough => false;

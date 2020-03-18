@@ -10,7 +10,7 @@ namespace DocxCorrector.App
         {
             FeaturesProvider featuresProvider = FeaturesProvider.GetInstance(type: FeaturesProviderType.GemBox);
 
-            featuresProvider.GenerateNormalizedCSVFiles(Config.FilesToInpectDirectoryPath, Config.NormalizedPropertiesFileName);
+            featuresProvider.GenerateCSVFiles(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileName);
 
             Console.WriteLine("\nEnd of program");
             Console.ReadLine();
