@@ -16,7 +16,6 @@ namespace DocxCorrector.Models
         // ParagraphFormat
         public string Alignment { get; }
         public string BackgroundColor { get; }
-        public string Borders { get; }
         public string KeepLinesTogether { get; }
         public string KeepWithNext { get; }
         public string LeftIndentation { get; }
@@ -32,7 +31,6 @@ namespace DocxCorrector.Models
         public string SpaceBefore { get; }
         public string SpecialIndentation { get; }
         public string Style { get; }
-        public string Tabs { get; }
         public string WidowControl { get; }
         // ListFormat
         public string ListFormatIsList { get; }
@@ -51,7 +49,6 @@ namespace DocxCorrector.Models
             // ParagraphFormat
             Alignment = paragraph.ParagraphFormat.Alignment.ToString();
             BackgroundColor = paragraph.ParagraphFormat.BackgroundColor.ToString();
-            Borders = paragraph.ParagraphFormat.Borders.ToString();
             KeepLinesTogether = paragraph.ParagraphFormat.KeepLinesTogether.ToString();
             KeepWithNext = paragraph.ParagraphFormat.KeepWithNext.ToString();
             LeftIndentation = paragraph.ParagraphFormat.LeftIndentation.ToString();
@@ -67,7 +64,6 @@ namespace DocxCorrector.Models
             SpaceBefore = paragraph.ParagraphFormat.SpaceBefore.ToString();
             SpecialIndentation = paragraph.ParagraphFormat.SpecialIndentation.ToString();
             Style = paragraph.ParagraphFormat.Style.ToString();
-            Tabs = paragraph.ParagraphFormat.Tabs.ToString();
             WidowControl = paragraph.ParagraphFormat.WidowControl.ToString();
             // ListFormat
             ListFormatIsList = paragraph.ListFormat.IsList.ToString();
@@ -82,7 +78,6 @@ namespace DocxCorrector.Models
                     { "\nItalic", runner.CharacterFormat.Italic.ToString() },
                     { "\nAppCaps", runner.CharacterFormat.AllCaps.ToString() },
                     { "\nBackgroundColor", runner.CharacterFormat.BackgroundColor.ToString() },
-                    { "\nBorder", runner.CharacterFormat.Border.ToString() },
                     { "\nDoubleStrikethrough", runner.CharacterFormat.DoubleStrikethrough.ToString() },
                     { "\nFontColor", runner.CharacterFormat.FontColor.ToString() },
                     { "\nFontName", runner.CharacterFormat.FontName.ToString() },
