@@ -11,8 +11,6 @@ namespace DocxCorrector.Models
         // CharacterFormatForParagraphMark
         public string FullBold { get; }
         public string FullItalic { get; }
-        public string FontName { get; }
-        public string FontSize { get; }
         // ParagraphFormat
         public string Alignment { get; }
         public string BackgroundColor { get; }
@@ -34,7 +32,19 @@ namespace DocxCorrector.Models
         public string WidowControl { get; }
         // ListFormat
         public string ListFormatIsList { get; }
-        public string ListFormatLevel { get; }
+        public string? ListItem { get; }
+        public string? ListFormatLevel { get; }
+        public string? ListFormat { get; }
+        public string? CurrentListAligment { get; }
+        public string? CurrentListIsLegal { get; }
+        public string? CurrentListLevel { get; }
+        public string? CurrentListNumberFormat { get; }
+        public string? CurrentListNumberPosition { get; }
+        public string? CurrentListNumberStyle { get; }
+        public string? CurrentListRestartAfterLevel { get; }
+        public string? CurrentListStartAt { get; }
+        public string? CurrentListTextPosition { get; }
+        public string? CurrentListTrailingCharacter { get; }
         // RunnersFormat
         public List<Dictionary<string, string>> RunnersFormat { get; }
 
@@ -44,8 +54,6 @@ namespace DocxCorrector.Models
             // CharacterFormatForParagraphMark
             FullBold = paragraph.CharacterFormatForParagraphMark.Bold.ToString();
             FullItalic = paragraph.CharacterFormatForParagraphMark.Italic.ToString();
-            FontName = paragraph.CharacterFormatForParagraphMark.FontName.ToString();
-            FontSize = paragraph.CharacterFormatForParagraphMark.Size.ToString();
             // ParagraphFormat
             Alignment = paragraph.ParagraphFormat.Alignment.ToString();
             BackgroundColor = paragraph.ParagraphFormat.BackgroundColor.ToString();
@@ -67,7 +75,22 @@ namespace DocxCorrector.Models
             WidowControl = paragraph.ParagraphFormat.WidowControl.ToString();
             // ListFormat
             ListFormatIsList = paragraph.ListFormat.IsList.ToString();
-            ListFormatLevel = paragraph.ListFormat.ListLevelNumber.ToString();
+            if (paragraph.ListFormat.IsList)
+            {
+                ListItem = paragraph.ListItem.ToString();
+                ListFormatLevel = paragraph.ListFormat.ListLevelNumber.ToString();
+                ListFormat = paragraph.ListFormat.ListLevelFormat.ToString();
+                CurrentListAligment = paragraph.ListFormat.ListLevelFormat.Alignment.ToString();
+                CurrentListIsLegal = paragraph.ListFormat.ListLevelFormat.IsLegal.ToString();
+                CurrentListLevel = paragraph.ListFormat.ListLevelFormat.Level.ToString();
+                CurrentListNumberFormat = paragraph.ListFormat.ListLevelFormat.NumberFormat.ToString();
+                CurrentListNumberPosition = paragraph.ListFormat.ListLevelFormat.NumberPosition.ToString();
+                CurrentListNumberStyle = paragraph.ListFormat.ListLevelFormat.NumberStyle.ToString();
+                CurrentListRestartAfterLevel = paragraph.ListFormat.ListLevelFormat.RestartAfterLevel.ToString();
+                CurrentListStartAt = paragraph.ListFormat.ListLevelFormat.StartAt.ToString();
+                CurrentListTextPosition = paragraph.ListFormat.ListLevelFormat.TextPosition.ToString();
+                CurrentListTrailingCharacter = paragraph.ListFormat.ListLevelFormat.TrailingCharacter.ToString();
+             }
             // RunnersFormat
             RunnersFormat = new List<Dictionary<string, string>>();
             foreach (Word.Run runner in paragraph.GetChildElements(true, Word.ElementType.Run))

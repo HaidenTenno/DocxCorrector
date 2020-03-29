@@ -3,8 +3,6 @@ using Word = Microsoft.Office.Interop.Word;
 
 namespace DocxCorrector.Models
 {
-    // TODO: Убрать лишние поля и понять какие нужно раскрыть
-
     public sealed class ParagraphPropertiesInterop : ParagraphProperties
     {
         // Range

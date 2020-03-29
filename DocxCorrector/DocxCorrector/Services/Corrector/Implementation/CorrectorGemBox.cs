@@ -38,6 +38,7 @@ namespace DocxCorrector.Services.Corrector
         // Public
         // IDisposable
         public override void Dispose() { }
+
         // Corrector
         public CorrectorGemBox()
         {
@@ -52,6 +53,8 @@ namespace DocxCorrector.Services.Corrector
 
             List<ParagraphProperties> allParagraphProperties = new List<ParagraphProperties>();
 
+            document.CalculateListItems();
+
             foreach (Word.Paragraph paragraph in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
             {
                 ParagraphProperties paragraphProperties = new ParagraphPropertiesGemBox(paragraph: paragraph);
@@ -64,7 +67,20 @@ namespace DocxCorrector.Services.Corrector
         //Получить свойства всех страниц
         public override List<PageProperties> GetAllPagesProperties(string filePath)
         {
-            throw new NotImplementedException();
+            Word.DocumentModel? document = OpenDocument(filePath: filePath);
+            if (document == null) { return new List<PageProperties>(); }
+
+            List<PageProperties> pageProperties = new List<PageProperties>();
+
+            // TODO: Implement next
+            //var pages = document.GetPaginator().Pages;
+
+            //foreach (var page in pages)
+            //{
+            //    Console.WriteLine(page);
+            //}
+
+            return pageProperties;
         }
 
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
