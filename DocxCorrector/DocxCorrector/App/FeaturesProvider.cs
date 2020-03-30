@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.IO;
 using DocxCorrector.Services.Corrector;
@@ -13,6 +14,7 @@ namespace DocxCorrector.App
     {
         Interop,
         GemBox,
+        Spire,
         InteropMultipleApp
     }
 
@@ -39,6 +41,7 @@ namespace DocxCorrector.App
                 {
                     FeaturesProviderType.Interop => new FeaturesProvider(corrector: new CorrectorInterop()),
                     FeaturesProviderType.GemBox => new FeaturesProvider(corrector: new CorrectorGemBox()),
+                    FeaturesProviderType.Spire => new FeaturesProvider(corrector: new CorrectorSpire()),
                     FeaturesProviderType.InteropMultipleApp => new FeaturesProvider(corrector: new CorrectorInteropMultipleApps()),
                     _ => throw new NotImplementedException()
                 };
@@ -47,6 +50,7 @@ namespace DocxCorrector.App
             return Instance;
         }
 
+        // Напечатать содержимое всех параграфов документа filePath
         public void PrintParagraphs(string filePath)
         {
             Corrector.PrintAllParagraphs(filePath: filePath);
@@ -154,6 +158,25 @@ namespace DocxCorrector.App
             });
         }
 
+        // GenerateCSVFiles с асинхронным анализом файлов
+        public void GenerateCSVFilesWithAsyncFilesIteration(string rootDir, string resultFileName)
+        {
+            DirectoryIterator.IterateDir(rootDir, (subDir) =>
+            {
+                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+
+                Task.WaitAll(DirectoryIterator.IterateDocxFilesAsync(subDir, (filePath) =>
+                {
+                    Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+                    List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties(filePath: filePath);
+                    Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+                    propertiesForDir.AddRange(propertiesForFile);
+                }));
+
+                FileWriter.FillCSV(String.Concat(subDir, resultFileName), propertiesForDir);
+            });
+        }
+
         // GenerateCSVFiles, основанный на асинхронном методе с асинхронным анализом файлов
         public void GenerateCSVFilesAsyncWithAsyncFilesIteration(string rootDir, string resultFileName)
         {
@@ -198,6 +221,19 @@ namespace DocxCorrector.App
 
                 FileWriter.FillCSV(String.Concat(subDir, resultFileName), normalizedPropertiesForDir);
             });
+        }
+
+        // Тест скорости работы синхронных и асинхронных методов при вытигивании свойств из документов
+        public void TestCorrectorSpeed(string rootDir)
+        {
+            Console.WriteLine("Синхронный анализ параграфов, синхронный проход по директории");
+            TimeCounter.CountTime(() => GenerateCSVFiles(rootDir, Config.SyncParagraphsSyncIteration));
+            Console.WriteLine("\nАсинхронный анализ параграфов, синхронный проход по директории");
+            TimeCounter.CountTime(() => GenerateCSVFilesAsync(rootDir, Config.AsyncParagraphsSyncIteration));
+            Console.WriteLine("\nCинхронный анализ параграфов, асинхронный проход по директории");
+            TimeCounter.CountTime(() => GenerateCSVFilesWithAsyncFilesIteration(rootDir, Config.SyncParagraphsAsyncIteration));
+            Console.WriteLine("\nАсинхронный анализ параграфов, асинхронный проход по директории");
+            TimeCounter.CountTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir, Config.AsyncParagraphsAsyncIteration));
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DocxCorrector.Models;
-using CsvHelper;
+using ServiceStack.Text;
 
 namespace DocxCorrector.Services
 {
@@ -31,44 +30,53 @@ namespace DocxCorrector.Services
         // Записать в CSV файл filePath объекты из списка listData
         public static void FillCSV<T>(string filePath, List<T> listData)
         {
-            try
-            {
-                using (StreamWriter sw = new StreamWriter(filePath))
-                using (CsvWriter csv = new CsvWriter(sw, CultureInfo.InvariantCulture))
-                {
-                    csv.Configuration.Delimiter = ";";
-                    csv.WriteRecords(listData);
-                }
-            }
-            catch (Exception e)
-            {
-#if DEBUG
-                Console.WriteLine(e.Message);
-#endif
-            }
+            CsvConfig.ItemSeperatorString = ";";
+            string csvString = CsvSerializer.SerializeToCsv(listData);
+
+            WriteToFile(filePath, csvString);
         }
 
-        // Преобразование типов
         // Заполнить CSV файл для свойств параграфов
         public static void FillCSV(string filePath, List<ParagraphProperties> listData)
         {
             List<ParagraphPropertiesInterop> listDataInterop = listData.OfType<ParagraphPropertiesInterop>().ToList();
-            if (listDataInterop != null)
+            if (listDataInterop.Count != 0)
             {
                 FillCSV(filePath: filePath, listData: listDataInterop);
                 return;
             }
 
-            List<ParagraphPropertiesGemBox> listDataGemBox= listData.OfType<ParagraphPropertiesGemBox>().ToList();
-            if (listDataGemBox != null)
+            List<ParagraphPropertiesGemBox> listDataGemBox = listData.OfType<ParagraphPropertiesGemBox>().ToList();
+            if (listDataGemBox.Count != 0)
             {
                 FillCSV(filePath: filePath, listData: listDataGemBox);
                 return;
             }
 
-            FillCSV(filePath: filePath, listData: listData);
+            List<ParagraphPropertiesSpire> listDataSpire = listData.OfType<ParagraphPropertiesSpire>().ToList();
+            if (listDataSpire.Count != 0)
+            {
+                FillCSV(filePath: filePath, listData: listDataSpire);
+                return;
+            }
         }
 
-        // TODO: - Описать аналогичные перегрузки для: NormalizedProperties, PageProperties
+        // Заполнить CSV файл для свойств страниц
+        public static void FillCSV(string filePath, List<PageProperties> listData)
+        {
+            List<PagePropertiesInterop> listDataInterop = listData.OfType<PagePropertiesInterop>().ToList();
+            if (listDataInterop.Count != 0)
+            {
+                FillCSV(filePath: filePath, listData: listDataInterop);
+                return;
+            }
+
+            List<PagePropertiesGemBox> listDataGemBox = listData.OfType<PagePropertiesGemBox>().ToList();
+            if (listDataGemBox.Count != 0)
+            {
+                FillCSV(filePath: filePath, listData: listDataGemBox);
+                return;
+            }
+        }
     }
 }

@@ -38,9 +38,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CsvHelper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.15.0.0\lib\net47\CsvHelper.dll</HintPath>
-    </Reference>
     <Reference Include="GemBox.Document, Version=31.0.35.1130, Culture=neutral, PublicKeyToken=b1b72c69714d4847, processorArchitecture=MSIL">
       <HintPath>..\packages\GemBox.Document.31.0.0.1130\lib\net35\GemBox.Document.dll</HintPath>
     </Reference>
@@ -55,11 +52,25 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ServiceStack.Text, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
+      <HintPath>..\packages\ServiceStack.Text.5.8.0\lib\net45\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Doc, Version=7.11.0.41046, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.Doc.7.11.0\lib\net46\Spire.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.License, Version=1.3.7.46, Culture=neutral, PublicKeyToken=b1144360237c8b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.Doc.7.11.0\lib\net46\Spire.License.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Pdf, Version=5.11.0.2046, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.Doc.7.11.0\lib\net46\Spire.Pdf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
@@ -93,14 +104,23 @@
     <Compile Include="App\Config.cs" />
     <Compile Include="App\FeaturesProvider.cs" />
     <Compile Include="App\Program.cs" />
+    <Compile Include="Models\ElementsObjectModel\DocumentElement.cs" />
+    <Compile Include="Models\ElementsObjectModel\ImageSign\ImageSign.cs" />
+    <Compile Include="Models\ElementsObjectModel\IRegexSupportable.cs" />
+    <Compile Include="Models\ElementsObjectModel\List\ListElementLast.cs" />
+    <Compile Include="Models\ElementsObjectModel\List\ListElement.cs" />
+    <Compile Include="Models\ElementsObjectModel\Paragraph\ParagraphBeforeList.cs" />
+    <Compile Include="Models\ElementsObjectModel\Paragraph\Paragraph.cs" />
     <Compile Include="Models\NormalizedProperties\NormalizedProperties.cs" />
     <Compile Include="Models\NormalizedProperties\NormalizedPropertiesGemBox.cs" />
     <Compile Include="Models\NormalizedProperties\NormalizedPropertiesInterop.cs" />
     <Compile Include="Models\PageProperties\PageProperties.cs" />
+    <Compile Include="Models\PageProperties\PagePropertiesGemBox.cs" />
     <Compile Include="Models\PageProperties\PagePropertiesInterop.cs" />
     <Compile Include="Models\ParagraphProperties\ParagraphProperties.cs" />
     <Compile Include="Models\ParagraphProperties\ParagraphPropertiesGemBox.cs" />
     <Compile Include="Models\ParagraphProperties\ParagraphPropertiesInterop.cs" />
+    <Compile Include="Models\ParagraphProperties\ParagraphPropertiesSpire.cs" />
     <Compile Include="Models\ParagraphResult\ParagraphResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Corrector\Corrector.cs" />
@@ -108,6 +128,7 @@
     <Compile Include="Services\Corrector\Implementation\CorrectorInterop.cs" />
     <Compile Include="Services\Corrector\ICorrecorAsync.cs" />
     <Compile Include="Services\Corrector\Implementation\CorrectorInteropMultipleApps.cs" />
+    <Compile Include="Services\Corrector\Implementation\CorrectorSpire.cs" />
     <Compile Include="Services\DirectoryIterator.cs" />
     <Compile Include="Services\FileWriter.cs" />
     <Compile Include="Services\Helper\GemBoxHelper.cs" />
@@ -119,6 +140,5 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

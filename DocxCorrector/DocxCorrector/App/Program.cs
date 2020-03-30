@@ -8,14 +8,14 @@ namespace DocxCorrector.App
         // Точка входа
         static void Main(string[] args)
         {
-            FeaturesProvider featuresProvider = FeaturesProvider.GetInstance(type: FeaturesProviderType.InteropMultipleApp);
+            FeaturesProvider featuresProvider = FeaturesProvider.GetInstance(type: FeaturesProviderType.Spire);
 
-            Console.WriteLine("OLD");
-            TimeCounter.CountTime(() => featuresProvider.GenerateNormalizedCSVFiles(Config.FilesToInpectDirectoryPath, Config.NormalizedPropertiesFileName));
-            Console.WriteLine("\nNEW");
-            TimeCounter.CountTime(() => featuresProvider.GenerateNormalizedCSVFilesAsync(Config.FilesToInpectDirectoryPath, Config.NormalizedPropertiesFileNameAstnc));
+            //featuresProvider.GenerateCSVFiles(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileName);
+            //featuresProvider.GeneratePagesPropertiesJSON(Config.DocFilePath, Config.PagesPropertiesFilePath);
 
-            Console.WriteLine("End of program");
+            featuresProvider.TestCorrectorSpeed(Config.FilesToInpectDirectoryPath);
+
+            Console.WriteLine("\nEnd of program");
             Console.ReadLine();
         }
     }
