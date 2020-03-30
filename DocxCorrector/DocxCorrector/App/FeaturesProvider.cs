@@ -19,7 +19,6 @@ namespace DocxCorrector.App
     }
 
     // Функции программы, доступные глобально
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public sealed class FeaturesProvider
     {
         // Private

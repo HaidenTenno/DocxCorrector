@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DocxCorrector.Services;
 using Spire.Doc.Documents;
 using Spire.Doc.Fields;
 
@@ -11,81 +8,6 @@ namespace DocxCorrector.Models
 {
     public sealed class ParagraphPropertiesSpire : ParagraphProperties
     {
-        // TODO: понять, что вытаскивают поля, отмеченные "??"
-        public ParagraphPropertiesSpire(Paragraph paragraph)
-        {
-            Text = paragraph.Text;
-            WordCount = paragraph.WordCount;
-            StyleName = paragraph.StyleName;
-            NoBorders = paragraph.Format.Borders.NoBorder;
-            AfterSpacing = paragraph.Format.AfterSpacing;
-            IsEmptyBackgroundColor = paragraph.Format.BackColor.IsEmpty;
-            BeforeSpacing = paragraph.Format.BeforeSpacing;
-            HorizontalAlignment = paragraph.Format.HorizontalAlignment.ToString();
-            IsBidi = paragraph.Format.IsBidi;
-            IsFrame = paragraph.Format.IsFrame; // ??
-            KeepFollow = paragraph.Format.KeepFollow;
-            KeepLines = paragraph.Format.KeepLines;
-            LeftIndent = paragraph.Format.LeftIndent;
-            LineSpacing = paragraph.Format.LineSpacing;
-            MirrorIndents = paragraph.Format.MirrorIndents;
-            OutlineLevel = paragraph.Format.OutlineLevel.ToString();
-            OverflowPunctuation = paragraph.Format.OverflowPunc; // ??
-            RightIndent = paragraph.Format.RightIndent;
-            TextAlignment = paragraph.Format.TextAlignment.ToString();
-            WordWrap = paragraph.Format.WordWrap;
-            AfterAutoSpacing = paragraph.Format.AfterAutoSpacing; // ??
-            BeforeAutoSpacing = paragraph.Format.BeforeAutoSpacing; // ??
-            FirstLineIndent = paragraph.Format.FirstLineIndent;
-            IsKinSoku = paragraph.Format.IsKinSoku;
-            IsWidowControl = paragraph.Format.IsWidowControl; // ??
-            LineSpacingRule = paragraph.Format.LineSpacingRule.ToString(); // ??
-            PageBreakAfter = paragraph.Format.PageBreakAfter;
-            PageBreakBefore = paragraph.Format.PageBreakBefore;
-            AutoSpaceDE = paragraph.Format.AutoSpaceDE; // ??
-            AutoSpaceDN = paragraph.Format.AutoSpaceDN; // ??
-            IsColumnBreakAfter = paragraph.Format.IsColumnBreakAfter;
-            var textRangesProperties = new List<string>();
-            foreach (TextRange textRange in paragraph.ChildObjects.OfType<TextRange>())
-            {
-                var textRangeProperty = new Dictionary<string, string>
-                {
-                    ["Text"] = textRange.Text,
-                    ["IsBidi"] = textRange.CharacterFormat.Bidi.ToString(),
-                    ["IsBold"] = textRange.CharacterFormat.Bold.ToString(),
-                    ["HasBorder"] = (textRange.CharacterFormat.Border.LineWidth == 0.0).ToString(),
-                    ["IsEmbossed"] = textRange.CharacterFormat.Emboss.ToString(),
-                    ["IsEngraved"] = textRange.CharacterFormat.Engrave.ToString(),
-                    ["IsHidden"] = textRange.CharacterFormat.Hidden.ToString(),
-                    ["IsItalic"] = textRange.CharacterFormat.Italic.ToString(),
-                    ["Position"] = textRange.CharacterFormat.Position.ToString(), // ??
-                    ["IsBigCaps"] = textRange.CharacterFormat.AllCaps.ToString(),
-                    ["CharSpacing"] = textRange.CharacterFormat.CharacterSpacing.ToString(),
-                    ["IsDoubleStriked"] = textRange.CharacterFormat.DoubleStrike.ToString(),
-                    ["HasEmphasisMark"] = (textRange.CharacterFormat.EmphasisMark.ToString() != "None").ToString(),
-                    ["FontName"] = textRange.CharacterFormat.FontName,
-                    ["FontSize"] = textRange.CharacterFormat.FontSize.ToString(),
-                    ["HasUnusualHiglightColor"] = (!textRange.CharacterFormat.HighlightColor.IsEmpty).ToString(),
-                    ["IsShadow"] = textRange.CharacterFormat.IsShadow.ToString(),
-                    ["IsStrikeout"] = textRange.CharacterFormat.IsStrikeout.ToString(),
-                    ["HasLigaturesType"] = (textRange.CharacterFormat.LigaturesType.ToString() != "None").ToString(),
-                    ["HasUnusualTextColor"] = (!textRange.CharacterFormat.TextColor.IsEmpty).ToString(),
-                    ["TextScale"] = textRange.CharacterFormat.TextScale.ToString(),
-                    ["HasUnderline"] = (textRange.CharacterFormat.UnderlineStyle.ToString() != "None").ToString(),
-                    ["AllowContextualAlternates"] = textRange.CharacterFormat.AllowContextualAlternates.ToString(), // ??
-                    ["FontTypeHint"] = textRange.CharacterFormat.FontTypeHint.ToString(), // ??
-                    ["IsOutLine"] = textRange.CharacterFormat.IsOutLine.ToString(),
-                    ["IsSmallCaps"] = textRange.CharacterFormat.IsSmallCaps.ToString(),
-                    ["NumberFormType"] = textRange.CharacterFormat.NumberFormType.ToString(), // ??
-                    ["NumberSpaceType"] = textRange.CharacterFormat.NumberSpaceType.ToString(), // ??
-                    ["StylisticSetType"] = textRange.CharacterFormat.StylisticSetType.ToString(), // ??
-                    ["SubSuperScript"] = textRange.CharacterFormat.SubSuperScript.ToString(),
-                    ["HasUnusualBackgraoundColor"] = (!textRange.CharacterFormat.TextBackgroundColor.IsEmpty).ToString()
-                };
-                textRangesProperties.Add(JSONMaker.MakeJSON(textRangeProperty));
-            }
-            TextRangesProperties = String.Join(",", textRangesProperties);
-        }
         public string Text { get; }
         public int WordCount { get; }
         public string StyleName { get; }
@@ -120,7 +42,83 @@ namespace DocxCorrector.Models
         public bool AutoSpaceDN { get; }
         public bool IsColumnBreakAfter { get; }
 
-        // Property within all text ranges properties
-        public string TextRangesProperties { get; }
+        // Ranges
+        public List<Dictionary<string, string>> TextRangesProperties { get; }
+
+        // TODO: понять, что вытаскивают поля, отмеченные "??"
+        public ParagraphPropertiesSpire(Paragraph paragraph)
+        {
+            Text = paragraph.Text;
+            WordCount = paragraph.WordCount;
+            StyleName = paragraph.StyleName;
+            NoBorders = paragraph.Format.Borders.NoBorder;
+            AfterSpacing = paragraph.Format.AfterSpacing;
+            IsEmptyBackgroundColor = paragraph.Format.BackColor.IsEmpty;
+            BeforeSpacing = paragraph.Format.BeforeSpacing;
+            HorizontalAlignment = paragraph.Format.HorizontalAlignment.ToString();
+            IsBidi = paragraph.Format.IsBidi;
+            IsFrame = paragraph.Format.IsFrame; // ??
+            KeepFollow = paragraph.Format.KeepFollow;
+            KeepLines = paragraph.Format.KeepLines;
+            LeftIndent = paragraph.Format.LeftIndent;
+            LineSpacing = paragraph.Format.LineSpacing;
+            MirrorIndents = paragraph.Format.MirrorIndents;
+            OutlineLevel = paragraph.Format.OutlineLevel.ToString();
+            OverflowPunctuation = paragraph.Format.OverflowPunc; // ??
+            RightIndent = paragraph.Format.RightIndent;
+            TextAlignment = paragraph.Format.TextAlignment.ToString();
+            WordWrap = paragraph.Format.WordWrap;
+            AfterAutoSpacing = paragraph.Format.AfterAutoSpacing; // ??
+            BeforeAutoSpacing = paragraph.Format.BeforeAutoSpacing; // ??
+            FirstLineIndent = paragraph.Format.FirstLineIndent;
+            IsKinSoku = paragraph.Format.IsKinSoku;
+            IsWidowControl = paragraph.Format.IsWidowControl; // ??
+            LineSpacingRule = paragraph.Format.LineSpacingRule.ToString(); // ??
+            PageBreakAfter = paragraph.Format.PageBreakAfter;
+            PageBreakBefore = paragraph.Format.PageBreakBefore;
+            AutoSpaceDE = paragraph.Format.AutoSpaceDE; // ??
+            AutoSpaceDN = paragraph.Format.AutoSpaceDN; // ??
+            IsColumnBreakAfter = paragraph.Format.IsColumnBreakAfter;
+            // Runners
+            TextRangesProperties = new List<Dictionary<string, string>>();
+            foreach (TextRange textRange in paragraph.ChildObjects.OfType<TextRange>())
+            {
+                var textRangeProperty = new Dictionary<string, string>()
+                {
+                    { "Text", textRange.Text },
+                    { "\nIsBidi", textRange.CharacterFormat.Bidi.ToString() },
+                    { "\nIsBold", textRange.CharacterFormat.Bold.ToString() },
+                    { "\nHasBorder", (textRange.CharacterFormat.Border.LineWidth == 0.0).ToString() },
+                    { "\nIsEmbossed", textRange.CharacterFormat.Emboss.ToString() },
+                    { "\nIsEngraved", textRange.CharacterFormat.Engrave.ToString() },
+                    { "\nIsHidden", textRange.CharacterFormat.Hidden.ToString() },
+                    { "\nIsItalic", textRange.CharacterFormat.Italic.ToString() },
+                    { "\nPosition", textRange.CharacterFormat.Position.ToString() }, // ??
+                    { "\nIsBigCaps", textRange.CharacterFormat.AllCaps.ToString() },
+                    { "\nCharSpacing", textRange.CharacterFormat.CharacterSpacing.ToString() },
+                    { "\nIsDoubleStriked", textRange.CharacterFormat.DoubleStrike.ToString() },
+                    { "\nHasEmphasisMark", (textRange.CharacterFormat.EmphasisMark.ToString() != "None").ToString() },
+                    { "\nFontName", textRange.CharacterFormat.FontName },
+                    { "\nFontSize", textRange.CharacterFormat.FontSize.ToString() },
+                    { "\nHasUnusualHiglightColor", (!textRange.CharacterFormat.HighlightColor.IsEmpty).ToString() },
+                    { "\nIsShadow", textRange.CharacterFormat.IsShadow.ToString() },
+                    { "\nIsStrikeout", textRange.CharacterFormat.IsStrikeout.ToString() },
+                    { "\nHasLigaturesType", (textRange.CharacterFormat.LigaturesType.ToString() != "None").ToString() },
+                    { "\nHasUnusualTextColor", (!textRange.CharacterFormat.TextColor.IsEmpty).ToString() },
+                    { "\nTextScale", textRange.CharacterFormat.TextScale.ToString() },
+                    { "\nHasUnderline", (textRange.CharacterFormat.UnderlineStyle.ToString() != "None").ToString() },
+                    { "\nAllowContextualAlternates", textRange.CharacterFormat.AllowContextualAlternates.ToString() }, // ??
+                    { "\nFontTypeHint", textRange.CharacterFormat.FontTypeHint.ToString() }, // ??
+                    { "\nIsOutLine", textRange.CharacterFormat.IsOutLine.ToString() },
+                    { "\nIsSmallCaps", textRange.CharacterFormat.IsSmallCaps.ToString() },
+                    { "\nNumberFormType", textRange.CharacterFormat.NumberFormType.ToString() }, // ??
+                    { "\nNumberSpaceType", textRange.CharacterFormat.NumberSpaceType.ToString() }, // ??
+                    { "\nStylisticSetType", textRange.CharacterFormat.StylisticSetType.ToString() }, // ??
+                    { "\nSubSuperScript", textRange.CharacterFormat.SubSuperScript.ToString() },
+                    { "\nHasUnusualBackgraoundColor", (!textRange.CharacterFormat.TextBackgroundColor.IsEmpty).ToString() }
+                };
+                TextRangesProperties.Add(textRangeProperty);
+            }
+        }
     }
 }

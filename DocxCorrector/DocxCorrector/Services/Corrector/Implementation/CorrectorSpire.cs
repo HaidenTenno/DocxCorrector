@@ -1,50 +1,57 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 using DocxCorrector.Models;
-using Spire.Doc;
-using Spire.Doc.Documents;
+using Word = Spire.Doc;
 
 namespace DocxCorrector.Services.Corrector
 {
-    public sealed class CorrectorSpire : Corrector
+    public sealed class CorrectorSpire : Corrector, ICorrecorAsync
     {
-        private static Document? Document { get; set; }
-
-        private static void OpenDocument(string filePath)
+        // Private
+        // Открыть документ filePath
+        private Word.Document? OpenDocument(string filePath)
         {
             try
             {
-                Document = new Document();
-                Document.LoadFromFile(filePath);
+                Word.Document document = new Word.Document(filePath);
+                return document;
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine(ex.Message);
+#endif
                 Console.WriteLine("Can't open document");
+                return null;
             }
         }
 
+        // Public
+        // IDisposable
+        public override void Dispose() { }
+
+        // Corrector
         // Получить свойства всех параграфов документа filePath
         public override List<ParagraphProperties> GetAllParagraphsProperties(string filePath)
         {
-            var allParagraphProperties = new List<ParagraphProperties>();
-            OpenDocument(filePath);
-            if (Document != null)
+            Word.Document? document = OpenDocument(filePath);
+            if (document == null) { return new List<ParagraphProperties>(); }
+
+            List<ParagraphProperties> allParagraphProperties = new List<ParagraphProperties>();
+
+            foreach (Word.Section section in document.Sections)
             {
-                foreach (Section section in Document.Sections)
+                foreach (Word.Documents.Paragraph paragraph in section.Paragraphs)
                 {
-                    foreach (Paragraph paragraph in section.Paragraphs)
-                    {
-                        var paragraphProperties = new ParagraphPropertiesSpire(paragraph: paragraph);
-                        allParagraphProperties.Add(paragraphProperties);
-                    }
+                    var paragraphProperties = new ParagraphPropertiesSpire(paragraph: paragraph);
+                    allParagraphProperties.Add(paragraphProperties);
                 }
-                Document.Close();
             }
+
+            document.Close();
             return allParagraphProperties;
         }
 
@@ -60,7 +67,6 @@ namespace DocxCorrector.Services.Corrector
             throw new NotImplementedException();
         }
 
-        // Вспомогательные на момент разработки методы, которые, возможно, подлежат удалению
         // Печать всех абзацев документа filePath
         public override void PrintAllParagraphs(string filePath)
         {
@@ -73,8 +79,43 @@ namespace DocxCorrector.Services.Corrector
             throw new NotImplementedException();
         }
 
-        // IDisposable
-        public override void Dispose()
+        // ICorrectorAsync
+        // Private
+        private Task<ParagraphProperties> GetParagraphPropertiesAsync(Word.Documents.Paragraph paragraph)
+        {
+            return Task.Run(() => (ParagraphProperties)new ParagraphPropertiesSpire(paragraph));
+        }
+
+        //private Task<NormalizedProperties> GetNormalizedPropertiesAsync(Word.Documents.Paragraph paragraph, int paragraphId)
+        //{
+        //    return Task.Run(() => (NormalizedProperties)new NormalizedPropertiesSpire(paragraph, paragraphId));
+        //}
+
+        // Public
+        public Corrector Corrector => throw new NotImplementedException();
+
+        public async Task<List<ParagraphProperties>> GetAllParagraphsPropertiesAsync(string filePath)
+        {
+            Word.Document? document = OpenDocument(filePath);
+            if (document == null) { return new List<ParagraphProperties>(); }
+
+            List<Task<ParagraphProperties>> listOfTasks = new List<Task<ParagraphProperties>>();
+
+            foreach (Word.Section section in document.Sections)
+            {
+                foreach (Word.Documents.Paragraph paragraph in section.Paragraphs)
+                {
+                    listOfTasks.Add(GetParagraphPropertiesAsync(paragraph));
+                }
+            }
+
+            var result = await Task.WhenAll(listOfTasks);
+
+            document.Close();
+            return result.ToList();
+        }
+
+        public async Task<List<NormalizedProperties>> GetNormalizedPropertiesAsync(string filePath)
         {
             throw new NotImplementedException();
         }
