@@ -121,7 +121,6 @@ namespace DocxCorrector.Models
                     { "\nUnderlineColor", runner.CharacterFormat.UnderlineColor.ToString() },
                     { "\nUnderlineStyle", runner.CharacterFormat.UnderlineStyle.ToString() }
                 };
-
                 RunnersFormat.Add(runnerFormat);
             }
         }

@@ -17,7 +17,7 @@ namespace DocxCorrector.Services.Corrector
             Word.ComponentInfo.SetLicense("FREE-LIMITED-KEY");
         }
 
-        // Открыть документ
+        // Открыть документ filePath
         private Word.DocumentModel? OpenDocument(string filePath)
         {
             try
@@ -45,7 +45,7 @@ namespace DocxCorrector.Services.Corrector
             SetLicense();
         }
 
-        // Получить свойства всех параграфов
+        // Получить свойства всех параграфов документа filePath
         public override List<ParagraphProperties> GetAllParagraphsProperties(string filePath)
         {
             Word.DocumentModel? document = OpenDocument(filePath: filePath);
@@ -64,7 +64,7 @@ namespace DocxCorrector.Services.Corrector
             return allParagraphProperties;
         }
 
-        //Получить свойства всех страниц
+        //Получить свойства всех страниц документа filePath
         public override List<PageProperties> GetAllPagesProperties(string filePath)
         {
             Word.DocumentModel? document = OpenDocument(filePath: filePath);
@@ -90,7 +90,7 @@ namespace DocxCorrector.Services.Corrector
             return pageProperties;
         }
 
-        // Получить нормализованные свойства параграфов (Для классификатора Ромы)
+        // Получить нормализованные свойства параграфов документа filePath (Для классификатора Ромы)
         public override List<NormalizedProperties> GetNormalizedProperties(string filePath)
         {
             Word.DocumentModel? document = OpenDocument(filePath: filePath);
@@ -109,7 +109,7 @@ namespace DocxCorrector.Services.Corrector
             return allNormalizedProperties;
         }
 
-        // Печать всех абзацев
+        // Печать всех абзацев документа filePath
         public override void PrintAllParagraphs(string filePath)
         {
             Word.DocumentModel? document = OpenDocument(filePath: filePath);
@@ -128,7 +128,7 @@ namespace DocxCorrector.Services.Corrector
             }
         }
 
-        // Получить списк ошибок для выбранного документа, с учетом того, что все параграфы в нем типа elementType
+        // Получить списк ошибок для документа filePath, с учетом того, что все параграфы в нем типа elementType
         public override List<ParagraphResult> GetMistakesForElementType(string filePath, ElementType elementType)
         {
             throw new NotImplementedException();

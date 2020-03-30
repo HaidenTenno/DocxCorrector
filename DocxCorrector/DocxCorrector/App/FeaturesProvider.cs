@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.IO;
 using DocxCorrector.Services.Corrector;
@@ -13,6 +14,7 @@ namespace DocxCorrector.App
     {
         Interop,
         GemBox,
+        Spire,
         InteropMultipleApp
     }
 
@@ -39,6 +41,7 @@ namespace DocxCorrector.App
                 {
                     FeaturesProviderType.Interop => new FeaturesProvider(corrector: new CorrectorInterop()),
                     FeaturesProviderType.GemBox => new FeaturesProvider(corrector: new CorrectorGemBox()),
+                    FeaturesProviderType.Spire => new FeaturesProvider(corrector: new CorrectorSpire()),
                     FeaturesProviderType.InteropMultipleApp => new FeaturesProvider(corrector: new CorrectorInteropMultipleApps()),
                     _ => throw new NotImplementedException()
                 };

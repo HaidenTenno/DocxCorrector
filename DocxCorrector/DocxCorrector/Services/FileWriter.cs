@@ -52,6 +52,13 @@ namespace DocxCorrector.Services
                 FillCSV(filePath: filePath, listData: listDataGemBox);
                 return;
             }
+
+            List<ParagraphPropertiesSpire> listDataSpire = listData.OfType<ParagraphPropertiesSpire>().ToList();
+            if (listDataSpire.Count != 0)
+            {
+                FillCSV(filePath: filePath, listData: listDataSpire);
+                return;
+            }
         }
 
         // Заполнить CSV файл для свойств страниц

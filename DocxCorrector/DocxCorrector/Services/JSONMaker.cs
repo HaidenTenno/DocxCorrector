@@ -12,5 +12,10 @@ namespace DocxCorrector.Services
         {
             return JsonConvert.SerializeObject(results, Formatting.Indented);
         }
+
+        public static string MakeJSON<T1,T2>(Dictionary<T1,T2> results)
+        {
+            return JsonConvert.SerializeObject(results, Formatting.Indented);
+        }
     }
 }
