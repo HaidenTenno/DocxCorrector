@@ -106,6 +106,7 @@
     <Compile Include="Models\NormalizedProperties\NormalizedPropertiesGemBox.cs" />
     <Compile Include="Models\NormalizedProperties\NormalizedPropertiesInterop.cs" />
     <Compile Include="Models\PageProperties\PageProperties.cs" />
+    <Compile Include="Models\PageProperties\PagePropertiesGemBox.cs" />
     <Compile Include="Models\PageProperties\PagePropertiesInterop.cs" />
     <Compile Include="Models\ParagraphProperties\ParagraphProperties.cs" />
     <Compile Include="Models\ParagraphProperties\ParagraphPropertiesGemBox.cs" />

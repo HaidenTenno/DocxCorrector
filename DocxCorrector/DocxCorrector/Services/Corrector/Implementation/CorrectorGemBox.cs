@@ -79,6 +79,13 @@ namespace DocxCorrector.Services.Corrector
             //{
             //    Console.WriteLine(page);
             //}
+            //foreach (var section in document.Sections)
+            //{
+            //    Word.PageSetup pageSetup = section.PageSetup;
+            //    PageProperties currentPageProperties = new PagePropertiesGemBox(pageSetup: pageSetup, pageNumber: 1);
+            //    pageProperties.Add(currentPageProperties);
+            //}
+
 
             return pageProperties;
         }
