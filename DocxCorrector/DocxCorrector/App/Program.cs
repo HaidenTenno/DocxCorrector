@@ -10,8 +10,8 @@ namespace DocxCorrector.App
         {
             FeaturesProvider featuresProvider = FeaturesProvider.GetInstance(type: FeaturesProviderType.Spire);
 
-            //featuresProvider.GenerateCSVFiles(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileName);
-            featuresProvider.GeneratePagesPropertiesJSON(Config.DocFilePath, Config.PagesPropertiesFilePath);
+            featuresProvider.GenerateCSVFiles(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileName);
+            //featuresProvider.GeneratePagesPropertiesJSON(Config.DocFilePath, Config.PagesPropertiesFilePath);
 
             Console.WriteLine("\nEnd of program");
             Console.ReadLine();
