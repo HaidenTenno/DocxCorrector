@@ -64,6 +64,25 @@ namespace DocxCorrector.Services.Corrector
             return allParagraphProperties;
         }
 
+        // Получить свойства секций документа filePath
+        public override List<SectionProperties> GetAllSectionsProperties(string filePath)
+        {
+            Word.DocumentModel? document = OpenDocument(filePath: filePath);
+            if (document == null) { return new List<SectionProperties>(); }
+
+            List<SectionProperties> allSectionsProperties = new List<SectionProperties>();
+
+            int sectionNumber = 1;
+            foreach (Word.Section section in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Section))
+            {
+                SectionProperties currentSectionProperties = new SectionPropertiesGemBox(section: section, sectionNumber: sectionNumber);
+                allSectionsProperties.Add(currentSectionProperties);
+                sectionNumber++;
+            }
+
+            return allSectionsProperties;
+        }
+
         //Получить свойства всех страниц документа filePath
         public override List<PageProperties> GetAllPagesProperties(string filePath)
         {

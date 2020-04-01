@@ -6,163 +6,163 @@ namespace DocxCorrector.Models
     public sealed class ParagraphPropertiesInterop : ParagraphProperties
     {
         // Range
-        public string Text { get; set; }
-        public string Bold { get; set; }
-        public string Italic { get; set; }
-        public string Underline { get; set; }
-        public string BoldBi { get; set; }
-        public string Bookmarks { get; set; }
-        public string Borders { get; set; }
-        public string Case { get; set; }
-        public string Characters { get; set; }
-        public string CharacterWidth { get; set; }
-        public string CombineCharacters { get; set; }
-        public string ContentControls { get; set; }
-        public string Creator { get; set; }
-        public string DisableCharacterSpaceGrid { get; set; }
-        public string Document { get; set; }
-        public string Duplicate { get; set; }
-        public string Editors { get; set; }
-        public string EmpasisMark { get; set; }
-        public string End { get; set; }
-        public string EndnoteOptions { get; set; }
-        public string Endnotes { get; set; }
-        public string Fields { get; set; }
-        public string Find { get; set; }
-        public string FitTextWidth { get; set; }
-        public string Footnotes { get; set; }
-        public string FormattedText { get; set; }
-        public string FormFields { get; set; }
-        public string Frames { get; set; }
-        public string GrammarChecked { get; set; }
-        public string GrammaticalErrors { get; set; }
-        public string HighlightColorIndex { get; set; }
-        public string HorizontallnVertical { get; set; }
-        public string HTMLDicisions { get; set; }
-        public string Hyperlinks { get; set; }
-        public string InlineShapes { get; set; }
-        public string IsEndOfMark { get; set; }
-        public string ItalicBi { get; set; }
-        public string Kana { get; set; }
-        public string LanguageDetected { get; set; }
-        public string LanguageID { get; set; }
-        public string LanguageIDFarEst { get; set; }
-        public string LanguageIDOther { get; set; }
-        public string ListFormat { get; set; }
-        public string ListParagraphs { get; set; }
-        public string NoProofing { get; set; }
-        public string OMaths { get; set; }
-        public string Orientation { get; set; }
-        public string PageSetup { get; set; }
-        public string ParagraphFormat { get; set; }
-        public string Paragraphs { get; set; }
-        public string PreviousBookmarkID { get; set; }
-        public string ReadabilityStatistics { get; set; }
-        public string Revisions { get; set; }
-        public string Sections { get; set; }
-        public string Sentenses { get; set; }
-        public string Shading { get; set; }
-        public string ShapeRange { get; set; }
-        public string ShowAll { get; set; }
-        public string SmartTags { get; set; }
-        public string SpellingChecked { get; set; }
-        public string SpellingErrors { get; set; }
-        public string Subdocuments { get; set; }
-        public string SynonymInfo { get; set; }
-        public string Tables { get; set; }
-        public string TextRetrievalMode { get; set; }
-        public string TextVisibleOnScreen { get; set; }
-        public string TopLevelTables { get; set; }
-        public string TwoLinesInOne { get; set; }
-        public string Words { get; set; }
+        public string Text { get; }
+        public string Bold { get; }
+        public string Italic { get; }
+        public string Underline { get; }
+        public string BoldBi { get; }
+        public string Bookmarks { get; }
+        public string Borders { get; }
+        public string Case { get; }
+        public string Characters { get; }
+        public string CharacterWidth { get; }
+        public string CombineCharacters { get; }
+        public string ContentControls { get; }
+        public string Creator { get; }
+        public string DisableCharacterSpaceGrid { get; }
+        public string Document { get; }
+        public string Duplicate { get; }
+        public string Editors { get; }
+        public string EmpasisMark { get; }
+        public string End { get; }
+        public string EndnoteOptions { get; }
+        public string Endnotes { get; }
+        public string Fields { get; }
+        public string Find { get; }
+        public string FitTextWidth { get; }
+        public string Footnotes { get; }
+        public string FormattedText { get; }
+        public string FormFields { get; }
+        public string Frames { get; }
+        public string GrammarChecked { get; }
+        public string GrammaticalErrors { get; }
+        public string HighlightColorIndex { get; }
+        public string HorizontallnVertical { get; }
+        public string HTMLDicisions { get; }
+        public string Hyperlinks { get; }
+        public string InlineShapes { get; }
+        public string IsEndOfMark { get; }
+        public string ItalicBi { get; }
+        public string Kana { get; }
+        public string LanguageDetected { get; }
+        public string LanguageID { get; }
+        public string LanguageIDFarEst { get; }
+        public string LanguageIDOther { get; }
+        public string ListFormat { get; }
+        public string ListParagraphs { get; }
+        public string NoProofing { get; }
+        public string OMaths { get; }
+        public string Orientation { get; }
+        public string PageSetup { get; }
+        public string ParagraphFormat { get; }
+        public string Paragraphs { get; }
+        public string PreviousBookmarkID { get; }
+        public string ReadabilityStatistics { get; }
+        public string Revisions { get; }
+        public string Sections { get; }
+        public string Sentenses { get; }
+        public string Shading { get; }
+        public string ShapeRange { get; }
+        public string ShowAll { get; }
+        public string SmartTags { get; }
+        public string SpellingChecked { get; }
+        public string SpellingErrors { get; }
+        public string Subdocuments { get; }
+        public string SynonymInfo { get; }
+        public string Tables { get; }
+        public string TextRetrievalMode { get; }
+        public string TextVisibleOnScreen { get; }
+        public string TopLevelTables { get; }
+        public string TwoLinesInOne { get; }
+        public string Words { get; }
         // Font
-        public string FontName { get; set; }
-        public string FontSize { get; set; }
-        public string FontUnderlineColor { get; set; }
-        public string FontStrikeThrough { get; set; }
-        public string FontSuperscript { get; set; }
-        public string FontSubscript { get; set; }
-        public string FontHidden { get; set; }
-        public string FontScaling { get; set; }
-        public string FontPosition { get; set; }
-        public string FontKerning { get; set; }
-        public string FontAllCaps { get; set; }
-        public string FontApplication { get; set; }
-        public string FontBoldBi { get; set; }
-        public string FontBorders { get; set; }
-        public string FontColor { get; set; }
-        public string FontColorIndex { get; set; }
-        public string FontColorIndexBi { get; set; }
-        public string FontContextualAlternates { get; set; }
-        public string FontCreator { get; set; }
-        public string FontDiacriricColor { get; set; }
-        public string FontDoubleStrikeThrough { get; set; }
-        public string FontDuplicate { get; set; }
-        public string FontEmboss { get; set; }
-        public string FontEmphasisMark { get; set; }
-        public string FontEngrave { get; set; }
-        public string FontItalic { get; set; }
-        public string FontItalicBi { get; set; }
-        public string FontLigatures { get; set; }
-        public string FontNameAscii { get; set; }
-        public string FontNameBi { get; set; }
-        public string FontNameFarEast { get; set; }
-        public string FontNameOther { get; set; }
-        public string FontNumberForm { get; set; }
-        public string FontNumberSpacing { get; set; }
-        public string FontOutline { get; set; }
-        public string FontShading { get; set; }
-        public string FontShadow { get; set; }
-        public string FontSizeBi { get; set; }
-        public string FontSmallCaps { get; set; }
-        public string FontStylisticSet { get; set; }
-        public string FontUnderline { get; set; }
+        public string FontName { get; }
+        public string FontSize { get; }
+        public string FontUnderlineColor { get; }
+        public string FontStrikeThrough { get; }
+        public string FontSuperscript { get; }
+        public string FontSubscript { get; }
+        public string FontHidden { get; }
+        public string FontScaling { get; }
+        public string FontPosition { get; }
+        public string FontKerning { get; }
+        public string FontAllCaps { get; }
+        public string FontApplication { get; }
+        public string FontBoldBi { get; }
+        public string FontBorders { get; }
+        public string FontColor { get; }
+        public string FontColorIndex { get; }
+        public string FontColorIndexBi { get; }
+        public string FontContextualAlternates { get; }
+        public string FontCreator { get; }
+        public string FontDiacriricColor { get; }
+        public string FontDoubleStrikeThrough { get; }
+        public string FontDuplicate { get; }
+        public string FontEmboss { get; }
+        public string FontEmphasisMark { get; }
+        public string FontEngrave { get; }
+        public string FontItalic { get; }
+        public string FontItalicBi { get; }
+        public string FontLigatures { get; }
+        public string FontNameAscii { get; }
+        public string FontNameBi { get; }
+        public string FontNameFarEast { get; }
+        public string FontNameOther { get; }
+        public string FontNumberForm { get; }
+        public string FontNumberSpacing { get; }
+        public string FontOutline { get; }
+        public string FontShading { get; }
+        public string FontShadow { get; }
+        public string FontSizeBi { get; }
+        public string FontSmallCaps { get; }
+        public string FontStylisticSet { get; }
+        public string FontUnderline { get; }
         // Paragraph
-        public string OutlineLevel { get; set; }
-        public string Alignment { get; set; }
-        public string CharacterUnitLeftIndent { get; set; }
-        public string LeftIndent { get; set; }
-        public string CharacterUnitRightIndent { get; set; }
-        public string RightIndent { get; set; }
-        public string CharacterUnitFirstLineIndent { get; set; }
-        public string MirrorIndents { get; set; }
-        public string LineSpacing { get; set; }
-        public string SpaceBefore { get; set; }
-        public string SpaceAfter { get; set; }
-        public string PageBreakBefore { get; set; }
-        public string AddSpaceBetweenFarEastAndAlpha { get; set; }
-        public string AddSpaceBetweenFarEastAndDigit { get; set; }
-        public string Application { get; set; }
-        public string AutoAdjustRightIndent { get; set; }
-        public string BaseLineAlignment { get; set; }
-        public string ParagraphBorders { get; set; }
-        public string CollapsedState { get; set; }
-        public string CollapseHEadingByDefault { get; set; }
-        public string ParagraphCreator { get; set; }
-        public string DisableLineHeightGrid { get; set; }
-        public string DropCap { get; set; }
-        public string FarEastLineBreakControl { get; set; }
-        public string FirstLineIndent { get; set; }
-        public string HalfWidthPunctuationOnTopOfLine { get; set; }
-        public string HalfWidthPunctuation { get; set; }
-        public string Hyphenation { get; set; }
-        public string IsStyleSeparator { get; set; }
-        public string KeepTogether { get; set; }
-        public string KeepWithNext { get; set; }
-        public string LineSpacingRule { get; set; }
-        public string LineUnitAfter { get; set; }
-        public string LineUnitBefore { get; set; }
-        public string NoLineNumber { get; set; }
-        public string ParagraphParent { get; set; }
-        public string ReadingOrder { get; set; }
-        public string ParagraphShading { get; set; }
-        public string SpaceAfterAuto { get; set; }
-        public string ParagraphStyle { get; set; }
-        public string TabStops { get; set; }
-        public string TextboxTightWrap { get; set; }
-        public string TextID { get; set; }
-        public string WindowControl { get; set; }
-        public string WordWrap { get; set; }
+        public string OutlineLevel { get; }
+        public string Alignment { get; }
+        public string CharacterUnitLeftIndent { get; }
+        public string LeftIndent { get; }
+        public string CharacterUnitRightIndent { get; }
+        public string RightIndent { get; }
+        public string CharacterUnitFirstLineIndent { get; }
+        public string MirrorIndents { get; }
+        public string LineSpacing { get; }
+        public string SpaceBefore { get; }
+        public string SpaceAfter { get; }
+        public string PageBreakBefore { get; }
+        public string AddSpaceBetweenFarEastAndAlpha { get; }
+        public string AddSpaceBetweenFarEastAndDigit { get; }
+        public string Application { get; }
+        public string AutoAdjustRightIndent { get; }
+        public string BaseLineAlignment { get; }
+        public string ParagraphBorders { get; }
+        public string CollapsedState { get; }
+        public string CollapseHEadingByDefault { get; }
+        public string ParagraphCreator { get; }
+        public string DisableLineHeightGrid { get; }
+        public string DropCap { get; }
+        public string FarEastLineBreakControl { get; }
+        public string FirstLineIndent { get; }
+        public string HalfWidthPunctuationOnTopOfLine { get; }
+        public string HalfWidthPunctuation { get; }
+        public string Hyphenation { get; }
+        public string IsStyleSeparator { get; }
+        public string KeepTogether { get; }
+        public string KeepWithNext { get; }
+        public string LineSpacingRule { get; }
+        public string LineUnitAfter { get; }
+        public string LineUnitBefore { get; }
+        public string NoLineNumber { get; }
+        public string ParagraphParent { get; }
+        public string ReadingOrder { get; }
+        public string ParagraphShading { get; }
+        public string SpaceAfterAuto { get; }
+        public string ParagraphStyle { get; }
+        public string TabStops { get; }
+        public string TextboxTightWrap { get; }
+        public string TextID { get; }
+        public string WindowControl { get; }
+        public string WordWrap { get; }
 
         public ParagraphPropertiesInterop(Word.Paragraph paragraph)
         {

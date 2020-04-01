@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Spire.Doc.Documents;
-using Spire.Doc.Fields;
+using Word = Spire.Doc;
 
 namespace DocxCorrector.Models
 {
@@ -50,7 +49,7 @@ namespace DocxCorrector.Models
         public List<Dictionary<string, string>> TextRangesProperties { get; }
 
         // TODO: понять, что вытаскивают поля, отмеченные "??"
-        public ParagraphPropertiesSpire(Paragraph paragraph)
+        public ParagraphPropertiesSpire(Word.Documents.Paragraph paragraph)
         {
             Text = paragraph.Text;
             WordCount = paragraph.WordCount;
@@ -105,7 +104,7 @@ namespace DocxCorrector.Models
             
             // Ranges
             TextRangesProperties = new List<Dictionary<string, string>>();
-            foreach (TextRange textRange in paragraph.ChildObjects.OfType<TextRange>())
+            foreach (Word.Fields.TextRange textRange in paragraph.ChildObjects.OfType<Word.Fields.TextRange>())
             {
                 var textRangeProperty = new Dictionary<string, string>
                 {

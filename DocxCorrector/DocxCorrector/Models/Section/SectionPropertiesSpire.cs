@@ -1,11 +1,9 @@
 using System;
-using Spire.Doc;
-using Spire.Doc.Documents;
-using Spire.Doc.Fields;
+using Word = Spire.Doc;
 
 namespace DocxCorrector.Models
 {
-    public sealed class SectionPropertiesSpire : PageProperties
+    public sealed class SectionPropertiesSpire : SectionProperties
     {
         public int SectionNumber { get; }
         public string ColumnsCount { get; }
@@ -49,7 +47,7 @@ namespace DocxCorrector.Models
         public string DifferentFirstPageHeaderFooter { get; }
         public string LineNumberingDistanceFromText { get; }
         public string DifferentOddAndEvenPagesHeaderFooter { get; }
-        public SectionPropertiesSpire(Section section, int sectionNumber)
+        public SectionPropertiesSpire(Word.Section section, int sectionNumber)
         {
             SectionNumber = sectionNumber;
             ColumnsCount = section.Columns.Count.ToString();

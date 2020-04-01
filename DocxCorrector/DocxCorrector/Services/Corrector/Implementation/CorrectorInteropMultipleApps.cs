@@ -396,6 +396,12 @@ namespace DocxCorrector.Services.Corrector
             return result;
         }
 
+        // Получить свойства секций документа filePath
+        public override List<SectionProperties> GetAllSectionsProperties(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
         // Получить нормализованные свойства параграфов (Для классификатора Ромы)
         public override List<NormalizedProperties> GetNormalizedProperties(string filePath)
         {

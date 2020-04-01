@@ -22,32 +22,20 @@ namespace DocxCorrector.App
     public sealed class FeaturesProvider
     {
         // Private
-        private static FeaturesProvider? Instance;
-
         private readonly Corrector Corrector;
-        
-        private FeaturesProvider(Corrector corrector)
-        {
-            Corrector = corrector;
-        }
 
         // Public
         // Получение экземпляра класса, реализующих возможности приложения через библиотеку type
-        public static FeaturesProvider GetInstance(FeaturesProviderType type)
+        public FeaturesProvider(FeaturesProviderType type)
         {
-            if (Instance == null)
+            Corrector = type switch
             {
-                Instance = type switch
-                {
-                    FeaturesProviderType.Interop => new FeaturesProvider(corrector: new CorrectorInterop()),
-                    FeaturesProviderType.GemBox => new FeaturesProvider(corrector: new CorrectorGemBox()),
-                    FeaturesProviderType.Spire => new FeaturesProvider(corrector: new CorrectorSpire()),
-                    FeaturesProviderType.InteropMultipleApp => new FeaturesProvider(corrector: new CorrectorInteropMultipleApps()),
-                    _ => throw new NotImplementedException()
-                };
-            }
-
-            return Instance;
+                FeaturesProviderType.Interop => new CorrectorInterop(),
+                FeaturesProviderType.GemBox => new CorrectorGemBox(),
+                FeaturesProviderType.Spire => new CorrectorSpire(),
+                FeaturesProviderType.InteropMultipleApp => new CorrectorInteropMultipleApps(),
+                _ => throw new NotImplementedException()
+            };
         }
 
         // Напечатать содержимое всех параграфов документа filePath
@@ -59,9 +47,21 @@ namespace DocxCorrector.App
         // Проанализировать документ filePath и Создать JSON файл resultFilePath со свойствами его страниц
         public void GeneratePagesPropertiesJSON(string filePath, string resultFilePath)
         {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
             List<PageProperties> pagesProperties = Corrector.GetAllPagesProperties(filePath: filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
             string pagesPropertiesJSON = JSONMaker.MakeJSON(pagesProperties);
             FileWriter.WriteToFile(resultFilePath, pagesPropertiesJSON);
+        }
+
+        // Проанализировать документ filePath и Создать JSON файл resultFilePath со свойствами его секций
+        public void GenerateSectionsPropertiesJSON(string filePath, string resultFilePath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            List<SectionProperties> sectionsProperties = Corrector.GetAllSectionsProperties(filePath: filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+            string sectionsPropertiesJSON = JSONMaker.MakeJSON(sectionsProperties);
+            FileWriter.WriteToFile(resultFilePath, sectionsPropertiesJSON);
         }
 
         // Пройтись по всем поддиректориям rootDir и в каждой создать csv файл с именем resultFileName, где будут результаты для всех docx файлов в этой директории

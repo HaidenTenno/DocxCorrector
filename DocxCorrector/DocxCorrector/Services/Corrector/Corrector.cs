@@ -12,6 +12,9 @@ namespace DocxCorrector.Services.Corrector
         // Получить свойства страниц документа filePath
         public abstract List<PageProperties> GetAllPagesProperties(string filePath);
 
+        // Получить свойства секций документа filePath
+        public abstract List<SectionProperties> GetAllSectionsProperties(string filePath);
+
         // Получить нормализованные свойства параграфов документа filePath (Для классификатора Ромы)
         public abstract List<NormalizedProperties> GetNormalizedProperties(string filePath);
 

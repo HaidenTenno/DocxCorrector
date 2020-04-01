@@ -60,23 +60,5 @@ namespace DocxCorrector.Services
                 return;
             }
         }
-
-        // Заполнить CSV файл для свойств страниц
-        public static void FillCSV(string filePath, List<PageProperties> listData)
-        {
-            List<PagePropertiesInterop> listDataInterop = listData.OfType<PagePropertiesInterop>().ToList();
-            if (listDataInterop.Count != 0)
-            {
-                FillCSV(filePath: filePath, listData: listDataInterop);
-                return;
-            }
-
-            List<PagePropertiesGemBox> listDataGemBox = listData.OfType<PagePropertiesGemBox>().ToList();
-            if (listDataGemBox.Count != 0)
-            {
-                FillCSV(filePath: filePath, listData: listDataGemBox);
-                return;
-            }
-        }
     }
 }
