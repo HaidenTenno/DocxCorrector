@@ -8,12 +8,12 @@ namespace DocxCorrector.App
         // Точка входа
         static void Main(string[] args)
         {
-            FeaturesProvider featuresProvider = FeaturesProvider.GetInstance(type: FeaturesProviderType.InteropMultipleApp);
-
-            //featuresProvider.GenerateCSVFiles(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileName);
-            //featuresProvider.GeneratePagesPropertiesJSON(Config.DocFilePath, Config.PagesPropertiesFilePath);
-
-            featuresProvider.TestCorrectorSpeed(Config.FilesToInpectDirectoryPath);
+            FeaturesProvider featuresProvider = FeaturesProvider.GetInstance(type: FeaturesProviderType.Spire);
+            
+            // featuresProvider.GenerateCSVFiles(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileName);
+            featuresProvider.GeneratePagesPropertiesJSON(Config.DocFilePath, Config.PagesPropertiesFilePath);
+            
+            // featuresProvider.TestCorrectorSpeed(Config.FilesToInpectDirectoryPath);
 
             Console.WriteLine("\nEnd of program");
             Console.ReadLine();

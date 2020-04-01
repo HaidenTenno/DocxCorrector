@@ -41,7 +41,11 @@ namespace DocxCorrector.Models
         public bool AutoSpaceDE { get; }
         public bool AutoSpaceDN { get; }
         public bool IsColumnBreakAfter { get; }
-
+        
+        // Properties considering paragraph as list
+        public string ListType { get; }
+        public List<Dictionary<string, string>> ListItemProperties { get; }
+        
         // Ranges
         public List<Dictionary<string, string>> TextRangesProperties { get; }
 
@@ -79,43 +83,63 @@ namespace DocxCorrector.Models
             AutoSpaceDE = paragraph.Format.AutoSpaceDE; // ??
             AutoSpaceDN = paragraph.Format.AutoSpaceDN; // ??
             IsColumnBreakAfter = paragraph.Format.IsColumnBreakAfter;
-            // Runners
+            ListType = paragraph.ListFormat.ListType.ToString();
+            ListItemProperties = new List<Dictionary<string, string>>();
+            if (ListType != "NoList")
+            {
+                var listItemProperties = new Dictionary<string, string>
+                {
+                    ["ListMarkerText"] = paragraph.ListText,
+                    ["ListLevelNumber"] = paragraph.ListFormat.ListLevelNumber.ToString(),
+                    ["BulletCharacter"] = paragraph.ListFormat.CurrentListLevel.BulletCharacter,
+                    ["ListNumberAlignment"] = paragraph.ListFormat.CurrentListLevel.NumberAlignment.ToString(),
+                    ["ListNumberPosition"] = paragraph.ListFormat.CurrentListLevel.NumberPosition.ToString(),
+                    ["ListPatternType"] = paragraph.ListFormat.CurrentListLevel.PatternType.ToString(),
+                    ["ListStartingNumber"] = paragraph.ListFormat.CurrentListLevel.StartAt.ToString(),
+                    ["ListContentTextPosition"] = paragraph.ListFormat.CurrentListLevel.TextPosition.ToString(),
+                    ["ListIsLegalStartNumbering"] = paragraph.ListFormat.CurrentListLevel.IsLegalStyleNumbering.ToString(),
+                    ["ListIsItemsNumbersNoRestart"] = paragraph.ListFormat.CurrentListLevel.NoRestartByHigher.ToString()
+                };
+                ListItemProperties.Add(listItemProperties);
+            }
+            
+            // Ranges
             TextRangesProperties = new List<Dictionary<string, string>>();
             foreach (TextRange textRange in paragraph.ChildObjects.OfType<TextRange>())
             {
-                var textRangeProperty = new Dictionary<string, string>()
+                var textRangeProperty = new Dictionary<string, string>
                 {
-                    { "Text", textRange.Text },
-                    { "\nIsBidi", textRange.CharacterFormat.Bidi.ToString() },
-                    { "\nIsBold", textRange.CharacterFormat.Bold.ToString() },
-                    { "\nHasBorder", (textRange.CharacterFormat.Border.LineWidth == 0.0).ToString() },
-                    { "\nIsEmbossed", textRange.CharacterFormat.Emboss.ToString() },
-                    { "\nIsEngraved", textRange.CharacterFormat.Engrave.ToString() },
-                    { "\nIsHidden", textRange.CharacterFormat.Hidden.ToString() },
-                    { "\nIsItalic", textRange.CharacterFormat.Italic.ToString() },
-                    { "\nPosition", textRange.CharacterFormat.Position.ToString() }, // ??
-                    { "\nIsBigCaps", textRange.CharacterFormat.AllCaps.ToString() },
-                    { "\nCharSpacing", textRange.CharacterFormat.CharacterSpacing.ToString() },
-                    { "\nIsDoubleStriked", textRange.CharacterFormat.DoubleStrike.ToString() },
-                    { "\nHasEmphasisMark", (textRange.CharacterFormat.EmphasisMark.ToString() != "None").ToString() },
-                    { "\nFontName", textRange.CharacterFormat.FontName },
-                    { "\nFontSize", textRange.CharacterFormat.FontSize.ToString() },
-                    { "\nHasUnusualHiglightColor", (!textRange.CharacterFormat.HighlightColor.IsEmpty).ToString() },
-                    { "\nIsShadow", textRange.CharacterFormat.IsShadow.ToString() },
-                    { "\nIsStrikeout", textRange.CharacterFormat.IsStrikeout.ToString() },
-                    { "\nHasLigaturesType", (textRange.CharacterFormat.LigaturesType.ToString() != "None").ToString() },
-                    { "\nHasUnusualTextColor", (!textRange.CharacterFormat.TextColor.IsEmpty).ToString() },
-                    { "\nTextScale", textRange.CharacterFormat.TextScale.ToString() },
-                    { "\nHasUnderline", (textRange.CharacterFormat.UnderlineStyle.ToString() != "None").ToString() },
-                    { "\nAllowContextualAlternates", textRange.CharacterFormat.AllowContextualAlternates.ToString() }, // ??
-                    { "\nFontTypeHint", textRange.CharacterFormat.FontTypeHint.ToString() }, // ??
-                    { "\nIsOutLine", textRange.CharacterFormat.IsOutLine.ToString() },
-                    { "\nIsSmallCaps", textRange.CharacterFormat.IsSmallCaps.ToString() },
-                    { "\nNumberFormType", textRange.CharacterFormat.NumberFormType.ToString() }, // ??
-                    { "\nNumberSpaceType", textRange.CharacterFormat.NumberSpaceType.ToString() }, // ??
-                    { "\nStylisticSetType", textRange.CharacterFormat.StylisticSetType.ToString() }, // ??
-                    { "\nSubSuperScript", textRange.CharacterFormat.SubSuperScript.ToString() },
-                    { "\nHasUnusualBackgraoundColor", (!textRange.CharacterFormat.TextBackgroundColor.IsEmpty).ToString() }
+                    ["Text"] = textRange.Text,
+                    ["IsBidi"] = textRange.CharacterFormat.Bidi.ToString(),
+                    ["IsBold"] = textRange.CharacterFormat.Bold.ToString(),
+                    ["HasBorder"] = (textRange.CharacterFormat.Border.LineWidth != 0.0).ToString(),
+                    ["IsEmbossed"] = textRange.CharacterFormat.Emboss.ToString(),
+                    ["IsEngraved"] = textRange.CharacterFormat.Engrave.ToString(),
+                    ["IsHidden"] = textRange.CharacterFormat.Hidden.ToString(),
+                    ["IsItalic"] = textRange.CharacterFormat.Italic.ToString(),
+                    ["Position"] = textRange.CharacterFormat.Position.ToString(), // ??
+                    ["IsBigCaps"] = textRange.CharacterFormat.AllCaps.ToString(),
+                    ["CharSpacing"] = textRange.CharacterFormat.CharacterSpacing.ToString(),
+                    ["IsDoubleStriked"] = textRange.CharacterFormat.DoubleStrike.ToString(),
+                    ["HasEmphasisMark"] = (textRange.CharacterFormat.EmphasisMark.ToString() != "None").ToString(),
+                    ["FontName"] = textRange.CharacterFormat.FontName,
+                    ["FontSize"] = textRange.CharacterFormat.FontSize.ToString(),
+                    ["HasUnusualHiglightColor"] = (!textRange.CharacterFormat.HighlightColor.IsEmpty).ToString(),
+                    ["IsShadow"] = textRange.CharacterFormat.IsShadow.ToString(),
+                    ["IsStrikeout"] = textRange.CharacterFormat.IsStrikeout.ToString(),
+                    ["HasLigaturesType"] = (textRange.CharacterFormat.LigaturesType.ToString() != "None").ToString(),
+                    ["HasUnusualTextColor"] = (!textRange.CharacterFormat.TextColor.IsEmpty).ToString(),
+                    ["TextScale"] = textRange.CharacterFormat.TextScale.ToString(),
+                    ["HasUnderline"] = (textRange.CharacterFormat.UnderlineStyle.ToString() != "None").ToString(),
+                    ["AllowContextualAlternates"] = textRange.CharacterFormat.AllowContextualAlternates.ToString(), // ??
+                    ["FontTypeHint"] = textRange.CharacterFormat.FontTypeHint.ToString(), // ??
+                    ["IsOutLine"] = textRange.CharacterFormat.IsOutLine.ToString(),
+                    ["IsSmallCaps"] = textRange.CharacterFormat.IsSmallCaps.ToString(),
+                    ["NumberFormType"] = textRange.CharacterFormat.NumberFormType.ToString(), // ??
+                    ["NumberSpaceType"] = textRange.CharacterFormat.NumberSpaceType.ToString(), // ??
+                    ["StylisticSetType"] = textRange.CharacterFormat.StylisticSetType.ToString(), // ??
+                    ["SubSuperScript"] = textRange.CharacterFormat.SubSuperScript.ToString(),
+                    ["HasUnusualBackgraoundColor"] = (!textRange.CharacterFormat.TextBackgroundColor.IsEmpty).ToString()
                 };
                 TextRangesProperties.Add(textRangeProperty);
             }

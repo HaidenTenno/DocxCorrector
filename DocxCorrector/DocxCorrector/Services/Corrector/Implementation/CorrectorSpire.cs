@@ -58,7 +58,20 @@ namespace DocxCorrector.Services.Corrector
         // Получить свойства страниц документа filePath
         public override List<PageProperties> GetAllPagesProperties(string filePath)
         {
-            throw new NotImplementedException();
+            Word.Document? document = OpenDocument(filePath);
+            if (document == null) { return new List<PageProperties>(); }
+
+            List<PageProperties> allPageProperties = new List<PageProperties>();
+
+            for (int i = 0; i < document.Sections.Count; i++)
+            {
+                Word.Section section = document.Sections[i];
+                var pageProperties = new SectionPropertiesSpire(section, i);
+                allPageProperties.Add(pageProperties);
+            }
+
+            document.Close();
+            return allPageProperties;
         }
 
         // Получить нормализованные свойства параграфов документа filePath (Для классификатора Ромы)
