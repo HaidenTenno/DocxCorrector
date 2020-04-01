@@ -40,6 +40,7 @@
             <e p="PageProperties.cs" t="Include" />
             <e p="PagePropertiesGemBox.cs" t="Include" />
             <e p="PagePropertiesInterop.cs" t="Include" />
+            <e p="SectionPropertiesSpire.cs" t="Include" />
           </e>
           <e p="ParagraphProperties" t="Include">
             <e p="ParagraphProperties.cs" t="Include" />

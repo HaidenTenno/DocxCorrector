@@ -117,6 +117,7 @@
     <Compile Include="Models\PageProperties\PageProperties.cs" />
     <Compile Include="Models\PageProperties\PagePropertiesGemBox.cs" />
     <Compile Include="Models\PageProperties\PagePropertiesInterop.cs" />
+    <Compile Include="Models\PageProperties\SectionPropertiesSpire.cs" />
     <Compile Include="Models\ParagraphProperties\ParagraphProperties.cs" />
     <Compile Include="Models\ParagraphProperties\ParagraphPropertiesGemBox.cs" />
     <Compile Include="Models\ParagraphProperties\ParagraphPropertiesInterop.cs" />
