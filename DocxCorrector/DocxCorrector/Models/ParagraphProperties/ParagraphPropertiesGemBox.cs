@@ -32,6 +32,7 @@ namespace DocxCorrector.Models
         public string WidowControl { get; }
         // ListFormat
         public string ListFormatIsList { get; }
+        public string? ListStyleHash { get; }
         public string? ListItem { get; }
         public string? ListFormatLevel { get; }
         public string? ListFormat { get; }
@@ -77,6 +78,7 @@ namespace DocxCorrector.Models
             ListFormatIsList = paragraph.ListFormat.IsList.ToString();
             if (paragraph.ListFormat.IsList)
             {
+                ListStyleHash = paragraph.ListFormat.Style.GetHashCode().ToString();
                 ListItem = paragraph.ListItem.ToString();
                 ListFormatLevel = paragraph.ListFormat.ListLevelNumber.ToString();
                 ListFormat = paragraph.ListFormat.ListLevelFormat.ToString();

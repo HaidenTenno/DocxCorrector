@@ -72,20 +72,15 @@ namespace DocxCorrector.Services.Corrector
 
             List<PageProperties> pageProperties = new List<PageProperties>();
 
-            // TODO: Implement next
-            //var pages = document.GetPaginator().Pages;
+            var pages = document.GetPaginator().Pages;
 
-            //foreach (var page in pages)
-            //{
-            //    Console.WriteLine(page);
-            //}
-            //foreach (var section in document.Sections)
-            //{
-            //    Word.PageSetup pageSetup = section.PageSetup;
-            //    PageProperties currentPageProperties = new PagePropertiesGemBox(pageSetup: pageSetup, pageNumber: 1);
-            //    pageProperties.Add(currentPageProperties);
-            //}
-
+            int pageNumber = 1;
+            foreach (var page in pages)
+            {
+                PageProperties currentPageProperties = new PagePropertiesGemBox(page: page, pageNumber: pageNumber);
+                pageProperties.Add(currentPageProperties);
+                pageNumber++;
+            }
 
             return pageProperties;
         }

@@ -6,10 +6,15 @@ namespace DocxCorrector.Models
 {
     public sealed class PagePropertiesGemBox : PageProperties
     {
+        public int PageNumber { get; set; }
+        public double Height { get; set; }
+        public double Width { get; set; }
 
-        public PagePropertiesGemBox(Word.PageSetup pageSetup, int pageNumber)
+        public PagePropertiesGemBox(Word.DocumentModelPage page, int pageNumber)
         {
-
+            PageNumber = pageNumber;
+            Height = page.Height;
+            Width = page.Width;
         }
     }
 }
