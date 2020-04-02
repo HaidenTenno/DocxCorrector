@@ -39,24 +39,10 @@ namespace DocxCorrector.Services
         // Заполнить CSV файл для свойств параграфов
         public static void FillCSV(string filePath, List<ParagraphProperties> listData)
         {
-            List<ParagraphPropertiesInterop> listDataInterop = listData.OfType<ParagraphPropertiesInterop>().ToList();
-            if (listDataInterop.Count != 0)
-            {
-                FillCSV(filePath: filePath, listData: listDataInterop);
-                return;
-            }
-
             List<ParagraphPropertiesGemBox> listDataGemBox = listData.OfType<ParagraphPropertiesGemBox>().ToList();
             if (listDataGemBox.Count != 0)
             {
                 FillCSV(filePath: filePath, listData: listDataGemBox);
-                return;
-            }
-
-            List<ParagraphPropertiesSpire> listDataSpire = listData.OfType<ParagraphPropertiesSpire>().ToList();
-            if (listDataSpire.Count != 0)
-            {
-                FillCSV(filePath: filePath, listData: listDataSpire);
                 return;
             }
         }

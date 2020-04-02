@@ -10,14 +10,6 @@ using DocxCorrector.Models;
 
 namespace DocxCorrector.App
 {
-    public enum FeaturesProviderType
-    {
-        Interop,
-        GemBox,
-        Spire,
-        InteropMultipleApp
-    }
-
     // Функции программы, доступные глобально
     public sealed class FeaturesProvider
     {
@@ -25,17 +17,9 @@ namespace DocxCorrector.App
         private readonly Corrector Corrector;
 
         // Public
-        // Получение экземпляра класса, реализующих возможности приложения через библиотеку type
-        public FeaturesProvider(FeaturesProviderType type)
+        public FeaturesProvider()
         {
-            Corrector = type switch
-            {
-                FeaturesProviderType.Interop => new CorrectorInterop(),
-                FeaturesProviderType.GemBox => new CorrectorGemBox(),
-                FeaturesProviderType.Spire => new CorrectorSpire(),
-                FeaturesProviderType.InteropMultipleApp => new CorrectorInteropMultipleApps(),
-                _ => throw new NotImplementedException()
-            };
+            Corrector = new CorrectorGemBox();
         }
 
         // Напечатать содержимое всех параграфов документа filePath

@@ -1,5 +1,4 @@
 ﻿using System;
-using DocxCorrector.Services;
 
 namespace DocxCorrector.App
 {
@@ -8,9 +7,9 @@ namespace DocxCorrector.App
         // Точка входа
         static void Main(string[] args)
         {
-            FeaturesProvider featuresProvider = new FeaturesProvider(type: FeaturesProviderType.GemBox);
+            FeaturesProvider featuresProvider = new FeaturesProvider();
             
-            featuresProvider.GenerateSectionsPropertiesJSON(Config.DocFilePath, Config.PagesPropertiesFilePath);
+            //featuresProvider.GenerateSectionsPropertiesJSON(Config.DocFilePath, Config.PagesPropertiesFilePath);
             featuresProvider.GenerateCSVFiles(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileName);
 
             Console.WriteLine("\nEnd of program");
