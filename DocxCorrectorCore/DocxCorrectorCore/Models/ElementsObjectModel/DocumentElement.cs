@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
 
-namespace DocxCorrector.Models.ElementsObjectModel
+namespace DocxCorrectorCore.Models.ElementsObjectModel
 {
     public enum AligmentType : int
     {

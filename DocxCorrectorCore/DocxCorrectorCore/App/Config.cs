@@ -1,5 +1,5 @@
 ﻿
-namespace DocxCorrector.App
+namespace DocxCorrectorCore.App
 {
     public static class Config
     {
@@ -9,6 +9,10 @@ namespace DocxCorrector.App
         public const string MistakesFilePath = @"C:\Users\haide\Desktop\mistakes.json";
         // Файл для записи свойств страниц
         public const string PagesPropertiesFilePath = @"C:\Users\haide\Desktop\pagesProperties.json";
+        // Файл для записи свойств секций
+        public const string SectionsPropertiesFilePath = @"C:\Users\haide\Desktop\sectionsProperties.json";
+        // Файл для записи свойств колонтитулов
+        public const string HeadersFootersInfoFilePath = @"C:\Users\haide\Desktop\headersFootersInfo.json";
         // Корневая директория с файлами, из которых нужно вытянуть свойства
         public const string FilesToInpectDirectoryPath = @"C:\Users\haide\Desktop\FilesToInspect";
         // Называние для файла со свойствами параграфа

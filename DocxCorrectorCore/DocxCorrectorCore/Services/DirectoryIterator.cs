@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DocxCorrector.Services
+namespace DocxCorrectorCore.Services
 {
     public static class DirectoryIterator
     {

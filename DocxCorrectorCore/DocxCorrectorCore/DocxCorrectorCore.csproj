@@ -9,7 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ElementsObjectModel\Headline\" />
+    <Compile Remove="Models\ElementsObjectModel\Headline\**" />
+    <EmbeddedResource Remove="Models\ElementsObjectModel\Headline\**" />
+    <None Remove="Models\ElementsObjectModel\Headline\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\TableOfContents\" />
+    <Folder Include="Models\Pictire\" />
   </ItemGroup>
 
   <ItemGroup>

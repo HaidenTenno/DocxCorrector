@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using DocxCorrector.Models;
+using DocxCorrectorCore.Models;
 using Newtonsoft.Json;
 
-namespace DocxCorrector.Services
+namespace DocxCorrectorCore.Services
 {
     public static class JSONMaker
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using DocxCorrector.Services.Helper;
+using DocxCorrectorCore.Services.Helper;
 using Word = GemBox.Document;
 
-namespace DocxCorrector.Models
+namespace DocxCorrectorCore.Models
 {
     public sealed class NormalizedPropertiesGemBox : NormalizedProperties
     {

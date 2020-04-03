@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace DocxCorrector.Models.ElementsObjectModel
+namespace DocxCorrectorCore.Models.ElementsObjectModel
 {
     public class ImageSign : DocumentElement, IRegexSupportable
     {

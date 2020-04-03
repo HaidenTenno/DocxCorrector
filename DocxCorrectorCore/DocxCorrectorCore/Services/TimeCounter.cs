@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DocxCorrector.Services
+namespace DocxCorrectorCore.Services
 {
     public static class TimeCounter
     {

@@ -2,7 +2,7 @@
 using System;
 using Word = GemBox.Document;
 
-namespace DocxCorrector.Models
+namespace DocxCorrectorCore.Models
 {
     public sealed class PagePropertiesGemBox : PageProperties
     {

@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DocxCorrector.Models;
+using DocxCorrectorCore.Models;
 using Word = GemBox.Document;
 
-namespace DocxCorrector.Services.Corrector
+namespace DocxCorrectorCore.Services.Corrector
 {
     public sealed class CorrectorGemBox : Corrector, ICorrecorAsync
     {
@@ -23,6 +23,8 @@ namespace DocxCorrector.Services.Corrector
             try
             {
                 Word.DocumentModel document = Word.DocumentModel.Load(filePath);
+                document.CalculateListItems();
+                document.GetPaginator(new Word.PaginatorOptions() { UpdateFields = true });
                 return document;
             }
             catch (Exception ex)
@@ -52,8 +54,6 @@ namespace DocxCorrector.Services.Corrector
             if (document == null) { return new List<ParagraphProperties>(); }
 
             List<ParagraphProperties> allParagraphProperties = new List<ParagraphProperties>();
-
-            document.CalculateListItems();
 
             foreach (Word.Paragraph paragraph in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
             {
@@ -121,6 +121,50 @@ namespace DocxCorrector.Services.Corrector
             }
 
             return allNormalizedProperties;
+        }
+
+        // Получить свойства верхних/нижних колонтитулов документа filePath
+        public override List<HeaderFooterInfo> GetHeadersFootersInfo(HeaderFooterType type, string filePath)
+        {
+            List<Word.HeaderFooterType> GetChosenHeaderFooterType(HeaderFooterType type)
+            {
+                return type switch
+                {
+                    HeaderFooterType.Header => new List<Word.HeaderFooterType>()
+                    {
+                        Word.HeaderFooterType.HeaderFirst,
+                        Word.HeaderFooterType.HeaderEven,
+                        Word.HeaderFooterType.HeaderDefault
+                    },
+                    HeaderFooterType.Footer => new List<Word.HeaderFooterType>()
+                    {
+                        Word.HeaderFooterType.FooterFirst,
+                        Word.HeaderFooterType.FooterEven,
+                        Word.HeaderFooterType.FooterDefault
+                    },
+                    _ => throw new NotSupportedException()
+                };
+            }
+
+            Word.DocumentModel? document = OpenDocument(filePath: filePath);
+            if (document == null) { return new List<HeaderFooterInfo>(); }
+
+            List<HeaderFooterInfo> headersFootersInfo = new List<HeaderFooterInfo>();
+
+            List<Word.HeaderFooterType> chosenTypes = GetChosenHeaderFooterType(type);
+
+            foreach (Word.Section section in document.GetChildElements(true, Word.ElementType.Section))
+            {
+                foreach (Word.HeaderFooter headerFooter in section.HeadersFooters)
+                {
+                    if (chosenTypes.Contains(headerFooter.HeaderFooterType))
+                    {
+                        HeaderFooterInfo headerFooterInfo = new HeaderFooterInfoGemBox(headerFooter);
+                        headersFootersInfo.Add(headerFooterInfo);
+                    }
+                }
+            }
+            return headersFootersInfo;
         }
 
         // Печать всех абзацев документа filePath

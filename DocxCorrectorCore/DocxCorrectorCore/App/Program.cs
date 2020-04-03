@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DocxCorrector.App
+namespace DocxCorrectorCore.App
 {
     class Program
     {
@@ -8,9 +8,8 @@ namespace DocxCorrector.App
         static void Main(string[] args)
         {
             FeaturesProvider featuresProvider = new FeaturesProvider();
-            
-            //featuresProvider.GenerateSectionsPropertiesJSON(Config.DocFilePath, Config.PagesPropertiesFilePath);
-            featuresProvider.GenerateCSVFiles(Config.FilesToInpectDirectoryPath, Config.ParagraphPropertiesFileName);
+
+            //featuresProvider.GenerateHeadersFootersInfoJSON(Models.HeaderFooterType.Footer, Config.DocFilePath, Config.HeadersFootersInfoFilePath);
 
             Console.WriteLine("\nEnd of program");
             Console.ReadLine();

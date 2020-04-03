@@ -1,7 +1,7 @@
 ﻿using System;
 using Word = GemBox.Document;
 
-namespace DocxCorrector.Services.Helper
+namespace DocxCorrectorCore.Services.Helper
 {
     internal static class GemBoxHelper
     {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Word = GemBox.Document;
 
-namespace DocxCorrector.Models
+namespace DocxCorrectorCore.Models
 {
     public sealed class ParagraphPropertiesGemBox : ParagraphProperties
     {
@@ -92,7 +92,7 @@ namespace DocxCorrector.Models
                 CurrentListStartAt = paragraph.ListFormat.ListLevelFormat.StartAt.ToString();
                 CurrentListTextPosition = paragraph.ListFormat.ListLevelFormat.TextPosition.ToString();
                 CurrentListTrailingCharacter = paragraph.ListFormat.ListLevelFormat.TrailingCharacter.ToString();
-             }
+            }
             // RunnersFormat
             RunnersFormat = new List<Dictionary<string, string>>();
             foreach (Word.Run runner in paragraph.GetChildElements(true, Word.ElementType.Run))

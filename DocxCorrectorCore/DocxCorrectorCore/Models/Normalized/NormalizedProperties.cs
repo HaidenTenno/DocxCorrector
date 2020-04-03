@@ -1,5 +1,5 @@
 ﻿
-namespace DocxCorrector.Models
+namespace DocxCorrectorCore.Models
 {
     // Выравнивание
     public enum NormalizedAligment: int

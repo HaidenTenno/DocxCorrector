@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DocxCorrector.Models;
+using DocxCorrectorCore.Models;
 using ServiceStack.Text;
 
-namespace DocxCorrector.Services
+namespace DocxCorrectorCore.Services
 {
     public static class FileWriter
     {

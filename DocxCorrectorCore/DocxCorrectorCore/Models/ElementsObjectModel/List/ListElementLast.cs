@@ -1,6 +1,5 @@
-﻿using System;
-
-namespace DocxCorrector.Models.ElementsObjectModel
+﻿
+namespace DocxCorrectorCore.Models.ElementsObjectModel
 {
     public class ListElementLast : ListElement
     {

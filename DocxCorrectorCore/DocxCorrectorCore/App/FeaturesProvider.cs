@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.IO;
-using DocxCorrector.Services.Corrector;
-using DocxCorrector.Services;
-using DocxCorrector.Models;
+using DocxCorrectorCore.Services.Corrector;
+using DocxCorrectorCore.Services;
+using DocxCorrectorCore.Models;
 
-namespace DocxCorrector.App
+namespace DocxCorrectorCore.App
 {
     // Функции программы, доступные глобально
     public sealed class FeaturesProvider
@@ -46,6 +46,16 @@ namespace DocxCorrector.App
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
             string sectionsPropertiesJSON = JSONMaker.MakeJSON(sectionsProperties);
             FileWriter.WriteToFile(resultFilePath, sectionsPropertiesJSON);
+        }
+
+        // Проанализировать документ filePath и создать JSON файл resultFilePath со свойствами колонтитулов типа type
+        public void GenerateHeadersFootersInfoJSON(HeaderFooterType type, string filePath, string resultFilePath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            List<HeaderFooterInfo> headersFootersInfo = Corrector.GetHeadersFootersInfo(type: type, filePath: filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+            string headersFootersInfoJSON = JSONMaker.MakeJSON(headersFootersInfo);
+            FileWriter.WriteToFile(resultFilePath, headersFootersInfoJSON);
         }
 
         // Пройтись по всем поддиректориям rootDir и в каждой создать csv файл с именем resultFileName, где будут результаты для всех docx файлов в этой директории

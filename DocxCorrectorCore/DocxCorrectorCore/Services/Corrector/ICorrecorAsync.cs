@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DocxCorrector.Models;
+using DocxCorrectorCore.Models;
 
-namespace DocxCorrector.Services.Corrector
+namespace DocxCorrectorCore.Services.Corrector
 {
     public interface ICorrecorAsync
     {

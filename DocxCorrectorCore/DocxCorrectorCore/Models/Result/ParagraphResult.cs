@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DocxCorrector.Models
+namespace DocxCorrectorCore.Models
 {
     // Тип параграфа
     public enum ElementType

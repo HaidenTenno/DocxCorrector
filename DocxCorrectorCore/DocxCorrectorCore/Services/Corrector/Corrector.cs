@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using DocxCorrector.Models;
+using DocxCorrectorCore.Models;
 
-namespace DocxCorrector.Services.Corrector
+namespace DocxCorrectorCore.Services.Corrector
 {
     public abstract class Corrector : IDisposable
     {
@@ -17,6 +17,9 @@ namespace DocxCorrector.Services.Corrector
 
         // Получить нормализованные свойства параграфов документа filePath (Для классификатора Ромы)
         public abstract List<NormalizedProperties> GetNormalizedProperties(string filePath);
+
+        // Получить свойства верхних/нижних колонтитулов документа filePath
+        public abstract List<HeaderFooterInfo> GetHeadersFootersInfo(HeaderFooterType type, string filePath);
 
         // Вспомогательные на момент разработки методы, которые, возможно, подлежат удалению
         // Печать всех абзацев документа filePath
