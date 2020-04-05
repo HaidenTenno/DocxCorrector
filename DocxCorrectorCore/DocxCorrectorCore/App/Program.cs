@@ -7,12 +7,8 @@ namespace DocxCorrectorCore.App
         // Точка входа
         static void Main(string[] args)
         {
-            FeaturesProvider featuresProvider = new FeaturesProvider();
-
-            //featuresProvider.GenerateHeadersFootersInfoJSON(Models.HeaderFooterType.Footer, Config.DocFilePath, Config.HeadersFootersInfoFilePath);
-
-            Console.WriteLine("\nEnd of program");
-            Console.ReadLine();
+            UserDialogCoordinator userDialogCoordinator = new UserDialogCoordinator();
+            userDialogCoordinator.Start();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.IO;
 using DocxCorrectorCore.Services.Corrector;
@@ -73,7 +72,7 @@ namespace DocxCorrectorCore.App
                     propertiesForDir.AddRange(propertiesForFile);
                 });
 
-                FileWriter.FillCSV(String.Concat(subDir, resultFileName), propertiesForDir);
+                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), propertiesForDir);
             });
         }
 
@@ -92,7 +91,7 @@ namespace DocxCorrectorCore.App
                     normalizedPropertiesForDir.AddRange(normalizedPropertiesForFile);
                 });
 
-                FileWriter.FillCSV(String.Concat(subDir, resultFileName), normalizedPropertiesForDir);
+                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), normalizedPropertiesForDir);
             });
         }
 
@@ -148,7 +147,7 @@ namespace DocxCorrectorCore.App
                     propertiesForDir.AddRange(propertiesForFile);
                 });
 
-                FileWriter.FillCSV(String.Concat(subDir, resultFileName), propertiesForDir);
+                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), propertiesForDir);
             });
         }
 
@@ -167,7 +166,7 @@ namespace DocxCorrectorCore.App
                     propertiesForDir.AddRange(propertiesForFile);
                 }));
 
-                FileWriter.FillCSV(String.Concat(subDir, resultFileName), propertiesForDir);
+                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), propertiesForDir);
             });
         }
 
@@ -190,7 +189,7 @@ namespace DocxCorrectorCore.App
                     propertiesForDir.AddRange(propertiesForFile);
                 }));
 
-                FileWriter.FillCSV(String.Concat(subDir, resultFileName), propertiesForDir);
+                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), propertiesForDir);
             });
         }
 
@@ -213,7 +212,7 @@ namespace DocxCorrectorCore.App
                     normalizedPropertiesForDir.AddRange(normalizedPropertiesForFile);
                 });
 
-                FileWriter.FillCSV(String.Concat(subDir, resultFileName), normalizedPropertiesForDir);
+                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), normalizedPropertiesForDir);
             });
         }
 
