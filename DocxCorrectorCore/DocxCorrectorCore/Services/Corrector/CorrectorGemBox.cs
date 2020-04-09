@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -239,6 +240,36 @@ namespace DocxCorrectorCore.Services.Corrector
 
             var result = await Task.WhenAll(listOfTasks);
             return result.ToList();
+        }
+
+        // Сохранить документ filePath как pdf resultPath
+        public override void SaveDocumentAsPdf(string filePath, string resultFilePath)
+        {
+            Word.DocumentModel? document = OpenDocument(filePath: filePath);
+            if (document == null) { return; }
+
+            string fullResultPath = Path.Combine(resultFilePath, "result.pdf");
+            document.Save(fullResultPath);
+        }
+
+
+        // Сохранить страницы документа filePath как отдельные pdf в директории resultPath
+        public override void SavePagesAsPdf(string filePath, string resultFilePath)
+        {
+            Word.DocumentModel? document = OpenDocument(filePath: filePath);
+            if (document == null) { return; }
+
+            var pages = document.GetPaginator().Pages;
+
+            int pageNumber = 1;
+            foreach (var page in pages)
+            {
+                string fullResultPath = Path.Combine(resultFilePath, $"{pageNumber}.pdf");
+                page.Save(fullResultPath);
+                pageNumber++;
+            }
+
+            
         }
     }
 }

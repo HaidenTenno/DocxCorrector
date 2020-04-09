@@ -11,9 +11,10 @@ namespace DocxCorrectorCore.App
          SectionProperties,
          HeadersFooters,
          ParagraphProperties,
-         NormalizedParagraphProperties
+         NormalizedParagraphProperties,
+         SaveDocumentAsPdf,
+         SavePagesAsPdf
     }
-
 
     public abstract class UserQuestion
     {
@@ -156,7 +157,7 @@ namespace DocxCorrectorCore.App
     public class PagePropertiesJSONQuestion : StringAnswerQuestion
     {
         // Public
-        public PagePropertiesJSONQuestion(Action onBack, Action onExit) : base("Введите путь к анализируемуму файлу и путь к файлу для записи свойств страниц", onBack, onExit) { }
+        public PagePropertiesJSONQuestion(Action onBack, Action onExit) : base("Введите путь к анализируемому файлу и путь к файлу для записи свойств страниц", onBack, onExit) { }
 
         public override void Load()
         {
@@ -178,7 +179,7 @@ namespace DocxCorrectorCore.App
     public class SectionPropertiesJSONQuestion : StringAnswerQuestion
     {
         // Public
-        public SectionPropertiesJSONQuestion(Action onBack, Action onExit) : base("Введите путь к анализируемуму файлу и путь к файлу для записи свойств секций", onBack, onExit) { }
+        public SectionPropertiesJSONQuestion(Action onBack, Action onExit) : base("Введите путь к анализируемому файлу и путь к файлу для записи свойств секций", onBack, onExit) { }
 
         public override void Load()
         {
@@ -278,9 +279,49 @@ namespace DocxCorrectorCore.App
             featuresProvider.GenerateNormalizedCSVFiles(UserAnswer[0], UserAnswer[1]);
         }
     }
+
+    public class SaveDocumentAsPdf : StringAnswerQuestion
+    {
+        // Public
+        public SaveDocumentAsPdf(Action onBack, Action onExit) : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории с выходным файлом", onBack, onExit) { }
+
+        public override void Load()
+        {
+            base.Load();
+
+            if (CheckIfBackOrExit()) { return; }
+
+            if (UserAnswer.Count != 2 )
+            {
+                Console.WriteLine("Некорректное число аргументов");
+                return;
+            }
+
+            FeaturesProvider featuresProvider = new FeaturesProvider();
+            featuresProvider.SaveDocumentAsPdf(UserAnswer[0], UserAnswer[1]);
+        }
+    }
+
+    public class SavePagesAsPdf : StringAnswerQuestion
+    {
+        // Public
+        public SavePagesAsPdf(Action onBack, Action onExit) : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории с выходными файлами", onBack, onExit) { }
+
+        public override void Load()
+        {
+            base.Load();
+
+            if (CheckIfBackOrExit()) { return; }
+
+            if (UserAnswer.Count != 2)
+            {
+                Console.WriteLine("Некорректное число аргументов");
+                return;
+            }
+
+            FeaturesProvider featuresProvider = new FeaturesProvider();
+            featuresProvider.SavePagesAsPdf(UserAnswer[0], UserAnswer[1]);
+        }
+    }
 }
 
-/*
-("Генерация CSV для свойств параграфов", () => { }),
-("Генерация CSV для нормализованных свойств параграфов", () => { }),
- */

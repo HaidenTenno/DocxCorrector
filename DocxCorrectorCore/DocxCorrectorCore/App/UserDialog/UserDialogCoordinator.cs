@@ -56,6 +56,8 @@ namespace DocxCorrectorCore.App
                     ("Печать свойств верхних / нижних колонтитулов", () => { PushQuestion(createStringAnswerQuesion(UserQuestionType.HeadersFooters)); }),
                     ("Генерация CSV для свойств параграфов", () => { PushQuestion(createStringAnswerQuesion(UserQuestionType.ParagraphProperties)); }),
                     ("Генерация CSV для нормализованных свойств параграфов", () => { PushQuestion(createStringAnswerQuesion(UserQuestionType.NormalizedParagraphProperties)); }),
+                    ("Сохранение документа как pdf", () => { PushQuestion(createStringAnswerQuesion(UserQuestionType.SaveDocumentAsPdf)); }),
+                    ("Сохранение каждой страницы документа отдельным pdf", () => { PushQuestion(createStringAnswerQuesion(UserQuestionType.SavePagesAsPdf)); }),
                     ("Выход", () => PopAll())
                 }
             );
@@ -87,6 +89,14 @@ namespace DocxCorrectorCore.App
                     onExit: () => PopAll()
                 ),
                 UserQuestionType.NormalizedParagraphProperties => new NormalizedParagraphPropertiesCSVQuestion(
+                    onBack: () => PopQuestion(),
+                    onExit: () => PopAll()
+                ),
+                UserQuestionType.SaveDocumentAsPdf => new SaveDocumentAsPdf(
+                    onBack: () => PopQuestion(),
+                    onExit: () => PopAll()
+                ),
+                UserQuestionType.SavePagesAsPdf => new SavePagesAsPdf(
                     onBack: () => PopQuestion(),
                     onExit: () => PopAll()
                 ),
