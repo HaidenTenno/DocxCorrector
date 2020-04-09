@@ -28,6 +28,12 @@ namespace DocxCorrectorCore.Services.Corrector
         // Получить спискок ошибок для документа filePath, с учетом того, что все параграфы в нем типа elementType
         public abstract List<ParagraphResult> GetMistakesForElementType(string filePath, ElementType elementType);
 
+        // Сохранить документ filePath как pdf resultPath
+        public abstract void SaveDocumentAsPdf(string filePath, string resultFilePath);
+
+        // Сохранить страницы документа filePath как отдельные pdf в директории resultPath
+        public abstract void SavePagesAsPdf(string filePath, string resultFilePath);
+
         // IDisposable
         public abstract void Dispose();
     }

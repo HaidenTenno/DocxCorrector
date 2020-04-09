@@ -228,5 +228,21 @@ namespace DocxCorrectorCore.App
             Console.WriteLine("\nАсинхронный анализ параграфов, асинхронный проход по директории");
             TimeCounter.CountTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir, Config.AsyncParagraphsAsyncIteration));
         }
+
+        // Сохранить документ filePath как pdf в директории resultPath
+        public void SaveDocumentAsPdf(string filePath, string resultFilePath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            Corrector.SaveDocumentAsPdf(filePath, resultFilePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+        }
+
+        // Сохранить страницы документ filePath как отдельные pdf в архиве в директории resultPath
+        public void SavePagesAsPdf(string filePath, string resultFilePath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            Corrector.SavePagesAsPdf(filePath, resultFilePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+        }
     }
 }
