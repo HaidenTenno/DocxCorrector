@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DocxCorrectorCore.Models;
 
 namespace DocxCorrectorCore.Services.Corrector
 {
-    public abstract class Corrector : IDisposable
+    public abstract class Corrector
     {
         // Получить свойства всех параграфов документа filePath
         public abstract List<ParagraphProperties> GetAllParagraphsProperties(string filePath);
@@ -33,8 +32,5 @@ namespace DocxCorrectorCore.Services.Corrector
 
         // Сохранить страницы документа filePath как отдельные pdf в директории resultPath
         public abstract void SavePagesAsPdf(string filePath, string resultFilePath);
-
-        // IDisposable
-        public abstract void Dispose();
     }
 }

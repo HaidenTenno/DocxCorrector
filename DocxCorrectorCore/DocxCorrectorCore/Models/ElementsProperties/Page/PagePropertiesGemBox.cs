@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.Models

@@ -1,4 +1,5 @@
 ﻿using System;
+using DocxCorrectorCore.UserDialog;
 
 namespace DocxCorrectorCore.App
 {
@@ -7,7 +8,7 @@ namespace DocxCorrectorCore.App
         // Точка входа
         static void Main(string[] args)
         {
-            UserDialogCoordinator userDialogCoordinator = new UserDialogCoordinator();
+            UserDialogCoordinator userDialogCoordinator = new UserDialogCoordinator(new QuestionsNavigationController());
             userDialogCoordinator.Start();
         }
     }

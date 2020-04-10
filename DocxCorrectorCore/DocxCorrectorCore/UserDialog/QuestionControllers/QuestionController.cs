@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocxCorrectorCore.App;
 
-namespace DocxCorrectorCore.App
+namespace DocxCorrectorCore.UserDialog
 {
-    public enum UserQuestionType
-    {
-         Print,
-         PageProperties,
-         SectionProperties,
-         HeadersFooters,
-         ParagraphProperties,
-         NormalizedParagraphProperties,
-         SaveDocumentAsPdf,
-         SavePagesAsPdf
-    }
-
-    public abstract class UserQuestion
+    public abstract class QuestionController
     {
         // Protected
+        protected QuestionsNavigationController? NavigationController;
+
         protected string QuestionInfo;
 
         protected int? GetUserAnswerInt()
@@ -37,8 +28,23 @@ namespace DocxCorrectorCore.App
             return userAnsers;
         }
 
+        protected void OnBack()
+        {
+            NavigationController?.PopQuestionController();
+        }
+
+        protected void OnExit()
+        {
+            NavigationController?.PopAllQuestionControllers();
+        }
+
         // Public
-        public UserQuestion(string questionInfo)
+        public void SetNavigationController(QuestionsNavigationController navigationController)
+        {
+            NavigationController = navigationController;
+        }
+
+        public QuestionController(string questionInfo)
         {
             QuestionInfo = questionInfo;
         }
@@ -46,47 +52,53 @@ namespace DocxCorrectorCore.App
         public abstract void Load();
     }
 
-    public class IntAnswerQuestion : UserQuestion
+    public class IntAnswerQuestionController : QuestionController
     {
-        // Private
-        private List<(string info, Action action)> Actions;
+        // Protected
+        protected readonly List<(string info, Action action)> Actions;
+
+        protected List<(string info, Action action)> GetActionsToShow()
+        {
+            List<(string info, Action action)> actionsToShow = new List<(string info, Action action)>(Actions);
+            if (NavigationController?.GetQuestionControllers().Count > 1) { actionsToShow.Add(("Назад", () => OnBack())); }
+            actionsToShow.Add(("Выход", () => OnExit()));
+            return actionsToShow;
+        }
 
         // Public
-        public IntAnswerQuestion(List<(string info, Action action)> actions) : base("Выберите функцию")
+        public IntAnswerQuestionController(List<(string info, Action action)> actions) : base("Выберите функцию")
         {
             Actions = actions;
         }
 
         public override void Load()
         {
+            List<(string info, Action action)> actionsToShow = GetActionsToShow();
             Console.WriteLine(QuestionInfo);
 
-            for (int i = 0; i < Actions.Count; i++)
+            for (int i = 0; i < actionsToShow.Count; i++)
             {
-                Console.WriteLine($"{i}: {Actions[i].info}");
+                Console.WriteLine($"{i}: {actionsToShow[i].info}");
             }
 
             int? userAnser = GetUserAnswerInt();
 
             Console.Clear();
 
-            if ((userAnser == null) | (userAnser >= Actions.Count) | (userAnser < 0))
+            if ((userAnser == null) | (userAnser >= actionsToShow.Count) | (userAnser < 0))
             {
                 Console.WriteLine("Недопустимая операция");
                 return;
             }
 
-            Console.WriteLine(Actions[(int)userAnser!].info);
-            Actions[(int)userAnser!].action();
+            Console.WriteLine(actionsToShow[(int)userAnser!].info);
+            actionsToShow[(int)userAnser!].action();
         }
     }
 
-    public class StringAnswerQuestion : UserQuestion
+    public class StringAnswerQuestionController : QuestionController
     {
         // Protected
-        protected Action OnBack;
-        protected Action OnExit;
-
         protected List<string> UserAnswer = new List<string>();
 
         protected bool CheckIfBackOrExit()
@@ -114,11 +126,7 @@ namespace DocxCorrectorCore.App
         }
 
         // Public
-        public StringAnswerQuestion(string questionInfo, Action onBack, Action onExit) : base(questionInfo)
-        {
-            OnBack = onBack;
-            OnExit = onExit;
-        }
+        public StringAnswerQuestionController(string questionInfo) : base(questionInfo) { }
 
         public override void Load()
         {
@@ -132,10 +140,10 @@ namespace DocxCorrectorCore.App
         }
     }
 
-    public class PrintQuestion : StringAnswerQuestion
+    public class PrintQuestionController : StringAnswerQuestionController
     {
         // Public
-        public PrintQuestion(Action onBack, Action onExit) : base("Введите путь к файлу для печати", onBack, onExit) { }
+        public PrintQuestionController() : base("Введите путь к файлу для печати") { }
 
         public override void Load()
         {
@@ -154,10 +162,10 @@ namespace DocxCorrectorCore.App
         }
     }
 
-    public class PagePropertiesJSONQuestion : StringAnswerQuestion
+    public class PagePropertiesJSONQuestionController : StringAnswerQuestionController
     {
         // Public
-        public PagePropertiesJSONQuestion(Action onBack, Action onExit) : base("Введите путь к анализируемому файлу и путь к файлу для записи свойств страниц", onBack, onExit) { }
+        public PagePropertiesJSONQuestionController() : base("Введите путь к анализируемому файлу и путь к файлу для записи свойств страниц") { }
 
         public override void Load()
         {
@@ -176,10 +184,10 @@ namespace DocxCorrectorCore.App
         }
     }
 
-    public class SectionPropertiesJSONQuestion : StringAnswerQuestion
+    public class SectionPropertiesJSONQuestionController : StringAnswerQuestionController
     {
         // Public
-        public SectionPropertiesJSONQuestion(Action onBack, Action onExit) : base("Введите путь к анализируемому файлу и путь к файлу для записи свойств секций", onBack, onExit) { }
+        public SectionPropertiesJSONQuestionController() : base("Введите путь к анализируемому файлу и путь к файлу для записи свойств секций") { }
 
         public override void Load()
         {
@@ -198,10 +206,10 @@ namespace DocxCorrectorCore.App
         }
     }
 
-    public class HeadersFootersPropertiesJSONQuestion : StringAnswerQuestion
+    public class HeadersFootersPropertiesJSONQuestionController : StringAnswerQuestionController
     {
         // Public
-        public HeadersFootersPropertiesJSONQuestion(Action onBack, Action onExit) : base("Введите: \nТип колонтитулов (0: верхний, 1: нижний) \nПуть к анализируемуму файлу \nПуть к файлу для записи свойств секций", onBack, onExit) { }
+        public HeadersFootersPropertiesJSONQuestionController() : base("Введите: \nТип колонтитулов (0: верхний, 1: нижний) \nПуть к анализируемуму файлу \nПуть к файлу для записи свойств секций") { }
 
         public override void Load()
         {
@@ -236,10 +244,10 @@ namespace DocxCorrectorCore.App
         }
     }
 
-    public class ParagraphPropertiesCSVQuestion : StringAnswerQuestion
+    public class ParagraphPropertiesCSVQuestionController : StringAnswerQuestionController
     {
         // Public
-        public ParagraphPropertiesCSVQuestion(Action onBack, Action onExit) : base("Введите путь к корневой директории для анализа файлов в поддиректориях и название результирующего файла (свойства параграфов)", onBack, onExit) { }
+        public ParagraphPropertiesCSVQuestionController() : base("Введите путь к корневой директории для анализа файлов в поддиректориях и название результирующего файла (свойства параграфов)") { }
 
         public override void Load()
         {
@@ -258,10 +266,10 @@ namespace DocxCorrectorCore.App
         }
     }
 
-    public class NormalizedParagraphPropertiesCSVQuestion : StringAnswerQuestion
+    public class NormalizedParagraphPropertiesCSVQuestionController : StringAnswerQuestionController
     {
         // Public
-        public NormalizedParagraphPropertiesCSVQuestion(Action onBack, Action onExit) : base("Введите путь к корневой директории для анализа файлов в поддиректориях и название результирующего файла (нормализованные свойства параграфов)", onBack, onExit) { }
+        public NormalizedParagraphPropertiesCSVQuestionController() : base("Введите путь к корневой директории для анализа файлов в поддиректориях и название результирующего файла (нормализованные свойства параграфов)") { }
 
         public override void Load()
         {
@@ -280,10 +288,10 @@ namespace DocxCorrectorCore.App
         }
     }
 
-    public class SaveDocumentAsPdf : StringAnswerQuestion
+    public class SaveDocumentAsPdfQuestionController : StringAnswerQuestionController
     {
         // Public
-        public SaveDocumentAsPdf(Action onBack, Action onExit) : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории с выходным файлом", onBack, onExit) { }
+        public SaveDocumentAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории с выходным файлом") { }
 
         public override void Load()
         {
@@ -302,10 +310,10 @@ namespace DocxCorrectorCore.App
         }
     }
 
-    public class SavePagesAsPdf : StringAnswerQuestion
+    public class SavePagesAsPdfQuestionController : StringAnswerQuestionController
     {
         // Public
-        public SavePagesAsPdf(Action onBack, Action onExit) : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории с выходными файлами", onBack, onExit) { }
+        public SavePagesAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории с выходными файлами") { }
 
         public override void Load()
         {

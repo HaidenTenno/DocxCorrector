@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,9 +38,6 @@ namespace DocxCorrectorCore.Services.Corrector
         }
 
         // Public
-        // IDisposable
-        public override void Dispose() { }
-
         // Corrector
         public CorrectorGemBox()
         {

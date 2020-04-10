@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DocxCorrectorCore.Models;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace DocxCorrectorCore.Services
@@ -14,7 +12,7 @@ namespace DocxCorrectorCore.Services
         }
 
         // Создать JSON строку из объекта типа словарь
-        public static string MakeJSON<T1,T2>(Dictionary<T1,T2> results)
+        public static string MakeJSON<T1,T2>(Dictionary<T1, T2> results) where T1 : notnull
         {
             return JsonConvert.SerializeObject(results, Formatting.Indented);
         }
