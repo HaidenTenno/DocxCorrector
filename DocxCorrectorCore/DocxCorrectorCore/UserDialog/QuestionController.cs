@@ -143,7 +143,7 @@ namespace DocxCorrectorCore.UserDialog
     public class PrintQuestionController : StringAnswerQuestionController
     {
         // Public
-        public PrintQuestionController() : base("Введите путь к файлу для печати") { }
+        public PrintQuestionController() : base("Введите: \nПуть к документу, параграфы которого нужно вывести в консоль") { }
 
         public override void Load()
         {
@@ -165,7 +165,7 @@ namespace DocxCorrectorCore.UserDialog
     public class PagePropertiesJSONQuestionController : StringAnswerQuestionController
     {
         // Public
-        public PagePropertiesJSONQuestionController() : base("Введите путь к анализируемому файлу и путь к файлу для записи свойств страниц") { }
+        public PagePropertiesJSONQuestionController() : base("Введите: \nПуть к документу \nПуть к директории для сохранения JSON файла со свойствами страниц") { }
 
         public override void Load()
         {
@@ -187,7 +187,7 @@ namespace DocxCorrectorCore.UserDialog
     public class SectionPropertiesJSONQuestionController : StringAnswerQuestionController
     {
         // Public
-        public SectionPropertiesJSONQuestionController() : base("Введите путь к анализируемому файлу и путь к файлу для записи свойств секций") { }
+        public SectionPropertiesJSONQuestionController() : base("Введите: \nПуть к документу \nПуть к директории для сохранения JSON файла со свойствами секций") { }
 
         public override void Load()
         {
@@ -209,7 +209,7 @@ namespace DocxCorrectorCore.UserDialog
     public class HeadersFootersPropertiesJSONQuestionController : StringAnswerQuestionController
     {
         // Public
-        public HeadersFootersPropertiesJSONQuestionController() : base("Введите: \nТип колонтитулов (0: верхний, 1: нижний) \nПуть к анализируемуму файлу \nПуть к файлу для записи свойств секций") { }
+        public HeadersFootersPropertiesJSONQuestionController() : base("Введите: \nТип колонтитулов (0: верхний, 1: нижний) \nПуть к документу \nПуть к директории для сохранения JSON файла со свойствами колонтитулов") { }
 
         public override void Load()
         {
@@ -223,8 +223,7 @@ namespace DocxCorrectorCore.UserDialog
                 return;
             }
 
-            Models.HeaderFooterType? chosenHeaderFooterType = null;
-
+            Models.HeaderFooterType? chosenHeaderFooterType;
             switch (UserAnswer[0])
             {
                 case "0":
@@ -247,7 +246,7 @@ namespace DocxCorrectorCore.UserDialog
     public class ParagraphPropertiesCSVQuestionController : StringAnswerQuestionController
     {
         // Public
-        public ParagraphPropertiesCSVQuestionController() : base("Введите путь к корневой директории для анализа файлов в поддиректориях и название результирующего файла (свойства параграфов)") { }
+        public ParagraphPropertiesCSVQuestionController() : base("Введите: \nПуть к корневой директории, в поддиректориях которой находятся документы, для которых нужно создать CSV со свойствами параграфов") { }
 
         public override void Load()
         {
@@ -255,21 +254,21 @@ namespace DocxCorrectorCore.UserDialog
 
             if (CheckIfBackOrExit()) { return; }
 
-            if (UserAnswer.Count != 2)
+            if (UserAnswer.Count != 1)
             {
                 Console.WriteLine("Некорректное число аргументов");
                 return;
             }
 
             FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateCSVFiles(UserAnswer[0], UserAnswer[1]);
+            featuresProvider.GenerateCSVFiles(UserAnswer[0]);
         }
     }
 
     public class NormalizedParagraphPropertiesCSVQuestionController : StringAnswerQuestionController
     {
         // Public
-        public NormalizedParagraphPropertiesCSVQuestionController() : base("Введите путь к корневой директории для анализа файлов в поддиректориях и название результирующего файла (нормализованные свойства параграфов)") { }
+        public NormalizedParagraphPropertiesCSVQuestionController() : base("Введите: \nПуть к корневой директории, в поддиректориях которой находятся документы, для которых нужно создать CSV с нормализованными свойствами параграфов") { }
 
         public override void Load()
         {
@@ -277,21 +276,21 @@ namespace DocxCorrectorCore.UserDialog
 
             if (CheckIfBackOrExit()) { return; }
 
-            if (UserAnswer.Count != 2)
+            if (UserAnswer.Count != 1)
             {
                 Console.WriteLine("Некорректное число аргументов");
                 return;
             }
 
             FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateNormalizedCSVFiles(UserAnswer[0], UserAnswer[1]);
+            featuresProvider.GenerateNormalizedCSVFiles(UserAnswer[0]);
         }
     }
 
     public class SaveDocumentAsPdfQuestionController : StringAnswerQuestionController
     {
         // Public
-        public SaveDocumentAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории с выходным файлом") { }
+        public SaveDocumentAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории для сохранения результата") { }
 
         public override void Load()
         {
@@ -313,7 +312,7 @@ namespace DocxCorrectorCore.UserDialog
     public class SavePagesAsPdfQuestionController : StringAnswerQuestionController
     {
         // Public
-        public SavePagesAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории с выходными файлами") { }
+        public SavePagesAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории для сохранения результата") { }
 
         public override void Load()
         {

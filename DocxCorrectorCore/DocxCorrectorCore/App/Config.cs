@@ -3,26 +3,22 @@ namespace DocxCorrectorCore.App
 {
     public static class Config
     {
-        // Docx файл для проверки
-        public const string DocFilePath = @"C:\Users\haide\Desktop\testDoc.docx";
         // Файл для записи ошибок
-        public const string MistakesFilePath = @"C:\Users\haide\Desktop\mistakes.json";
+        public const string MistakesFileName = "mistakes.json";
         // Файл для записи свойств страниц
-        public const string PagesPropertiesFilePath = @"C:\Users\haide\Desktop\pagesProperties.json";
+        public const string PagesPropertiesFileName = "pagesProperties.json";
         // Файл для записи свойств секций
-        public const string SectionsPropertiesFilePath = @"C:\Users\haide\Desktop\sectionsProperties.json";
+        public const string SectionsPropertiesFileName = "sectionsProperties.json";
         // Файл для записи свойств колонтитулов
-        public const string HeadersFootersInfoFilePath = @"C:\Users\haide\Desktop\headersFootersInfo.json";
-        // Корневая директория с файлами, из которых нужно вытянуть свойства
-        public const string FilesToInpectDirectoryPath = @"C:\Users\haide\Desktop\FilesToInspect";
-        // Называние для файла со свойствами параграфа
-        public const string ParagraphPropertiesFileName = @"\properties.csv";
-        // Название для файла с нормализованными свойствами параграфа
-        public const string NormalizedPropertiesFileName = @"\normalizedProperties.csv";
+        public const string HeadersFootersInfoFileName = "headersFootersInfo.json";
+        // Файл со свойствами параграфов
+        public const string ParagraphsPropertiesFileName = "properties.csv";
+        // Файл с нормализованными свойствами параграфов
+        public const string NormalizedPropertiesFileName = "normalizedProperties.csv";
         // Называния csv файлов для тестирования синхронных/асинхронных методов
-        public const string SyncParagraphsSyncIteration = @"\syncParagraphsSyncIteration.csv";
-        public const string SyncParagraphsAsyncIteration = @"\syncParagraphAsyncIteration.csv";
-        public const string AsyncParagraphsSyncIteration = @"\asyncParagraphsSyncIteration.csv";
-        public const string AsyncParagraphsAsyncIteration = @"\asyncParagraphsAsyncIteration.csv";
+        public const string SyncParagraphsSyncIterationFileName = "syncParagraphsSyncIteration.csv";
+        public const string SyncParagraphsAsyncIterationFileName = "syncParagraphAsyncIteration.csv";
+        public const string AsyncParagraphsSyncIterationFileName = "asyncParagraphsSyncIteration.csv";
+        public const string AsyncParagraphsAsyncIterationFileName = "asyncParagraphsAsyncIteration.csv";
     }
 }

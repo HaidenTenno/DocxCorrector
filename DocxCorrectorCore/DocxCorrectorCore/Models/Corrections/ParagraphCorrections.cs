@@ -3,34 +3,34 @@
 namespace DocxCorrectorCore.Models
 {
     // Тип параграфа
-    public enum ElementType
+    public enum ParagraphClass
     {
         Paragraph, // Абзац
-        List, // Список
+        List, // Элемент списка
         ImageSign, // Подпись к рисунку
         Headline, // Заголовок
-        SourcesList, // Список источников
+        SourcesList, // Элемент списка источников
         Image // Рисунок
     }
 
     // Результат проверки для параграфа
-    public sealed class ParagraphResult
+    public sealed class ParagraphCorrections
     {
         // ID параграфа
         public int ParagraphID { get; set; }
         // Тип параграфа
-        public ElementType Type { get; set; }
+        public ParagraphClass ParagraphClass { get; set; }
         // Начало параграфа (20 символов)
         public string Prefix { get; set; }
         // Ошибки в параграфе
-        public List<Mistake> Mistakes { get; set; }
+        public List<ParagraphMistake> Mistakes { get; set; }
     }
-    public sealed class Mistake
+    public sealed class ParagraphMistake
     {
         // Сообщение об ошибке
         public string Message { get; set; }
 
-        public Mistake(string message)
+        public ParagraphMistake(string message)
         {
             Message = message;
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using DocxCorrectorCore.Services.Helper;
+using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.Models

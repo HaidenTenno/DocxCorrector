@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.IO;
 using DocxCorrectorCore.Services.Corrector;
+using DocxCorrectorCore.Services.PropertiesPuller;
 using DocxCorrectorCore.Services;
 using DocxCorrectorCore.Models;
 
@@ -13,51 +14,58 @@ namespace DocxCorrectorCore.App
     {
         // Private
         private readonly Corrector Corrector;
+        private readonly PropertiesPuller PropertiesPuller;
 
         // Public
         public FeaturesProvider()
         {
             Corrector = new CorrectorGemBox();
+            PropertiesPuller = new PropertiesPullerGemBox();
         }
 
         // Напечатать содержимое всех параграфов документа filePath
         public void PrintParagraphs(string filePath)
         {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
             Corrector.PrintAllParagraphs(filePath: filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
 
-        // Проанализировать документ filePath и Создать JSON файл resultFilePath со свойствами его страниц
-        public void GeneratePagesPropertiesJSON(string filePath, string resultFilePath)
+        // Проанализировать документ filePath и Создать JSON файл в директории resultDirPath со свойствами его страниц
+        public void GeneratePagesPropertiesJSON(string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            List<PageProperties> pagesProperties = Corrector.GetAllPagesProperties(filePath: filePath);
+            List<PageProperties> pagesProperties = PropertiesPuller.GetAllPagesProperties(filePath: filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
             string pagesPropertiesJSON = JSONMaker.MakeJSON(pagesProperties);
+            string resultFilePath = Path.Combine(resultDirPath, Config.PagesPropertiesFileName);
             FileWriter.WriteToFile(resultFilePath, pagesPropertiesJSON);
         }
 
-        // Проанализировать документ filePath и Создать JSON файл resultFilePath со свойствами его секций
-        public void GenerateSectionsPropertiesJSON(string filePath, string resultFilePath)
+        // Проанализировать документ filePath и Создать JSON файл в директории resultDirPath со свойствами его секций
+        public void GenerateSectionsPropertiesJSON(string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            List<SectionProperties> sectionsProperties = Corrector.GetAllSectionsProperties(filePath: filePath);
+            List<SectionProperties> sectionsProperties = PropertiesPuller.GetAllSectionsProperties(filePath: filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
             string sectionsPropertiesJSON = JSONMaker.MakeJSON(sectionsProperties);
+            string resultFilePath = Path.Combine(resultDirPath, Config.SectionsPropertiesFileName);
             FileWriter.WriteToFile(resultFilePath, sectionsPropertiesJSON);
         }
 
-        // Проанализировать документ filePath и создать JSON файл resultFilePath со свойствами колонтитулов типа type
-        public void GenerateHeadersFootersInfoJSON(HeaderFooterType type, string filePath, string resultFilePath)
+        // Проанализировать документ filePath и создать JSON файл в директории resultDirPath со свойствами колонтитулов типа type
+        public void GenerateHeadersFootersInfoJSON(HeaderFooterType type, string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            List<HeaderFooterInfo> headersFootersInfo = Corrector.GetHeadersFootersInfo(type: type, filePath: filePath);
+            List<HeaderFooterInfo> headersFootersInfo = PropertiesPuller.GetHeadersFootersInfo(type: type, filePath: filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
             string headersFootersInfoJSON = JSONMaker.MakeJSON(headersFootersInfo);
+            string resultFilePath = Path.Combine(resultDirPath, Config.HeadersFootersInfoFileName);
             FileWriter.WriteToFile(resultFilePath, headersFootersInfoJSON);
         }
 
-        // Пройтись по всем поддиректориям rootDir и в каждой создать csv файл с именем resultFileName, где будут результаты для всех docx файлов в этой директории
-        public void GenerateCSVFiles(string rootDir, string resultFileName)
+        // Пройтись по всем поддиректориям rootDir и в каждой создать csv файл, где будут записаны свойства параграфов для всех docx файлов в этой директории
+        public void GenerateCSVFiles(string rootDir)
         {
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
@@ -66,17 +74,18 @@ namespace DocxCorrectorCore.App
                 DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties(filePath: filePath);
+                    List<ParagraphProperties> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 });
 
-                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), propertiesForDir);
+                string resultFilePath = Path.Combine(subDir, Config.ParagraphsPropertiesFileName);
+                FileWriter.FillCSV(resultFilePath, propertiesForDir);
             });
         }
 
-        // Получение данных для программы Ромы
-        public void GenerateNormalizedCSVFiles(string rootDir, string resultFileName)
+        // Пройтись по всем поддиректориям rootDir и в каждой создать csv файл, где будут записаны нормализованные свойства параграфов для всех docx файлов в этой директории
+        public void GenerateNormalizedCSVFiles(string rootDir)
         {
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
@@ -85,54 +94,22 @@ namespace DocxCorrectorCore.App
                 DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<NormalizedProperties> normalizedPropertiesForFile = Corrector.GetNormalizedProperties(filePath: filePath);
+                    List<NormalizedProperties> normalizedPropertiesForFile = PropertiesPuller.GetNormalizedProperties(filePath: filePath);
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     normalizedPropertiesForDir.AddRange(normalizedPropertiesForFile);
                 });
 
-                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), normalizedPropertiesForDir);
+                string resultFilePath = Path.Combine(subDir, Config.NormalizedPropertiesFileName);
+                FileWriter.FillCSV(resultFilePath, normalizedPropertiesForDir);
             });
         }
 
-        // Проанализировать документ filePath и Создать JSON файл resultFilePath со списком ошибок, с учетом того, что все параграфы в документе определенного типа
-        public void CheckParagraphs(string filePath, string resultFilePath)
-        {
-            Console.WriteLine("Введите тип проверяемых параграфов:\n0 - абзац\n1 - элемент списка\n2 - подпись к рисунку");
-            string userAnswer = Console.ReadLine();
-            int userAnserInt;
-            bool result = int.TryParse(userAnswer, out userAnserInt);
-
-            if (!result)
-            {
-                Console.WriteLine("Недопустимый ответ");
-                return;
-            }
-
-            List<ParagraphResult> paragraphResults;
-
-            switch ((ElementType)userAnserInt)
-            {
-                case ElementType.Paragraph:
-                case ElementType.List:
-                case ElementType.ImageSign:
-                    paragraphResults = Corrector.GetMistakesForElementType(filePath: filePath, elementType: (ElementType)userAnserInt);
-                    break;
-
-                default:
-                    Console.WriteLine("Ответ не поддерживается");
-                    return;
-            }
-
-            string resultJSON = JSONMaker.MakeJSON(results: paragraphResults);
-            FileWriter.WriteToFile(resultFilePath, resultJSON);
-        }
-
         // GenerateCSVFiles, основанный на асинхронном методе
-        public void GenerateCSVFilesAsync(string rootDir, string resultFileName)
+        public void GenerateCSVFilesAsync(string rootDir)
         {
-            ICorrecorAsync? asyncCorretor = Corrector as ICorrecorAsync;
+            IPropertiesPullerAsync? asyncPuller = PropertiesPuller as IPropertiesPullerAsync;
 
-            if (asyncCorretor == null) { return; }
+            if (asyncPuller == null) { return; }
 
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
@@ -141,17 +118,18 @@ namespace DocxCorrectorCore.App
                 DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphProperties> propertiesForFile = asyncCorretor.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
+                    List<ParagraphProperties> propertiesForFile = asyncPuller.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 });
 
-                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), propertiesForDir);
+                string resultFilePath = Path.Combine(subDir, Config.AsyncParagraphsSyncIterationFileName);
+                FileWriter.FillCSV(resultFilePath, propertiesForDir);
             });
         }
 
         // GenerateCSVFiles с асинхронным анализом файлов
-        public void GenerateCSVFilesWithAsyncFilesIteration(string rootDir, string resultFileName)
+        public void GenerateCSVFilesWithAsyncFilesIteration(string rootDir)
         {
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
@@ -160,21 +138,22 @@ namespace DocxCorrectorCore.App
                 Task.WaitAll(DirectoryIterator.IterateDocxFilesAsync(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphProperties> propertiesForFile = Corrector.GetAllParagraphsProperties(filePath: filePath);
+                    List<ParagraphProperties> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 }));
 
-                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), propertiesForDir);
+                string resultFilePath = Path.Combine(subDir, Config.SyncParagraphsAsyncIterationFileName);
+                FileWriter.FillCSV(resultFilePath, propertiesForDir);
             });
         }
 
         // GenerateCSVFiles, основанный на асинхронном методе с асинхронным анализом файлов
-        public void GenerateCSVFilesAsyncWithAsyncFilesIteration(string rootDir, string resultFileName)
+        public void GenerateCSVFilesAsyncWithAsyncFilesIteration(string rootDir)
         {
-            ICorrecorAsync? asyncCorretor = Corrector as ICorrecorAsync;
+            IPropertiesPullerAsync? asyncPuller = PropertiesPuller as IPropertiesPullerAsync;
 
-            if (asyncCorretor == null) { return; }
+            if (asyncPuller == null) { return; }
 
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
@@ -183,21 +162,22 @@ namespace DocxCorrectorCore.App
                 Task.WaitAll(DirectoryIterator.IterateDocxFilesAsync(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphProperties> propertiesForFile = asyncCorretor.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
+                    List<ParagraphProperties> propertiesForFile = asyncPuller.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 }));
 
-                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), propertiesForDir);
+                string resultFilePath = Path.Combine(subDir, Config.AsyncParagraphsAsyncIterationFileName);
+                FileWriter.FillCSV(resultFilePath, propertiesForDir);
             });
         }
 
         // GenerateNormalizedCSVFiles, основанный на асинхнонном методе
-        public void GenerateNormalizedCSVFilesAsync(string rootDir, string resultFileName)
+        public void GenerateNormalizedCSVFilesAsync(string rootDir)
         {
-            ICorrecorAsync? asyncCorretor = Corrector as ICorrecorAsync;
+            IPropertiesPullerAsync? asyncPuller = PropertiesPuller as IPropertiesPullerAsync;
 
-            if (asyncCorretor == null) { return; }
+            if (asyncPuller == null) { return; }
 
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
@@ -206,12 +186,13 @@ namespace DocxCorrectorCore.App
                 DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<NormalizedProperties> normalizedPropertiesForFile = asyncCorretor.GetNormalizedPropertiesAsync(filePath: filePath).Result;
+                    List<NormalizedProperties> normalizedPropertiesForFile = asyncPuller.GetNormalizedPropertiesAsync(filePath: filePath).Result;
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     normalizedPropertiesForDir.AddRange(normalizedPropertiesForFile);
                 });
 
-                FileWriter.FillCSV(Path.Combine(subDir, resultFileName), normalizedPropertiesForDir);
+                string resultFilePath = Path.Combine(subDir, Config.NormalizedPropertiesFileName);
+                FileWriter.FillCSV(resultFilePath, normalizedPropertiesForDir);
             });
         }
 
@@ -219,28 +200,28 @@ namespace DocxCorrectorCore.App
         public void TestCorrectorSpeed(string rootDir)
         {
             Console.WriteLine("Синхронный анализ параграфов, синхронный проход по директории");
-            TimeCounter.CountTime(() => GenerateCSVFiles(rootDir, Config.SyncParagraphsSyncIteration));
+            TimeCounter.CountTime(() => GenerateCSVFiles(rootDir));
             Console.WriteLine("\nАсинхронный анализ параграфов, синхронный проход по директории");
-            TimeCounter.CountTime(() => GenerateCSVFilesAsync(rootDir, Config.AsyncParagraphsSyncIteration));
+            TimeCounter.CountTime(() => GenerateCSVFilesAsync(rootDir));
             Console.WriteLine("\nCинхронный анализ параграфов, асинхронный проход по директории");
-            TimeCounter.CountTime(() => GenerateCSVFilesWithAsyncFilesIteration(rootDir, Config.SyncParagraphsAsyncIteration));
+            TimeCounter.CountTime(() => GenerateCSVFilesWithAsyncFilesIteration(rootDir));
             Console.WriteLine("\nАсинхронный анализ параграфов, асинхронный проход по директории");
-            TimeCounter.CountTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir, Config.AsyncParagraphsAsyncIteration));
+            TimeCounter.CountTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir));
         }
 
-        // Сохранить документ filePath как pdf в директории resultPath
-        public void SaveDocumentAsPdf(string filePath, string resultFilePath)
+        // Сохранить документ filePath как pdf в директории resultDirPath
+        public void SaveDocumentAsPdf(string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            Corrector.SaveDocumentAsPdf(filePath, resultFilePath);
+            FileWriter.SaveDocumentAsPdf(filePath, resultDirPath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
 
-        // Сохранить страницы документ filePath как отдельные pdf в архиве в директории resultPath
-        public void SavePagesAsPdf(string filePath, string resultFilePath)
+        // Сохранить страницы документ filePath как отдельные pdf в директории resultDirPath
+        public void SavePagesAsPdf(string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            Corrector.SavePagesAsPdf(filePath, resultFilePath);
+            FileWriter.SavePagesAsPdf(filePath, resultDirPath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
     }

@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using DocxCorrectorCore.Models;
 using ServiceStack.Text;
+using DocxCorrectorCore.Services.Helpers;
+using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.Services
 {
@@ -44,6 +46,33 @@ namespace DocxCorrectorCore.Services
             {
                 FillCSV(filePath: filePath, listData: listDataGemBox);
                 return;
+            }
+        }
+
+        // Сохранить документ filePath как pdf в директории resultDirPath
+        public static void SaveDocumentAsPdf(string filePath, string resultDirPath)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return; }
+
+            string resultFilePath = Path.Combine(resultDirPath, $"{Path.GetFileNameWithoutExtension(filePath)}.pdf");
+            document.Save(resultFilePath);
+        }
+
+        // Сохранить страницы документа filePath как отдельные pdf в директории resultDirPath
+        public static void SavePagesAsPdf(string filePath, string resultDirPath)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return; }
+
+            var pages = document.GetPaginator().Pages;
+
+            int pageNumber = 1;
+            foreach (var page in pages)
+            {
+                string resultFilePath = Path.Combine(resultDirPath, $"{pageNumber}.pdf");
+                page.Save(resultFilePath);
+                pageNumber++;
             }
         }
     }

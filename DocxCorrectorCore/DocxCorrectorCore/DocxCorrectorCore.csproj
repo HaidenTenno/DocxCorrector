@@ -9,6 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\ElementsObjectModel\Headline\**" />
+    <Compile Remove="Models\Pictire\**" />
+    <Compile Remove="Models\TableOfContents\**" />
+    <EmbeddedResource Remove="Models\ElementsObjectModel\Headline\**" />
+    <EmbeddedResource Remove="Models\Pictire\**" />
+    <EmbeddedResource Remove="Models\TableOfContents\**" />
+    <None Remove="Models\ElementsObjectModel\Headline\**" />
+    <None Remove="Models\Pictire\**" />
+    <None Remove="Models\TableOfContents\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="GemBox.Document" Version="31.0.1156" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="ServiceStack.Text" Version="5.8.0" />

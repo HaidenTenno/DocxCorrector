@@ -1,10 +1,36 @@
 ﻿using System;
 using Word = GemBox.Document;
 
-namespace DocxCorrectorCore.Services.Helper
+namespace DocxCorrectorCore.Services.Helpers
 {
     internal static class GemBoxHelper
     {
+        // Ввод лицензионного ключа
+        internal static void SetLicense()
+        {
+            Word.ComponentInfo.SetLicense("FREE-LIMITED-KEY");
+        }
+
+        // Открыть документ filePath
+        internal static Word.DocumentModel? OpenDocument(string filePath)
+        {
+            try
+            {
+                Word.DocumentModel document = Word.DocumentModel.Load(filePath);
+                document.CalculateListItems();
+                document.GetPaginator(new Word.PaginatorOptions() { UpdateFields = true });
+                return document;
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+                Console.WriteLine("Can't open document");
+                return null;
+            }
+        }
+
         // Проверить, что первый символ абзаца принадлежит множеству символов
         internal static int CheckIfFirstSymbolOfParagraphIs(Word.Paragraph paragraph, string[] symbols)
         {
