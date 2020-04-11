@@ -8,7 +8,7 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.Services.PropertiesPuller
 {
-    public sealed class PropertiesPullerGemBox : PropertiesPuller
+    public sealed class PropertiesPullerGemBox : PropertiesPuller, IPropertiesPullerAsync
     {
         // Public
         public PropertiesPullerGemBox()
