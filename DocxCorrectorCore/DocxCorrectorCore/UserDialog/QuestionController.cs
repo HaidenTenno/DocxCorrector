@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocxCorrectorCore.App;
 
 namespace DocxCorrectorCore.UserDialog
 {
@@ -125,6 +124,16 @@ namespace DocxCorrectorCore.UserDialog
             return false;
         }
 
+        protected bool CheckIfWrongArgumentsCountPassed(int requiredCount)
+        {
+            if (UserAnswer.Count != requiredCount)
+            {
+                Console.WriteLine("Некорректное число аргументов");
+                return true;
+            }
+            return false;
+        }
+
         // Public
         public StringAnswerQuestionController(string questionInfo) : base(questionInfo) { }
 
@@ -137,197 +146,6 @@ namespace DocxCorrectorCore.UserDialog
 
             UserAnswer = GetUserAnswerString();
             Console.Clear();
-        }
-    }
-
-    public class PrintQuestionController : StringAnswerQuestionController
-    {
-        // Public
-        public PrintQuestionController() : base("Введите: \nПуть к документу, параграфы которого нужно вывести в консоль") { }
-
-        public override void Load()
-        {
-            base.Load();
-
-            if (CheckIfBackOrExit()) { return; }
-
-            if (UserAnswer.Count != 1)
-            {
-                Console.WriteLine("Некорректное число аргументов");
-                return;
-            }
-
-            FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.PrintParagraphs(UserAnswer[0]);
-        }
-    }
-
-    public class PagePropertiesJSONQuestionController : StringAnswerQuestionController
-    {
-        // Public
-        public PagePropertiesJSONQuestionController() : base("Введите: \nПуть к документу \nПуть к директории для сохранения JSON файла со свойствами страниц") { }
-
-        public override void Load()
-        {
-            base.Load();
-
-            if (CheckIfBackOrExit()) { return; }
-
-            if (UserAnswer.Count != 2)
-            {
-                Console.WriteLine("Некорректное число аргументов");
-                return;
-            }
-
-            FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GeneratePagesPropertiesJSON(UserAnswer[0], UserAnswer[1]);
-        }
-    }
-
-    public class SectionPropertiesJSONQuestionController : StringAnswerQuestionController
-    {
-        // Public
-        public SectionPropertiesJSONQuestionController() : base("Введите: \nПуть к документу \nПуть к директории для сохранения JSON файла со свойствами секций") { }
-
-        public override void Load()
-        {
-            base.Load();
-
-            if (CheckIfBackOrExit()) { return; }
-
-            if (UserAnswer.Count != 2)
-            {
-                Console.WriteLine("Некорректное число аргументов");
-                return;
-            }
-
-            FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateSectionsPropertiesJSON(UserAnswer[0], UserAnswer[1]);
-        }
-    }
-
-    public class HeadersFootersPropertiesJSONQuestionController : StringAnswerQuestionController
-    {
-        // Public
-        public HeadersFootersPropertiesJSONQuestionController() : base("Введите: \nТип колонтитулов (0: верхний, 1: нижний) \nПуть к документу \nПуть к директории для сохранения JSON файла со свойствами колонтитулов") { }
-
-        public override void Load()
-        {
-            base.Load();
-
-            if (CheckIfBackOrExit()) { return; }
-
-            if (UserAnswer.Count != 3)
-            {
-                Console.WriteLine("Некорректное число аргументов");
-                return;
-            }
-
-            Models.HeaderFooterType? chosenHeaderFooterType;
-            switch (UserAnswer[0])
-            {
-                case "0":
-                    chosenHeaderFooterType = Models.HeaderFooterType.Header;
-                    break;
-                case "1":
-                    chosenHeaderFooterType = Models.HeaderFooterType.Footer;
-                    break;
-                default:
-                    Console.WriteLine("Выбранна некорректная опция");
-                    return;
-            }
-
-            FeaturesProvider featuresProvider = new FeaturesProvider();
-
-            featuresProvider.GenerateHeadersFootersInfoJSON((Models.HeaderFooterType)chosenHeaderFooterType, UserAnswer[1], UserAnswer[2]);
-        }
-    }
-
-    public class ParagraphPropertiesCSVQuestionController : StringAnswerQuestionController
-    {
-        // Public
-        public ParagraphPropertiesCSVQuestionController() : base("Введите: \nПуть к корневой директории, в поддиректориях которой находятся документы, для которых нужно создать CSV со свойствами параграфов") { }
-
-        public override void Load()
-        {
-            base.Load();
-
-            if (CheckIfBackOrExit()) { return; }
-
-            if (UserAnswer.Count != 1)
-            {
-                Console.WriteLine("Некорректное число аргументов");
-                return;
-            }
-
-            FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateCSVFiles(UserAnswer[0]);
-        }
-    }
-
-    public class NormalizedParagraphPropertiesCSVQuestionController : StringAnswerQuestionController
-    {
-        // Public
-        public NormalizedParagraphPropertiesCSVQuestionController() : base("Введите: \nПуть к корневой директории, в поддиректориях которой находятся документы, для которых нужно создать CSV с нормализованными свойствами параграфов") { }
-
-        public override void Load()
-        {
-            base.Load();
-
-            if (CheckIfBackOrExit()) { return; }
-
-            if (UserAnswer.Count != 1)
-            {
-                Console.WriteLine("Некорректное число аргументов");
-                return;
-            }
-
-            FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateNormalizedCSVFiles(UserAnswer[0]);
-        }
-    }
-
-    public class SaveDocumentAsPdfQuestionController : StringAnswerQuestionController
-    {
-        // Public
-        public SaveDocumentAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории для сохранения результата") { }
-
-        public override void Load()
-        {
-            base.Load();
-
-            if (CheckIfBackOrExit()) { return; }
-
-            if (UserAnswer.Count != 2 )
-            {
-                Console.WriteLine("Некорректное число аргументов");
-                return;
-            }
-
-            FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.SaveDocumentAsPdf(UserAnswer[0], UserAnswer[1]);
-        }
-    }
-
-    public class SavePagesAsPdfQuestionController : StringAnswerQuestionController
-    {
-        // Public
-        public SavePagesAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории для сохранения результата") { }
-
-        public override void Load()
-        {
-            base.Load();
-
-            if (CheckIfBackOrExit()) { return; }
-
-            if (UserAnswer.Count != 2)
-            {
-                Console.WriteLine("Некорректное число аргументов");
-                return;
-            }
-
-            FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.SavePagesAsPdf(UserAnswer[0], UserAnswer[1]);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +17,15 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
         }
 
         // PropertiesPuller
+        // Напечатать содержимое документа filePath
+        public override void PrintContent(string filePath)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return; }
+
+            Console.WriteLine(document.Content.ToString());
+        }
+
         // Получить свойства всех параграфов документа filePath
         public override List<ParagraphProperties> GetAllParagraphsProperties(string filePath)
         {

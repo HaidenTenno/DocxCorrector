@@ -196,8 +196,8 @@ namespace DocxCorrectorCore.App
             });
         }
 
-        // Тест скорости работы синхронных и асинхронных методов при вытигивании свойств из документов
-        public void TestCorrectorSpeed(string rootDir)
+        // Тест скорости работы синхронных и асинхронных методов при вытигивании свойств параграфов из документов
+        public void TestParagraphPropertiesPullingSpeed(string rootDir)
         {
             Console.WriteLine("Синхронный анализ параграфов, синхронный проход по директории");
             TimeCounter.CountTime(() => GenerateCSVFiles(rootDir));
@@ -222,6 +222,25 @@ namespace DocxCorrectorCore.App
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
             FileWriter.SavePagesAsPdf(filePath, resultDirPath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+        }
+
+        // Вывести содержимое pdf документа filePath с помощью библиотеки GemBox.Document
+        public void PrintPdfGemBoxDocument(string filePath)
+        {
+            if (Path.GetExtension(filePath) != ".pdf") { Console.WriteLine("Неверное расширение"); return; }
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            PropertiesPuller.PrintContent(filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+        }
+
+        // Вывести содержимое pdf документа filePath с помощью библиотеки GemBox.Pdf
+        public void PrintPdfGemBoxPdf(string filePath)
+        {
+            if (Path.GetExtension(filePath) != ".pdf") { Console.WriteLine("Неверное расширение"); return; }
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            Services.GemBoxPdf.GemBoxPdfHelper gemBoxPdfHelper = new Services.GemBoxPdf.GemBoxPdfHelper();
+            gemBoxPdfHelper.PrintContent(filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
     }

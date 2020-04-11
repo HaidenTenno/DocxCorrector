@@ -5,6 +5,9 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
 {
     public abstract class PropertiesPuller
     {
+        // Напечатать содержимое документа filePath
+        public abstract void PrintContent(string filePath);
+
         // Получить свойства всех параграфов документа filePath
         public abstract List<ParagraphProperties> GetAllParagraphsProperties(string filePath);
 
