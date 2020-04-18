@@ -13,7 +13,7 @@ namespace DocxCorrectorCore.Services.Corrector
         // Public
         // TODO: Implement
         // Получить список ошибок форматирования для ВСЕГО документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
-        //public abstract List<DocumentCorrections> GetCorrections(string filePath, RulesModel rulesModel, List<ParagraphClass> paragraphClasses);
+        //public abstract DocumentCorrections GetCorrections(string filePath, RulesModel rulesModel, List<ParagraphClass> paragraphClasses);
 
         // Печать всех абзацев документа filePath
         public abstract void PrintAllParagraphs(string filePath);

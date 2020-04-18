@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DocxCorrectorCore": {
+      "commandName": "Project",
+      "commandLineArgs": "interactive"
+    }
+  }
+}

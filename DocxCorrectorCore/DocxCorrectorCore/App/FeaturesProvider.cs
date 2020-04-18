@@ -243,5 +243,12 @@ namespace DocxCorrectorCore.App
             gemBoxPdfHelper.PrintContent(filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
+
+        // Получить список ошибок форматирования для ВСЕГО документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
+        // сохранение результата в директории resultDirPath
+        public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClasses, string resultDir)
+        {
+            Console.WriteLine("GENERATE MISTAKES JSON");
+        }
     }
 }
