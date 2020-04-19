@@ -17,22 +17,33 @@ namespace DocxCorrectorCore.Models
     public sealed class ParagraphCorrections
     {
         // ID параграфа
-        public int ParagraphID { get; set; }
+        public readonly int ParagraphID;
         // Тип параграфа
-        public ParagraphClass ParagraphClass { get; set; }
+        public readonly ParagraphClass ParagraphClass;
         // Начало параграфа (20 символов)
-        public string Prefix { get; set; }
+        public readonly string Prefix;
         // Ошибки в параграфе
-        public List<ParagraphMistake> Mistakes { get; set; }
+        public readonly List<ParagraphMistake> Mistakes;
+
+        public ParagraphCorrections(int paragraphID, ParagraphClass paragraphClass, string prefix, List<ParagraphMistake> mistakes)
+        {
+            ParagraphID = paragraphID;
+            ParagraphClass = paragraphClass;
+            Prefix = prefix;
+            Mistakes = mistakes;
+        }
     }
     public sealed class ParagraphMistake
     {
         // Сообщение об ошибке
-        public string Message { get; set; }
+        public readonly string Message;
+        // Совет по исправлению
+        public readonly string Advice;
 
-        public ParagraphMistake(string message)
+        public ParagraphMistake(string message, string advice)
         {
             Message = message;
+            Advice = advice;
         }
     }
 }

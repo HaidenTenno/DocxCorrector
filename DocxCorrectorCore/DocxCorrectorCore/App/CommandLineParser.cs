@@ -60,8 +60,6 @@ namespace DocxCorrectorCore.App
         public static void Parse(string[] args)
         {
             SetupRootCommand().InvokeAsync(args).Wait();
-            // TODO: REMOVE
-            Console.ReadLine();
         }
     }
 }

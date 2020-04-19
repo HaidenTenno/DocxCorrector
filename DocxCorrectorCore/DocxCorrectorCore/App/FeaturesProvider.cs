@@ -248,7 +248,13 @@ namespace DocxCorrectorCore.App
         // сохранение результата в директории resultDirPath
         public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClasses, string resultDir)
         {
-            Console.WriteLine("GENERATE MISTAKES JSON");
+            Console.WriteLine($"Started {Path.GetFileName(fileToCorrect)}");
+            // TODO: FIX
+            DocumentCorrections documentCorrections = Corrector.GetCorrections(fileToCorrect, rules, new List<ParagraphClass> { ParagraphClass.Paragraph });
+            Console.WriteLine($"Done {Path.GetFileName(fileToCorrect)}");
+            string headersFootersInfoJSON = JSONMaker.MakeJSON(documentCorrections);
+            string resultFilePath = Path.Combine(resultDir, Config.MistakesFileName);
+            FileWriter.WriteToFile(resultFilePath, headersFootersInfoJSON);
         }
     }
 }

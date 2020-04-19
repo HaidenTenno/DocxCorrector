@@ -6,6 +6,12 @@ namespace DocxCorrectorCore.Services
     public static class JSONMaker
     {
         // Создать JSON строку из объекта
+        public static string MakeJSON<T>(T results)
+        {
+            return JsonConvert.SerializeObject(results, Formatting.Indented);
+        }
+
+        // Создать JSON строку из списка
         public static string MakeJSON<T>(List<T> results)
         {
             return JsonConvert.SerializeObject(results, Formatting.Indented);

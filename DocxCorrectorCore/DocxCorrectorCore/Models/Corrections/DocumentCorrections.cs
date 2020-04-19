@@ -12,6 +12,13 @@ namespace DocxCorrectorCore.Models
 
     public sealed class DocumentCorrections
     {
+        public readonly RulesModel RulesModel;
+        public readonly List<ParagraphCorrections> ParagraphsCorrections;
 
+        public DocumentCorrections(RulesModel rules, List<ParagraphCorrections> paragraphsCorrections)
+        {
+            RulesModel = rules;
+            ParagraphsCorrections = paragraphsCorrections;
+        }
     }
 }
