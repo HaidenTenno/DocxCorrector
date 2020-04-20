@@ -37,9 +37,9 @@ namespace DocxCorrectorCore.App
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
             List<PageProperties> pagesProperties = PropertiesPuller.GetAllPagesProperties(filePath: filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
-            string pagesPropertiesJSON = JSONMaker.MakeJSON(pagesProperties);
+            string pagesPropertiesJSON = JSONWorker.MakeJSON(pagesProperties);
             string resultFilePath = Path.Combine(resultDirPath, Config.PagesPropertiesFileName);
-            FileWriter.WriteToFile(resultFilePath, pagesPropertiesJSON);
+            FileWorker.WriteToFile(resultFilePath, pagesPropertiesJSON);
         }
 
         // Проанализировать документ filePath и Создать JSON файл в директории resultDirPath со свойствами его секций
@@ -48,9 +48,9 @@ namespace DocxCorrectorCore.App
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
             List<SectionProperties> sectionsProperties = PropertiesPuller.GetAllSectionsProperties(filePath: filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
-            string sectionsPropertiesJSON = JSONMaker.MakeJSON(sectionsProperties);
+            string sectionsPropertiesJSON = JSONWorker.MakeJSON(sectionsProperties);
             string resultFilePath = Path.Combine(resultDirPath, Config.SectionsPropertiesFileName);
-            FileWriter.WriteToFile(resultFilePath, sectionsPropertiesJSON);
+            FileWorker.WriteToFile(resultFilePath, sectionsPropertiesJSON);
         }
 
         // Проанализировать документ filePath и создать JSON файл в директории resultDirPath со свойствами колонтитулов типа type
@@ -59,9 +59,9 @@ namespace DocxCorrectorCore.App
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
             List<HeaderFooterInfo> headersFootersInfo = PropertiesPuller.GetHeadersFootersInfo(type: type, filePath: filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
-            string headersFootersInfoJSON = JSONMaker.MakeJSON(headersFootersInfo);
+            string headersFootersInfoJSON = JSONWorker.MakeJSON(headersFootersInfo);
             string resultFilePath = Path.Combine(resultDirPath, Config.HeadersFootersInfoFileName);
-            FileWriter.WriteToFile(resultFilePath, headersFootersInfoJSON);
+            FileWorker.WriteToFile(resultFilePath, headersFootersInfoJSON);
         }
 
         // Пройтись по всем поддиректориям rootDir и в каждой создать csv файл, где будут записаны свойства параграфов для всех docx файлов в этой директории
@@ -80,7 +80,7 @@ namespace DocxCorrectorCore.App
                 });
 
                 string resultFilePath = Path.Combine(subDir, Config.ParagraphsPropertiesFileName);
-                FileWriter.FillCSV(resultFilePath, propertiesForDir);
+                FileWorker.FillCSV(resultFilePath, propertiesForDir);
             });
         }
 
@@ -100,7 +100,7 @@ namespace DocxCorrectorCore.App
                 });
 
                 string resultFilePath = Path.Combine(subDir, Config.NormalizedPropertiesFileName);
-                FileWriter.FillCSV(resultFilePath, normalizedPropertiesForDir);
+                FileWorker.FillCSV(resultFilePath, normalizedPropertiesForDir);
             });
         }
 
@@ -124,7 +124,7 @@ namespace DocxCorrectorCore.App
                 });
 
                 string resultFilePath = Path.Combine(subDir, Config.AsyncParagraphsSyncIterationFileName);
-                FileWriter.FillCSV(resultFilePath, propertiesForDir);
+                FileWorker.FillCSV(resultFilePath, propertiesForDir);
             });
         }
 
@@ -144,7 +144,7 @@ namespace DocxCorrectorCore.App
                 }));
 
                 string resultFilePath = Path.Combine(subDir, Config.SyncParagraphsAsyncIterationFileName);
-                FileWriter.FillCSV(resultFilePath, propertiesForDir);
+                FileWorker.FillCSV(resultFilePath, propertiesForDir);
             });
         }
 
@@ -168,7 +168,7 @@ namespace DocxCorrectorCore.App
                 }));
 
                 string resultFilePath = Path.Combine(subDir, Config.AsyncParagraphsAsyncIterationFileName);
-                FileWriter.FillCSV(resultFilePath, propertiesForDir);
+                FileWorker.FillCSV(resultFilePath, propertiesForDir);
             });
         }
 
@@ -192,7 +192,7 @@ namespace DocxCorrectorCore.App
                 });
 
                 string resultFilePath = Path.Combine(subDir, Config.NormalizedPropertiesFileName);
-                FileWriter.FillCSV(resultFilePath, normalizedPropertiesForDir);
+                FileWorker.FillCSV(resultFilePath, normalizedPropertiesForDir);
             });
         }
 
@@ -213,7 +213,7 @@ namespace DocxCorrectorCore.App
         public void SaveDocumentAsPdf(string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            FileWriter.SaveDocumentAsPdf(filePath, resultDirPath);
+            FileWorker.SaveDocumentAsPdf(filePath, resultDirPath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
 
@@ -221,7 +221,7 @@ namespace DocxCorrectorCore.App
         public void SavePagesAsPdf(string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            FileWriter.SavePagesAsPdf(filePath, resultDirPath);
+            FileWorker.SavePagesAsPdf(filePath, resultDirPath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
 
@@ -239,7 +239,7 @@ namespace DocxCorrectorCore.App
         {
             if (Path.GetExtension(filePath) != ".pdf") { Console.WriteLine("Неверное расширение"); return; }
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            Services.GemBoxPdf.GemBoxPdfHelper gemBoxPdfHelper = new Services.GemBoxPdf.GemBoxPdfHelper();
+            Services.Helpers.GemBoxPdfHelper gemBoxPdfHelper = new Services.Helpers.GemBoxPdfHelper();
             gemBoxPdfHelper.PrintContent(filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
@@ -248,13 +248,18 @@ namespace DocxCorrectorCore.App
         // сохранение результата в директории resultDirPath
         public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClasses, string resultDir)
         {
+            string? paragraphsClassesJSON = FileWorker.GetContentOfTextFile(paragraphsClasses);
+            if (paragraphsClassesJSON == null) { return; }
+            List<ParagraphClass>? paragraphsClassesList = JSONWorker.DeserializeParagraphsClasses(paragraphsClassesJSON);
+            if (paragraphsClassesList == null) { return; }
+
             Console.WriteLine($"Started {Path.GetFileName(fileToCorrect)}");
-            // TODO: FIX
-            DocumentCorrections documentCorrections = Corrector.GetCorrections(fileToCorrect, rules, new List<ParagraphClass> { ParagraphClass.Paragraph });
+            DocumentCorrections documentCorrections = Corrector.GetCorrections(fileToCorrect, rules, paragraphsClassesList);
             Console.WriteLine($"Done {Path.GetFileName(fileToCorrect)}");
-            string headersFootersInfoJSON = JSONMaker.MakeJSON(documentCorrections);
+
+            string documentCorrectionsJSON = JSONWorker.MakeJSON(documentCorrections);
             string resultFilePath = Path.Combine(resultDir, Config.MistakesFileName);
-            FileWriter.WriteToFile(resultFilePath, headersFootersInfoJSON);
+            FileWorker.WriteToFile(resultFilePath, documentCorrectionsJSON);
         }
     }
 }

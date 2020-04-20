@@ -9,23 +9,19 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.Services
 {
-    public static class FileWriter
+    public static class FileWorker
     {
         // Записать текст text в файл, расположенный в filePath
         public static void WriteToFile(string filePath, string text)
         {
             try
             {
-                using (StreamWriter sw = new StreamWriter(filePath, false, System.Text.Encoding.UTF8))
-                {
-                    sw.WriteLine(text);
-                }
+                using StreamWriter sw = new StreamWriter(filePath, false, System.Text.Encoding.UTF8);
+                sw.WriteLine(text);
             }
             catch (Exception e)
             {
-#if DEBUG
                 Console.WriteLine(e.Message);
-#endif
             }
         }
 
@@ -73,6 +69,20 @@ namespace DocxCorrectorCore.Services
                 string resultFilePath = Path.Combine(resultDirPath, $"{pageNumber}.pdf");
                 page.Save(resultFilePath);
                 pageNumber++;
+            }
+        }
+
+        // Получить все текстовое содержимое файла
+        public static string? GetContentOfTextFile(string filePath)
+        {
+            try
+            {
+                return File.ReadAllText(filePath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
             }
         }
     }

@@ -18,17 +18,13 @@ namespace DocxCorrectorCore.Services
             }
             catch (Exception ex)
             {
-#if DEBUG
                 Console.WriteLine(ex.Message);
-#endif
                 return;
             }
 
             foreach (string subDir in subDirs)
             {
-#if DEBUG
                 Console.WriteLine(subDir);
-#endif
                 action(subDir);
             }
         }
@@ -43,9 +39,7 @@ namespace DocxCorrectorCore.Services
             }
             catch (Exception ex)
             {
-#if DEBUG
                 Console.WriteLine(ex.Message);
-#endif
                 return;
             }
 
@@ -65,9 +59,7 @@ namespace DocxCorrectorCore.Services
             }
             catch (Exception ex)
             {
-#if DEBUG
                 Console.WriteLine(ex.Message);
-#endif
                 return;
             }
 

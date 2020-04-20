@@ -1,7 +1,7 @@
 ﻿using System;
 using Pdf = GemBox.Pdf;
 
-namespace DocxCorrectorCore.Services.GemBoxPdf
+namespace DocxCorrectorCore.Services.Helpers
 {
     public sealed class GemBoxPdfHelper
     {

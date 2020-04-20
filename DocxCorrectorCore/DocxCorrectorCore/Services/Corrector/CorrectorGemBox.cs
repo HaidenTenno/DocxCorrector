@@ -26,11 +26,10 @@ namespace DocxCorrectorCore.Services.Corrector
             List<ParagraphCorrections> paragraphsCorrections = new List<ParagraphCorrections>();
 
             // TODO: REMOVE
-            List<Word.Paragraph> paragraphs = document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph).Select((element) => (Word.Paragraph)element).ToList();
             ParagraphCorrections testCorrection = new ParagraphCorrections(
                 paragraphID: 0,
                 paragraphClass: paragraphClasses[0],
-                prefix: GemBoxHelper.GetParagraphPrefix(paragraphs[0], 20),
+                prefix: "Test prefix",
                 mistakes: new List<ParagraphMistake>
                 {
                     new ParagraphMistake(
