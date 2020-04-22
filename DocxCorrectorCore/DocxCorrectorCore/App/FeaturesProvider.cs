@@ -64,6 +64,16 @@ namespace DocxCorrectorCore.App
             FileWorker.WriteToFile(resultFilePath, headersFootersInfoJSON);
         }
 
+        // Проанализировать документ filePath и создать csv файл в директории resultDirPath со свойствами его параграфов
+        public void GenerateParagraphsPropertiesCSV(string filePath, string resultDirPath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            List<ParagraphProperties> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+            string resultFilePath = Path.Combine(resultDirPath, Config.ParagraphsPropertiesFileName);
+            FileWorker.FillCSV(resultFilePath, propertiesForFile);
+        }
+
         // Пройтись по всем поддиректориям rootDir и в каждой создать csv файл, где будут записаны свойства параграфов для всех docx файлов в этой директории
         public void GenerateCSVFiles(string rootDir)
         {
