@@ -22,7 +22,6 @@ namespace DocxCorrectorCore.UserDialog
     public sealed class UserDialogCoordinator
     {
         // Private
-
         private readonly QuestionsNavigationController NavigationController;
 
         // Creators

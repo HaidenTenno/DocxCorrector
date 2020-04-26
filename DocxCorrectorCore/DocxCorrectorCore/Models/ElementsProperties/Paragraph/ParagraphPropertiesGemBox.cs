@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using Word = GemBox.Document;
+using DocxCorrectorCore.Services.Helpers;
 
 namespace DocxCorrectorCore.Models
 {
     public sealed class ParagraphPropertiesGemBox : ParagraphProperties
     {
         public string Content { get; }
+        // Element marks
+        public string PrevElementMark { get; }
+        public string CurElementMark { get; }
+        public string NextElementMark { get; }
         // CharacterFormatForParagraphMark
         public string FullBold { get; }
         public string FullItalic { get; }
@@ -45,8 +50,10 @@ namespace DocxCorrectorCore.Models
         public string? CurrentListStartAt { get; }
         public string? CurrentListTextPosition { get; }
         public string? CurrentListTrailingCharacter { get; }
+        // First word is (Таблица, Табл, Рисунок, Рис., Рис, Табл.)
+        public string? FirstKeyWord { get; }
         // RunnersFormat
-        public List<Dictionary<string, string>> RunnersFormat { get; }
+        //public List<Dictionary<string, string>> RunnersFormat { get; }
 
         public ParagraphPropertiesGemBox(Word.Paragraph paragraph)
         {
@@ -92,38 +99,40 @@ namespace DocxCorrectorCore.Models
                 CurrentListTextPosition = paragraph.ListFormat.ListLevelFormat.TextPosition.ToString();
                 CurrentListTrailingCharacter = paragraph.ListFormat.ListLevelFormat.TrailingCharacter.ToString();
             }
+            // First word is (Таблица, Табл, Рисунок, Рис., Рис, Табл.)
+            FirstKeyWord = GemBoxHelper.CheckIfFirtWordOfParagraphIsOneOf(paragraph, new string[] { "Таблица", "Табл", "Рисунок", "Рис.", "Рис", "Табл." });
             // RunnersFormat
-            RunnersFormat = new List<Dictionary<string, string>>();
-            foreach (Word.Run runner in paragraph.GetChildElements(true, Word.ElementType.Run))
-            {
-                Dictionary<string, string> runnerFormat = new Dictionary<string, string>()
-                {
-                    { "Bold", runner.CharacterFormat.Bold.ToString() },
-                    { "\nItalic", runner.CharacterFormat.Italic.ToString() },
-                    { "\nAppCaps", runner.CharacterFormat.AllCaps.ToString() },
-                    { "\nBackgroundColor", runner.CharacterFormat.BackgroundColor.ToString() },
-                    { "\nDoubleStrikethrough", runner.CharacterFormat.DoubleStrikethrough.ToString() },
-                    { "\nFontColor", runner.CharacterFormat.FontColor.ToString() },
-                    { "\nFontName", runner.CharacterFormat.FontName.ToString() },
-                    { "\nHidden", runner.CharacterFormat.Hidden.ToString() },
-                    { "\nHighlightColor", runner.CharacterFormat.HighlightColor.ToString() },
-                    { "\nKerning", runner.CharacterFormat.Kerning.ToString() },
-                    { "\nLanguage", runner.CharacterFormat.Language.ToString() },
-                    { "\nPosition", runner.CharacterFormat.Position.ToString() },
-                    { "\nRightToLeft", runner.CharacterFormat.RightToLeft.ToString() },
-                    { "\nScaling", runner.CharacterFormat.Scaling.ToString() },
-                    { "\nSize", runner.CharacterFormat.Size.ToString() },
-                    { "\nSmallCaps", runner.CharacterFormat.SmallCaps.ToString() },
-                    { "\nSpacing", runner.CharacterFormat.Spacing.ToString() },
-                    { "\nStrikethrough", runner.CharacterFormat.Strikethrough.ToString() },
-                    { "\nStyle", runner.CharacterFormat.Style.ToString() },
-                    { "\nSubscript", runner.CharacterFormat.Subscript.ToString() },
-                    { "\nSuperscript", runner.CharacterFormat.Superscript.ToString() },
-                    { "\nUnderlineColor", runner.CharacterFormat.UnderlineColor.ToString() },
-                    { "\nUnderlineStyle", runner.CharacterFormat.UnderlineStyle.ToString() }
-                };
-                RunnersFormat.Add(runnerFormat);
-            }
+            //RunnersFormat = new List<Dictionary<string, string>>();
+            //foreach (Word.Run runner in paragraph.GetChildElements(true, Word.ElementType.Run))
+            //{
+            //    Dictionary<string, string> runnerFormat = new Dictionary<string, string>()
+            //    {
+            //        { "Bold", runner.CharacterFormat.Bold.ToString() },
+            //        { "\nItalic", runner.CharacterFormat.Italic.ToString() },
+            //        { "\nAppCaps", runner.CharacterFormat.AllCaps.ToString() },
+            //        { "\nBackgroundColor", runner.CharacterFormat.BackgroundColor.ToString() },
+            //        { "\nDoubleStrikethrough", runner.CharacterFormat.DoubleStrikethrough.ToString() },
+            //        { "\nFontColor", runner.CharacterFormat.FontColor.ToString() },
+            //        { "\nFontName", runner.CharacterFormat.FontName.ToString() },
+            //        { "\nHidden", runner.CharacterFormat.Hidden.ToString() },
+            //        { "\nHighlightColor", runner.CharacterFormat.HighlightColor.ToString() },
+            //        { "\nKerning", runner.CharacterFormat.Kerning.ToString() },
+            //        { "\nLanguage", runner.CharacterFormat.Language.ToString() },
+            //        { "\nPosition", runner.CharacterFormat.Position.ToString() },
+            //        { "\nRightToLeft", runner.CharacterFormat.RightToLeft.ToString() },
+            //        { "\nScaling", runner.CharacterFormat.Scaling.ToString() },
+            //        { "\nSize", runner.CharacterFormat.Size.ToString() },
+            //        { "\nSmallCaps", runner.CharacterFormat.SmallCaps.ToString() },
+            //        { "\nSpacing", runner.CharacterFormat.Spacing.ToString() },
+            //        { "\nStrikethrough", runner.CharacterFormat.Strikethrough.ToString() },
+            //        { "\nStyle", runner.CharacterFormat.Style.ToString() },
+            //        { "\nSubscript", runner.CharacterFormat.Subscript.ToString() },
+            //        { "\nSuperscript", runner.CharacterFormat.Superscript.ToString() },
+            //        { "\nUnderlineColor", runner.CharacterFormat.UnderlineColor.ToString() },
+            //        { "\nUnderlineStyle", runner.CharacterFormat.UnderlineStyle.ToString() }
+            //    };
+            //    RunnersFormat.Add(runnerFormat);
+            //}
         }
     }
 }

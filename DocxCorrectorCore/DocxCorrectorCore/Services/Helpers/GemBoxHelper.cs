@@ -68,5 +68,16 @@ namespace DocxCorrectorCore.Services.Helpers
         {
             return paragraph.Content.ToString().Length > prefixLength ? paragraph.Content.ToString().Substring(0, prefixLength) : paragraph.Content.ToString();
         }
+
+        // 
+        internal static string? CheckIfFirtWordOfParagraphIsOneOf(Word.Paragraph paragraph, string[] keyWords)
+        {
+            string firstWord = paragraph.Content.ToString().Split(" ")[0];
+            foreach (var keyWord in keyWords)
+            {
+                if (keyWord == firstWord) { return keyWord; }
+            }
+            return null;
+        } 
     }
 }
