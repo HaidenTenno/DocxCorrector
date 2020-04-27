@@ -68,8 +68,9 @@ namespace DocxCorrectorCore.App
         public void GenerateParagraphsPropertiesCSV(string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            List<ParagraphProperties> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
-            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+            List<ParagraphProperties> propertiesForFile = new List<ParagraphProperties>();
+            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath); }, TimeCounter.ResultType.TotalMilliseconds);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}");
             string resultFilePath = Path.Combine(resultDirPath, Config.ParagraphsPropertiesFileName);
             FileWorker.FillCSV(resultFilePath, propertiesForFile);
         }
@@ -210,13 +211,13 @@ namespace DocxCorrectorCore.App
         public void TestParagraphPropertiesPullingSpeed(string rootDir)
         {
             Console.WriteLine("Синхронный анализ параграфов, синхронный проход по директории");
-            TimeCounter.CountTime(() => GenerateCSVFiles(rootDir));
+            TimeCounter.LogExecutionTime(() => GenerateCSVFiles(rootDir));
             Console.WriteLine("\nАсинхронный анализ параграфов, синхронный проход по директории");
-            TimeCounter.CountTime(() => GenerateCSVFilesAsync(rootDir));
+            TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsync(rootDir));
             Console.WriteLine("\nCинхронный анализ параграфов, асинхронный проход по директории");
-            TimeCounter.CountTime(() => GenerateCSVFilesWithAsyncFilesIteration(rootDir));
+            TimeCounter.LogExecutionTime(() => GenerateCSVFilesWithAsyncFilesIteration(rootDir));
             Console.WriteLine("\nАсинхронный анализ параграфов, асинхронный проход по директории");
-            TimeCounter.CountTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir));
+            TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir));
         }
 
         // Сохранить документ filePath как pdf в директории resultDirPath
@@ -264,8 +265,9 @@ namespace DocxCorrectorCore.App
             if (paragraphsClassesList == null) { return; }
 
             Console.WriteLine($"Started {Path.GetFileName(fileToCorrect)}");
-            DocumentCorrections documentCorrections = Corrector.GetCorrections(fileToCorrect, rules, paragraphsClassesList);
-            Console.WriteLine($"Done {Path.GetFileName(fileToCorrect)}");
+            DocumentCorrections documentCorrections = new DocumentCorrections(rules);
+            string time = TimeCounter.GetExecutionTime(() => { documentCorrections = Corrector.GetCorrections(fileToCorrect, rules, paragraphsClassesList); }, TimeCounter.ResultType.TotalMilliseconds);
+            Console.WriteLine($"Done {Path.GetFileName(fileToCorrect)} in {time}");
 
             string documentCorrectionsJSON = JSONWorker.MakeJSON(documentCorrections);
             string resultFilePath = Path.Combine(resultDir, Config.MistakesFileName);

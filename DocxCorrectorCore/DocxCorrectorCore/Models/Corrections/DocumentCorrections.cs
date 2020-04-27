@@ -15,10 +15,18 @@ namespace DocxCorrectorCore.Models
         public readonly RulesModel RulesModel;
         public readonly List<ParagraphCorrections> ParagraphsCorrections;
 
+        public int a;
+
         public DocumentCorrections(RulesModel rules, List<ParagraphCorrections> paragraphsCorrections)
         {
             RulesModel = rules;
             ParagraphsCorrections = paragraphsCorrections;
+        }
+
+        public DocumentCorrections(RulesModel rules)
+        {
+            RulesModel = rules;
+            ParagraphsCorrections = new List<ParagraphCorrections>();
         }
     }
 }
