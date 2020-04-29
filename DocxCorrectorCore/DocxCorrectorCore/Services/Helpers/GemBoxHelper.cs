@@ -10,7 +10,7 @@ namespace DocxCorrectorCore.Services.Helpers
         {
             Word.ComponentInfo.SetLicense("FREE-LIMITED-KEY");
         }
-
+        
         // Открыть документ filePath
         internal static Word.DocumentModel? OpenDocument(string filePath)
         {
@@ -18,7 +18,8 @@ namespace DocxCorrectorCore.Services.Helpers
             {
                 Word.DocumentModel document = Word.DocumentModel.Load(filePath);
                 document.CalculateListItems();
-                document.GetPaginator(new Word.PaginatorOptions() { UpdateFields = true });
+                // TODO: NOT SUPPORTED IN OUR DLL
+                //document.GetPaginator(new Word.PaginatorOptions() { UpdateFields = true });
                 return document;
             }
             catch (Exception ex)

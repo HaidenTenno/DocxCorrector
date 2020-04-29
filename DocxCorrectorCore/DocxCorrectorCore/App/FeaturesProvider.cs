@@ -212,12 +212,15 @@ namespace DocxCorrectorCore.App
         {
             Console.WriteLine("Синхронный анализ параграфов, синхронный проход по директории");
             TimeCounter.LogExecutionTime(() => GenerateCSVFiles(rootDir));
-            Console.WriteLine("\nАсинхронный анализ параграфов, синхронный проход по директории");
-            TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsync(rootDir));
+
+            // TODO: NOT SUPPORTED IN OUR DLL
+
+            //Console.WriteLine("\nАсинхронный анализ параграфов, синхронный проход по директории");
+            //TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsync(rootDir));
             Console.WriteLine("\nCинхронный анализ параграфов, асинхронный проход по директории");
             TimeCounter.LogExecutionTime(() => GenerateCSVFilesWithAsyncFilesIteration(rootDir));
-            Console.WriteLine("\nАсинхронный анализ параграфов, асинхронный проход по директории");
-            TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir));
+            //Console.WriteLine("\nАсинхронный анализ параграфов, асинхронный проход по директории");
+            //TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir));
         }
 
         // Сохранить документ filePath как pdf в директории resultDirPath
