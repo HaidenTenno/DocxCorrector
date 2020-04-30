@@ -34,10 +34,21 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
 
             List<ParagraphProperties> allParagraphProperties = new List<ParagraphProperties>();
 
-            foreach (Word.Paragraph paragraph in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
+            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
-                ParagraphProperties paragraphProperties = new ParagraphPropertiesGemBox(paragraph: paragraph);
-                allParagraphProperties.Add(paragraphProperties);
+                foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
+                {
+                    if (element is Word.Paragraph paragraph)
+                    {
+                        ParagraphProperties paragraphProperties = new ParagraphPropertiesGemBox(paragraph: paragraph);
+                        allParagraphProperties.Add(paragraphProperties);
+                    } 
+                    else if (element is Word.Tables.Table)
+                    {
+                        ParagraphProperties paragraphProperties = new ParagraphPropertiesGemBox(placeHolder: "Table");
+                        allParagraphProperties.Add(paragraphProperties);
+                    }
+                }
             }
 
             return allParagraphProperties;

@@ -67,10 +67,11 @@ namespace DocxCorrectorCore.Services.Helpers
         // Получить первые prefixLength символов параграфа paragraph (если длина меньшье, то вернуть весь параграф)
         internal static string GetParagraphPrefix(Word.Paragraph paragraph, int prefixLength)
         {
-            return paragraph.Content.ToString().Length > prefixLength ? paragraph.Content.ToString().Substring(0, prefixLength) : paragraph.Content.ToString();
+            string result = paragraph.Content.ToString().Length > prefixLength ? paragraph.Content.ToString().Substring(0, prefixLength) : paragraph.Content.ToString();
+            return result.Trim();
         }
 
-        // 
+        // Проверить, что первое слово в параграфе явлется одним из keyWords и вернуть его, если это так
         internal static string? CheckIfFirtWordOfParagraphIsOneOf(Word.Paragraph paragraph, string[] keyWords)
         {
             string firstWord = paragraph.Content.ToString().Split(" ")[0];
