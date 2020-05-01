@@ -59,26 +59,30 @@ namespace DocxCorrectorCore.Models
             string result = "";
             foreach (var element in paragraph.GetChildElements(false, new Word.ElementType[] { Word.ElementType.Run, Word.ElementType.Picture, Word.ElementType.Chart, Word.ElementType.Shape }))
             {
-                if (element is Word.Run run)
+                switch (element)
                 {
-                    result += run.Content;
-                }
-                else if (element is Word.Picture)
-                {
-                    result += "PICTURE ";
-                }
-                else if (element is Word.Chart)
-                {
-                    result += "CHART ";
-                }
-                else if (element is Word.Drawing.Shape)
-                {
-                    result += "SHAPE ";
+                    case Word.Run run:
+                        result += run.Content;
+                        break;
+                    case Word.Picture picture:
+                        result += "PICTURE ";
+                        break;
+                    case Word.Chart _:
+                        result += "CHART ";
+                        break;
+                    case Word.Drawing.Shape _:
+                        result += "SHAPE ";
+                        break;
+                    default:
+                        Console.WriteLine("Unsupported element");
+                        break;
                 }
             }
 
+            result = result.Trim();
+
             if (result == "") { result = "SPACE"; }
-            return result.Trim();
+            return result;
         }
 
         // Public

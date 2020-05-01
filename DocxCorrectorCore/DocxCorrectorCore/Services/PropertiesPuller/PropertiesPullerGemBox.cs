@@ -38,15 +38,20 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
             {
                 foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
                 {
-                    if (element is Word.Paragraph paragraph)
+                    ParagraphProperties paragraphProperties;
+                    switch (element)
                     {
-                        ParagraphProperties paragraphProperties = new ParagraphPropertiesGemBox(paragraph: paragraph);
-                        allParagraphProperties.Add(paragraphProperties);
-                    } 
-                    else if (element is Word.Tables.Table)
-                    {
-                        ParagraphProperties paragraphProperties = new ParagraphPropertiesGemBox(placeHolder: "Table");
-                        allParagraphProperties.Add(paragraphProperties);
+                        case Word.Paragraph paragraph:
+                            paragraphProperties = new ParagraphPropertiesGemBox(paragraph: paragraph);
+                            allParagraphProperties.Add(paragraphProperties);
+                            break;
+                        case Word.Tables.Table _:
+                            paragraphProperties = new ParagraphPropertiesGemBox(placeHolder: "Table");
+                            allParagraphProperties.Add(paragraphProperties);
+                            break;
+                        default:
+                            Console.WriteLine("Unsupported element");
+                            break;
                     }
                 }
             }
