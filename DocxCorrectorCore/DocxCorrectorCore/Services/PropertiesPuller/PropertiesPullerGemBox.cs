@@ -43,7 +43,7 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
 
                 foreach (var childElement in childElements)
                 {
-                    Console.WriteLine($"{prefixStr}{childElement}");
+                    Console.WriteLine($"{prefixStr}{childElement} -> {childElement.ElementType}");
                     PrintChildsInfo(childElement, interation + 1);
                 }
             }
@@ -169,7 +169,7 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
         // Получить свойства верхних/нижних (type) колонтитулов документа filePath
         public override List<HeaderFooterInfo> GetHeadersFootersInfo(HeaderFooterType type, string filePath)
         {
-            List<Word.HeaderFooterType> GetChosenHeaderFooterType(HeaderFooterType type)
+            static List<Word.HeaderFooterType> GetChosenHeaderFooterType(HeaderFooterType type)
             {
                 return type switch
                 {
