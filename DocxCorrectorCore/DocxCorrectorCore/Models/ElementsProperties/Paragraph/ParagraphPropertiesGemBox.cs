@@ -58,7 +58,7 @@ namespace DocxCorrectorCore.Models
         {
             string result = "";
 
-            foreach (var element in paragraph.GetChildElements(false, new Word.ElementType[] { Word.ElementType.Run, Word.ElementType.Picture, Word.ElementType.Chart, Word.ElementType.Shape }))
+            foreach (var element in paragraph.GetChildElements(false, new Word.ElementType[] { Word.ElementType.Run, Word.ElementType.Picture, Word.ElementType.Chart, Word.ElementType.Shape, Word.ElementType.PreservedInline }))
             {
                 switch (element)
                 {
@@ -73,6 +73,9 @@ namespace DocxCorrectorCore.Models
                         break;
                     case Word.Drawing.Shape _:
                         result += "SHAPE ";
+                        break;
+                    case Word.PreservedInline _:
+                        result += "PRESERVED INLINE ";
                         break;
                     default:
                         Console.WriteLine("Unsupported element");
