@@ -26,6 +26,54 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
             Console.WriteLine(document.Content.ToString());
         }
 
+        // Вывести в консоль информацию о структуре документа
+        public override void PrintDocumentStructureInfo(string filePath)
+        {
+            static void PrintChildsInfo(Word.Element element, int interation)
+            {
+                var childElements = element.GetChildElements(false);
+
+                if (childElements.Count() == 0) { return; }
+
+                var prefixStr = "";
+                for (int i = 0; i < interation; i++)
+                {
+                    prefixStr += "\t";
+                }
+
+                foreach (var childElement in childElements)
+                {
+                    Console.WriteLine($"{prefixStr}{childElement}");
+                    PrintChildsInfo(childElement, interation + 1);
+                }
+            }
+
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return; }
+
+            PrintChildsInfo(document, 0);
+        }
+
+
+        // Вывести в консоль информацию о содержании документа filePath
+        public override void PrintTableOfContenstsInfo(string filePath)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return; }
+
+            foreach (Word.TableOfEntries toe in document.GetChildElements(recursively: true, filterElements: Word.ElementType.TableOfEntries))
+            {
+                Console.WriteLine($"CONTENT: {toe.Content}");
+                Console.WriteLine($"INSTRUCTION TEXT: {toe.InstructionText}");
+                foreach (var entry in toe.Entries)
+                {
+                    Console.WriteLine($"ENTRY: {entry.Content}");
+                }
+                Console.WriteLine($"FIELD TYPE: {toe.FieldType}");
+                Console.WriteLine($"IS DIRTY: {toe.IsDirty}");                
+            }
+        }
+
         // Получить свойства всех параграфов документа filePath
         public override List<ParagraphProperties> GetAllParagraphsProperties(string filePath)
         {

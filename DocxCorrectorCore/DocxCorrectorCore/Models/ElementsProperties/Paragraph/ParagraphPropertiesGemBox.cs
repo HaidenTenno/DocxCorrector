@@ -57,6 +57,7 @@ namespace DocxCorrectorCore.Models
         private string GetProperContent(Word.Paragraph paragraph)
         {
             string result = "";
+
             foreach (var element in paragraph.GetChildElements(false, new Word.ElementType[] { Word.ElementType.Run, Word.ElementType.Picture, Word.ElementType.Chart, Word.ElementType.Shape }))
             {
                 switch (element)

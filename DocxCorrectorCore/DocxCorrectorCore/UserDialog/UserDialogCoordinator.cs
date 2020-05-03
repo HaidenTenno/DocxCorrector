@@ -7,6 +7,8 @@ namespace DocxCorrectorCore.UserDialog
     public enum QuestionControllerType
     {
         Print,
+        StructureInfo,
+        TableOfContentsInfo,
         //PageProperties,
         SectionProperties,
         HeadersFooters,
@@ -32,6 +34,8 @@ namespace DocxCorrectorCore.UserDialog
                 actions: new List<(string info, Action action)>()
                 {
                     ("Печать всех параграфов в консоль", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.Print))),
+                    ("Информация о структуре документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.StructureInfo))),
+                    ("Информация о содержании документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.TableOfContentsInfo))),
                     //("Печать свойства странц в файл", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.PageProperties))),
                     ("Печать свойства секций в файл", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.SectionProperties))),
                     ("Печать свойств верхних / нижних колонтитулов", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.HeadersFooters))),
@@ -53,6 +57,8 @@ namespace DocxCorrectorCore.UserDialog
             return type switch
             {
                 QuestionControllerType.Print => new PrintQuestionController(),
+                QuestionControllerType.StructureInfo => new StructureInfoQuestionController(),
+                QuestionControllerType.TableOfContentsInfo => new TableOfContentsInfoQuestionController(),
                 //QuestionControllerType.PageProperties => new PagePropertiesJSONQuestionController(),
                 QuestionControllerType.SectionProperties => new SectionPropertiesJSONQuestionController(),
                 QuestionControllerType.HeadersFooters => new HeadersFootersPropertiesJSONQuestionController(),

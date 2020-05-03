@@ -8,6 +8,12 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
         // Напечатать содержимое документа filePath
         public abstract void PrintContent(string filePath);
 
+        // Вывести в консоль информацию о структуре документа
+        public abstract void PrintDocumentStructureInfo(string filePath);
+
+        // Получить свойства содержания документа filePath
+        public abstract void PrintTableOfContenstsInfo(string filePath);
+
         // Получить свойства всех параграфов документа filePath
         public abstract List<ParagraphProperties> GetAllParagraphsProperties(string filePath);
 

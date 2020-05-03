@@ -31,6 +31,22 @@ namespace DocxCorrectorCore.App
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
 
+        // Напечатать информацию о структуре документа filePath
+        public void PrintStructureInfo(string filePath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            PropertiesPuller.PrintDocumentStructureInfo(filePath: filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+        }
+
+        // Напечатать информацию о содержании документа filePath
+        public void PrintTableOfContentsInfo(string filePath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            PropertiesPuller.PrintTableOfContenstsInfo(filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+        }
+
         // Проанализировать документ filePath и Создать JSON файл в директории resultDirPath со свойствами его страниц
         public void GeneratePagesPropertiesJSON(string filePath, string resultDirPath)
         {
