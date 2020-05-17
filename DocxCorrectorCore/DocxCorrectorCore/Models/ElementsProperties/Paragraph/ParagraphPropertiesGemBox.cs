@@ -8,34 +8,36 @@ namespace DocxCorrectorCore.Models
     public sealed class ParagraphPropertiesGemBox : ParagraphProperties
     {
         public string Content { get; }
+        // First word is (Таблица, Табл, Рисунок, Рис., Рис, Табл.)
+        public string? FirstKeyWord { get; }
         // Element marks
-        public string PrevElementMark { get; }
-        public string CurElementMark { get; }
-        public string NextElementMark { get; }
+        public string? PrevElementMark { get; }
+        public string? CurElementMark { get; }
+        public string? NextElementMark { get; }
         // CharacterFormatForParagraphMark
-        public string FullBold { get; }
-        public string FullItalic { get; }
+        public string? FullBold { get; }
+        public string? FullItalic { get; }
         // ParagraphFormat
-        public string Alignment { get; }
-        public string BackgroundColor { get; }
-        public string KeepLinesTogether { get; }
-        public string KeepWithNext { get; }
-        public string LeftIndentation { get; }
-        public string LineSpacing { get; }
-        public string LineSpacingRule { get; }
-        public string MirrorIndents { get; }
-        public string NoSpaceBetweenParagraphsOfSameStyle { get; }
-        public string OutlineLevel { get; }
-        public string PageBreakBefore { get; }
-        public string RightIndentation { get; }
-        public string RightToLeft { get; }
-        public string SpaceAfter { get; }
-        public string SpaceBefore { get; }
-        public string SpecialIndentation { get; }
-        public string Style { get; }
-        public string WidowControl { get; }
+        public string? Alignment { get; }
+        public string? BackgroundColor { get; }
+        public string? KeepLinesTogether { get; }
+        public string? KeepWithNext { get; }
+        public string? LeftIndentation { get; }
+        public string? LineSpacing { get; }
+        public string? LineSpacingRule { get; }
+        public string? MirrorIndents { get; }
+        public string? NoSpaceBetweenParagraphsOfSameStyle { get; }
+        public string? OutlineLevel { get; }
+        public string? PageBreakBefore { get; }
+        public string? RightIndentation { get; }
+        public string? RightToLeft { get; }
+        public string? SpaceAfter { get; }
+        public string? SpaceBefore { get; }
+        public string? SpecialIndentation { get; }
+        public string? Style { get; }
+        public string? WidowControl { get; }
         // ListFormat
-        public string ListFormatIsList { get; }
+        public string? ListFormatIsList { get; }
         public string? ListStyleHash { get; }
         public string? ListItem { get; }
         public string? ListFormatLevel { get; }
@@ -50,18 +52,53 @@ namespace DocxCorrectorCore.Models
         public string? CurrentListStartAt { get; }
         public string? CurrentListTextPosition { get; }
         public string? CurrentListTrailingCharacter { get; }
-        // First word is (Таблица, Табл, Рисунок, Рис., Рис, Табл.)
-        public string? FirstKeyWord { get; }
-        // RunnersFormat
-        //public List<Dictionary<string, string>> RunnersFormat { get; }
+
+        // Private
+        private string GetProperContent(Word.Paragraph paragraph)
+        {
+            string result = "";
+
+            foreach (var element in paragraph.GetChildElements(false, new Word.ElementType[] { Word.ElementType.Run, Word.ElementType.Picture, Word.ElementType.Chart, Word.ElementType.Shape, Word.ElementType.PreservedInline }))
+            {
+                switch (element)
+                {
+                    case Word.Run run:
+                        result += run.Content;
+                        break;
+                    case Word.Picture picture:
+                        result += "PICTURE ";
+                        break;
+                    case Word.Chart _:
+                        result += "CHART ";
+                        break;
+                    case Word.Drawing.Shape _:
+                        result += "SHAPE ";
+                        break;
+                    case Word.PreservedInline _:
+                        result += "PRESERVED INLINE ";
+                        break;
+                    default:
+                        Console.WriteLine("Unsupported element");
+                        break;
+                }
+            }
+
+            result = result.Trim();
+
+            if (result == "") { result = "SPACE"; }
+            return result;
+        }
+
+        // Public
 
         public ParagraphPropertiesGemBox(Word.Paragraph paragraph)
         {
-            Content = paragraph.Content.ToString().Remove(paragraph.Content.ToString().Length - 1);
-            // CharacterFormatForParagraphMark
+            Content = GetProperContent(paragraph);
+            FirstKeyWord = GemBoxHelper.CheckIfFirtWordOfParagraphIsOneOf(paragraph, new string[] { "Таблица", "Табл", "Рисунок", "Рис.", "Рис", "Табл." });
+            // Свойства символов всего параграфа
             FullBold = paragraph.CharacterFormatForParagraphMark.Bold.ToString();
             FullItalic = paragraph.CharacterFormatForParagraphMark.Italic.ToString();
-            // ParagraphFormat
+            // Свойства параграфа
             Alignment = paragraph.ParagraphFormat.Alignment.ToString();
             BackgroundColor = paragraph.ParagraphFormat.BackgroundColor.ToString();
             KeepLinesTogether = paragraph.ParagraphFormat.KeepLinesTogether.ToString();
@@ -80,7 +117,7 @@ namespace DocxCorrectorCore.Models
             SpecialIndentation = paragraph.ParagraphFormat.SpecialIndentation.ToString();
             Style = paragraph.ParagraphFormat.Style.ToString();
             WidowControl = paragraph.ParagraphFormat.WidowControl.ToString();
-            // ListFormat
+            // Свойства списка
             ListFormatIsList = paragraph.ListFormat.IsList.ToString();
             if (paragraph.ListFormat.IsList)
             {
@@ -99,40 +136,12 @@ namespace DocxCorrectorCore.Models
                 CurrentListTextPosition = paragraph.ListFormat.ListLevelFormat.TextPosition.ToString();
                 CurrentListTrailingCharacter = paragraph.ListFormat.ListLevelFormat.TrailingCharacter.ToString();
             }
-            // First word is (Таблица, Табл, Рисунок, Рис., Рис, Табл.)
-            FirstKeyWord = GemBoxHelper.CheckIfFirtWordOfParagraphIsOneOf(paragraph, new string[] { "Таблица", "Табл", "Рисунок", "Рис.", "Рис", "Табл." });
-            // RunnersFormat
-            //RunnersFormat = new List<Dictionary<string, string>>();
-            //foreach (Word.Run runner in paragraph.GetChildElements(true, Word.ElementType.Run))
-            //{
-            //    Dictionary<string, string> runnerFormat = new Dictionary<string, string>()
-            //    {
-            //        { "Bold", runner.CharacterFormat.Bold.ToString() },
-            //        { "\nItalic", runner.CharacterFormat.Italic.ToString() },
-            //        { "\nAppCaps", runner.CharacterFormat.AllCaps.ToString() },
-            //        { "\nBackgroundColor", runner.CharacterFormat.BackgroundColor.ToString() },
-            //        { "\nDoubleStrikethrough", runner.CharacterFormat.DoubleStrikethrough.ToString() },
-            //        { "\nFontColor", runner.CharacterFormat.FontColor.ToString() },
-            //        { "\nFontName", runner.CharacterFormat.FontName.ToString() },
-            //        { "\nHidden", runner.CharacterFormat.Hidden.ToString() },
-            //        { "\nHighlightColor", runner.CharacterFormat.HighlightColor.ToString() },
-            //        { "\nKerning", runner.CharacterFormat.Kerning.ToString() },
-            //        { "\nLanguage", runner.CharacterFormat.Language.ToString() },
-            //        { "\nPosition", runner.CharacterFormat.Position.ToString() },
-            //        { "\nRightToLeft", runner.CharacterFormat.RightToLeft.ToString() },
-            //        { "\nScaling", runner.CharacterFormat.Scaling.ToString() },
-            //        { "\nSize", runner.CharacterFormat.Size.ToString() },
-            //        { "\nSmallCaps", runner.CharacterFormat.SmallCaps.ToString() },
-            //        { "\nSpacing", runner.CharacterFormat.Spacing.ToString() },
-            //        { "\nStrikethrough", runner.CharacterFormat.Strikethrough.ToString() },
-            //        { "\nStyle", runner.CharacterFormat.Style.ToString() },
-            //        { "\nSubscript", runner.CharacterFormat.Subscript.ToString() },
-            //        { "\nSuperscript", runner.CharacterFormat.Superscript.ToString() },
-            //        { "\nUnderlineColor", runner.CharacterFormat.UnderlineColor.ToString() },
-            //        { "\nUnderlineStyle", runner.CharacterFormat.UnderlineStyle.ToString() }
-            //    };
-            //    RunnersFormat.Add(runnerFormat);
-            //}
         }
+
+        // PlaceHolder constructor
+        public ParagraphPropertiesGemBox(string placeHolder)
+        {
+            Content = placeHolder;
+        }       
     }
 }

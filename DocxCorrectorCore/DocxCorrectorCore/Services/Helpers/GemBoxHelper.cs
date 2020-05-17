@@ -10,7 +10,7 @@ namespace DocxCorrectorCore.Services.Helpers
         {
             Word.ComponentInfo.SetLicense("FREE-LIMITED-KEY");
         }
-
+        
         // Открыть документ filePath
         internal static Word.DocumentModel? OpenDocument(string filePath)
         {
@@ -18,7 +18,8 @@ namespace DocxCorrectorCore.Services.Helpers
             {
                 Word.DocumentModel document = Word.DocumentModel.Load(filePath);
                 document.CalculateListItems();
-                document.GetPaginator(new Word.PaginatorOptions() { UpdateFields = true });
+                // TODO: NOT SUPPORTED IN OUR DLL
+                //document.GetPaginator(new Word.PaginatorOptions() { UpdateFields = true });
                 return document;
             }
             catch (Exception ex)
@@ -66,10 +67,11 @@ namespace DocxCorrectorCore.Services.Helpers
         // Получить первые prefixLength символов параграфа paragraph (если длина меньшье, то вернуть весь параграф)
         internal static string GetParagraphPrefix(Word.Paragraph paragraph, int prefixLength)
         {
-            return paragraph.Content.ToString().Length > prefixLength ? paragraph.Content.ToString().Substring(0, prefixLength) : paragraph.Content.ToString();
+            string result = paragraph.Content.ToString().Length > prefixLength ? paragraph.Content.ToString().Substring(0, prefixLength) : paragraph.Content.ToString();
+            return result.Trim();
         }
 
-        // 
+        // Проверить, что первое слово в параграфе явлется одним из keyWords и вернуть его, если это так
         internal static string? CheckIfFirtWordOfParagraphIsOneOf(Word.Paragraph paragraph, string[] keyWords)
         {
             string firstWord = paragraph.Content.ToString().Split(" ")[0];

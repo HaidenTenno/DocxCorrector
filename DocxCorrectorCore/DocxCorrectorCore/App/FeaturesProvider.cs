@@ -31,6 +31,22 @@ namespace DocxCorrectorCore.App
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
 
+        // Напечатать информацию о структуре документа filePath
+        public void PrintStructureInfo(string filePath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            PropertiesPuller.PrintDocumentStructureInfo(filePath: filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+        }
+
+        // Напечатать информацию о содержании документа filePath
+        public void PrintTableOfContentsInfo(string filePath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            PropertiesPuller.PrintTableOfContenstsInfo(filePath);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+        }
+
         // Проанализировать документ filePath и Создать JSON файл в директории resultDirPath со свойствами его страниц
         public void GeneratePagesPropertiesJSON(string filePath, string resultDirPath)
         {
@@ -212,12 +228,15 @@ namespace DocxCorrectorCore.App
         {
             Console.WriteLine("Синхронный анализ параграфов, синхронный проход по директории");
             TimeCounter.LogExecutionTime(() => GenerateCSVFiles(rootDir));
-            Console.WriteLine("\nАсинхронный анализ параграфов, синхронный проход по директории");
-            TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsync(rootDir));
+
+            // TODO: NOT SUPPORTED IN OUR DLL
+
+            //Console.WriteLine("\nАсинхронный анализ параграфов, синхронный проход по директории");
+            //TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsync(rootDir));
             Console.WriteLine("\nCинхронный анализ параграфов, асинхронный проход по директории");
             TimeCounter.LogExecutionTime(() => GenerateCSVFilesWithAsyncFilesIteration(rootDir));
-            Console.WriteLine("\nАсинхронный анализ параграфов, асинхронный проход по директории");
-            TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir));
+            //Console.WriteLine("\nАсинхронный анализ параграфов, асинхронный проход по директории");
+            //TimeCounter.LogExecutionTime(() => GenerateCSVFilesAsyncWithAsyncFilesIteration(rootDir));
         }
 
         // Сохранить документ filePath как pdf в директории resultDirPath
