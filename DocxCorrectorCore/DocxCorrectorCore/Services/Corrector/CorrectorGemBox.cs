@@ -25,6 +25,8 @@ namespace DocxCorrectorCore.Services.Corrector
 
             List<ParagraphCorrections> paragraphsCorrections = new List<ParagraphCorrections>();
 
+            // TODO: NEXT STEP (AFTER ELEMENTS OBJECT MODEL IMPLEMENTATION)
+
             // TODO: REMOVE
             ParagraphCorrections testCorrection = new ParagraphCorrections(
                 paragraphID: 0,
