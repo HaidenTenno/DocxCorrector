@@ -37,7 +37,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public virtual float FontSize => 14f;
 
         // Отступ первой строки
-        public virtual float FirstLineIndent => 35.45f;
+        public virtual float FirstLineIndent => 35.45f; // = 1.25cm?
 
         // Курсив
         public virtual bool Italic => false;
