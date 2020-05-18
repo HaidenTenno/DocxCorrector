@@ -1,4 +1,6 @@
-﻿namespace DocxCorrectorCore.Models.ElementsObjectModel
+﻿using System;
+
+namespace DocxCorrectorCore.Models.ElementsObjectModel
 {
     public class ParagrapghBeforeEquation : Paragraph
     {

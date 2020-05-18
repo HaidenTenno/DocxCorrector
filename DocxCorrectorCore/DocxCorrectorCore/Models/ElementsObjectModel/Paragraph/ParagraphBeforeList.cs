@@ -8,5 +8,4 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public override bool KeepWithNext => true;
         public override string[] Suffixes => new string[] { ":" };
     }
-
 }

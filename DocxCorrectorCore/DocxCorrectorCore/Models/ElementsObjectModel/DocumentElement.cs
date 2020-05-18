@@ -2,7 +2,7 @@
 
 namespace DocxCorrectorCore.Models.ElementsObjectModel
 {
-    public enum AligmentType : int
+    public enum AlignmentType : int
     {
         Left,
         Center,
@@ -16,6 +16,13 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         Upper,
         Lower,
         Number,
+        Other
+    }
+
+    public enum FontCaseType : int
+    {
+        UpperCase,
+        Lowercase,
         Other
     }
 
@@ -58,7 +65,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public virtual int TextColor => 0xFFFFFF;
 
         // Выравнивание
-        public virtual AligmentType Aligment => AligmentType.Justify;
+        public virtual AlignmentType Alignment => AlignmentType.Justify;
 
         // Особенность начального символа
         public virtual StartSymbolType StartSymbol => StartSymbolType.Upper;
@@ -71,5 +78,11 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
 
         // Не отрывать от следующего
         public virtual bool KeepWithNext => false;
+        
+        // Особенность начертания
+        public virtual FontCaseType? FontCase => null;
+        
+        // Количество пустых строк (отбивок, SPACE, n0) после параграфа
+        public virtual int? EmptyLinesAfter => null;
     }
 }
