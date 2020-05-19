@@ -19,7 +19,8 @@ namespace DocxCorrectorCore.UserDialog
         //SaveDocumentAsPdf,
         //SavePagesAsPdf,
         //ReadPdfGemboxDocument,
-        //ReadPdfGemboxPdf
+        //ReadPdfGemboxPdf,
+        CheckDocument
     }
 
     public sealed class UserDialogCoordinator
@@ -46,7 +47,8 @@ namespace DocxCorrectorCore.UserDialog
                     //("Сохранение документа как pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.SaveDocumentAsPdf))),
                     //("Сохранение каждой страницы документа отдельным pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.SavePagesAsPdf))),
                     //("Чтение pdf документа библиотекой Gembox.Document", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ReadPdfGemboxDocument))),
-                    //("Чтение pdf документа библиотекой Gembox.Pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ReadPdfGemboxPdf)))
+                    //("Чтение pdf документа библиотекой Gembox.Pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ReadPdfGemboxPdf))),
+                    ("Проверить оформление docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CheckDocument)))
                 }
             );
             return mainMenu;
@@ -70,6 +72,7 @@ namespace DocxCorrectorCore.UserDialog
                 //QuestionControllerType.SavePagesAsPdf => new SavePagesAsPdfQuestionController(),
                 //QuestionControllerType.ReadPdfGemboxDocument => new ReadPdfGemBoxDocumentQuestionController(),
                 //QuestionControllerType.ReadPdfGemboxPdf => new ReadPdfGemBoxPdfQuestionController(),
+                QuestionControllerType.CheckDocument => new CheckDocumentQuestionController(),
                 _ => throw new NotImplementedException()
             };
         }

@@ -276,9 +276,9 @@ namespace DocxCorrectorCore.App
 
         // Получить список ошибок форматирования для ВСЕГО документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
         // сохранение результата в директории resultDirPath
-        public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClasses, string resultDir)
+        public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClassesFile, string resultDir)
         {
-            string? paragraphsClassesJSON = FileWorker.GetContentOfTextFile(paragraphsClasses);
+            string? paragraphsClassesJSON = FileWorker.GetContentOfTextFile(paragraphsClassesFile);
             if (paragraphsClassesJSON == null) { return; }
             List<ParagraphClass>? paragraphsClassesList = JSONWorker.DeserializeParagraphsClasses(paragraphsClassesJSON);
             if (paragraphsClassesList == null) { return; }
