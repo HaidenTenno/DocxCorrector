@@ -94,7 +94,7 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
                             allParagraphProperties.Add(paragraphProperties);
                             break;
                         case Word.Tables.Table _:
-                            paragraphProperties = new ParagraphPropertiesGemBox(placeHolder: "Table");
+                            paragraphProperties = new ParagraphPropertiesGemBox(placeHolder: "TABLE");
                             allParagraphProperties.Add(paragraphProperties);
                             break;
                         default:
