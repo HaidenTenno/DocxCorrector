@@ -6,5 +6,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
     {
         //c0
         public override string[] Suffixes => new string[] { ".", "!", "?" };
+        
+        // TODO: Внутри параграфа МОЖЕТ встречаться фраза, оформленная курсивом
     }
 }
