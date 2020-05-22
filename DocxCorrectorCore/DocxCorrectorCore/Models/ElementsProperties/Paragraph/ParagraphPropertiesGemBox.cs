@@ -8,6 +8,7 @@ namespace DocxCorrectorCore.Models
     public sealed class ParagraphPropertiesGemBox : ParagraphProperties
     {
         public string Content { get; }
+        public string? LastSymbolPd { get;  }
         // First word is (Таблица, Табл, Рисунок, Рис., Рис, Табл.)
         public string? FirstKeyWord { get; }
         // Element marks
@@ -19,7 +20,6 @@ namespace DocxCorrectorCore.Models
         public string? FullItalic { get; }
         // ParagraphFormat
         public string? Alignment { get; }
-        public string? BackgroundColor { get; }
         public string? KeepLinesTogether { get; }
         public string? KeepWithNext { get; }
         public string? LeftIndentation { get; }
@@ -30,28 +30,9 @@ namespace DocxCorrectorCore.Models
         public string? OutlineLevel { get; }
         public string? PageBreakBefore { get; }
         public string? RightIndentation { get; }
-        public string? RightToLeft { get; }
         public string? SpaceAfter { get; }
         public string? SpaceBefore { get; }
         public string? SpecialIndentation { get; }
-        public string? Style { get; }
-        public string? WidowControl { get; }
-        // ListFormat
-        public string? ListFormatIsList { get; }
-        public string? ListStyleHash { get; }
-        public string? ListItem { get; }
-        public string? ListFormatLevel { get; }
-        public string? ListFormat { get; }
-        public string? CurrentListAligment { get; }
-        public string? CurrentListIsLegal { get; }
-        public string? CurrentListLevel { get; }
-        public string? CurrentListNumberFormat { get; }
-        public string? CurrentListNumberPosition { get; }
-        public string? CurrentListNumberStyle { get; }
-        public string? CurrentListRestartAfterLevel { get; }
-        public string? CurrentListStartAt { get; }
-        public string? CurrentListTextPosition { get; }
-        public string? CurrentListTrailingCharacter { get; }
 
         // Private
         private string GetProperContent(Word.Paragraph paragraph)
@@ -94,13 +75,13 @@ namespace DocxCorrectorCore.Models
         public ParagraphPropertiesGemBox(Word.Paragraph paragraph)
         {
             Content = GetProperContent(paragraph);
+            LastSymbolPd = GemBoxHelper.CheckIfLastSymbolOfParagraphIsOneOf(paragraph, new string[] { ".", ",", ":", ";", "!" });
             FirstKeyWord = GemBoxHelper.CheckIfFirtWordOfParagraphIsOneOf(paragraph, new string[] { "Таблица", "Табл", "Рисунок", "Рис.", "Рис", "Табл." });
             // Свойства символов всего параграфа
             FullBold = paragraph.CharacterFormatForParagraphMark.Bold.ToString();
             FullItalic = paragraph.CharacterFormatForParagraphMark.Italic.ToString();
             // Свойства параграфа
             Alignment = paragraph.ParagraphFormat.Alignment.ToString();
-            BackgroundColor = paragraph.ParagraphFormat.BackgroundColor.ToString();
             KeepLinesTogether = paragraph.ParagraphFormat.KeepLinesTogether.ToString();
             KeepWithNext = paragraph.ParagraphFormat.KeepWithNext.ToString();
             LeftIndentation = paragraph.ParagraphFormat.LeftIndentation.ToString();
@@ -111,31 +92,9 @@ namespace DocxCorrectorCore.Models
             OutlineLevel = paragraph.ParagraphFormat.OutlineLevel.ToString();
             PageBreakBefore = paragraph.ParagraphFormat.PageBreakBefore.ToString();
             RightIndentation = paragraph.ParagraphFormat.RightIndentation.ToString();
-            RightToLeft = paragraph.ParagraphFormat.RightToLeft.ToString();
             SpaceAfter = paragraph.ParagraphFormat.SpaceAfter.ToString();
             SpaceBefore = paragraph.ParagraphFormat.SpaceBefore.ToString();
             SpecialIndentation = paragraph.ParagraphFormat.SpecialIndentation.ToString();
-            Style = paragraph.ParagraphFormat.Style.ToString();
-            WidowControl = paragraph.ParagraphFormat.WidowControl.ToString();
-            // Свойства списка
-            ListFormatIsList = paragraph.ListFormat.IsList.ToString();
-            if (paragraph.ListFormat.IsList)
-            {
-                ListStyleHash = paragraph.ListFormat.Style.GetHashCode().ToString();
-                ListItem = paragraph.ListItem.ToString();
-                ListFormatLevel = paragraph.ListFormat.ListLevelNumber.ToString();
-                ListFormat = paragraph.ListFormat.ListLevelFormat.ToString();
-                CurrentListAligment = paragraph.ListFormat.ListLevelFormat.Alignment.ToString();
-                CurrentListIsLegal = paragraph.ListFormat.ListLevelFormat.IsLegal.ToString();
-                CurrentListLevel = paragraph.ListFormat.ListLevelFormat.Level.ToString();
-                CurrentListNumberFormat = paragraph.ListFormat.ListLevelFormat.NumberFormat.ToString();
-                CurrentListNumberPosition = paragraph.ListFormat.ListLevelFormat.NumberPosition.ToString();
-                CurrentListNumberStyle = paragraph.ListFormat.ListLevelFormat.NumberStyle.ToString();
-                CurrentListRestartAfterLevel = paragraph.ListFormat.ListLevelFormat.RestartAfterLevel.ToString();
-                CurrentListStartAt = paragraph.ListFormat.ListLevelFormat.StartAt.ToString();
-                CurrentListTextPosition = paragraph.ListFormat.ListLevelFormat.TextPosition.ToString();
-                CurrentListTrailingCharacter = paragraph.ListFormat.ListLevelFormat.TrailingCharacter.ToString();
-            }
         }
 
         // PlaceHolder constructor

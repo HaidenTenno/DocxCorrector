@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.Services.Helpers
@@ -80,6 +81,26 @@ namespace DocxCorrectorCore.Services.Helpers
                 if (keyWord == firstWord) { return keyWord; }
             }
             return null;
-        } 
+        }
+
+        // Проверить, что последний символ в параграфе явлется одним из keySymbols и вернуть его, если это так
+        internal static string? CheckIfLastSymbolOfParagraphIsOneOf(Word.Paragraph paragraph, string[] keySymbols)
+        {
+            string lastSymbol;
+            try
+            {
+                lastSymbol = paragraph.Content.ToString().Trim().Last().ToString();
+            }
+            catch
+            {
+                return null;
+            }
+            
+            foreach (var keySymbol in keySymbols)
+            {
+                if (keySymbol == lastSymbol) { return keySymbol; }
+            }
+            return null;
+        }
     }
 }
