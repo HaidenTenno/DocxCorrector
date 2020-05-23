@@ -9,6 +9,38 @@ namespace DocxCorrectorCore.Services.Corrector
 {
     public sealed class CorrectorGemBox : Corrector
     {
+        // Private
+        // Проверить соответсвтие списка классов и параграфов документа
+        private bool ListsEquivalenceVerification(string filePath, List<ParagraphClass> paragraphClasses)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return false; }
+
+            int currentParagraphClassIndex = 0;
+            int totalElementsCount = 0;
+            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
+            {
+                if (currentParagraphClassIndex >= paragraphClasses.Count) { break; }
+
+                var paragraphs = section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph);
+                totalElementsCount += paragraphs.Count();
+                foreach (Word.Paragraph paragraph in paragraphs)
+                {
+                    if (currentParagraphClassIndex >= paragraphClasses.Count) { break; }
+
+                    if (paragraph.Content.ToString().Trim() == "") { totalElementsCount--; continue; }
+                    if (paragraph.ListFormat.IsList) { totalElementsCount--; continue; }
+
+                    Console.WriteLine($"CLASS {paragraphClasses[currentParagraphClassIndex]}, PARAGRAPH {GemBoxHelper.GetParagraphPrefix(paragraph, 20)}");
+
+                    currentParagraphClassIndex++;
+                }
+            }
+            Console.WriteLine($"current index {currentParagraphClassIndex}, totalClassesListCount {paragraphClasses.Count()}, totalElementsCount = {totalElementsCount}");
+
+            return (currentParagraphClassIndex == totalElementsCount);
+        }
+
         // Public
         public CorrectorGemBox()
         {
@@ -25,37 +57,28 @@ namespace DocxCorrectorCore.Services.Corrector
 
             List<ParagraphCorrections> paragraphsCorrections = new List<ParagraphCorrections>();
 
-            // TODO: REMOVE
-            //ParagraphCorrections testCorrection = new ParagraphCorrections(
-            //    paragraphID: 0,
-            //    paragraphClass: paragraphClasses[0],
-            //    prefix: "Test prefix",
-            //    mistakes: new List<ParagraphMistake>
-            //    {
-            //        new ParagraphMistake(
-            //            message: "No mistake",
-            //            advice: "Nothing to advice"
-            //        )
-            //    });
-            //paragraphsCorrections.Add(testCorrection);
-
             // TODO: Model switch
+
             // Paragraph formatting
             int currentParagraphClassIndex = 0;
             foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
-                if (currentParagraphClassIndex >=  paragraphClasses.Count) { break; }
+                if (currentParagraphClassIndex >= paragraphClasses.Count) { break; }
 
-                foreach (Word.Paragraph paragraph in section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph))
+                var paragraphs = section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph);
+                foreach (Word.Paragraph paragraph in paragraphs)
                 {
-                    if (paragraph.Content.ToString().Trim() == "") { continue; }
+                    if (currentParagraphClassIndex >= paragraphClasses.Count) { break; }
 
-                    Console.WriteLine($"CLASS {paragraphClasses[currentParagraphClassIndex]}, PARAGRAPH {GemBoxHelper.GetParagraphPrefix(paragraph, 20)}");
+                    if (paragraph.Content.ToString().Trim() == "") { continue; }
+                    if (paragraph.ListFormat.IsList) { continue; }
+
+                    // ПРОВЕРКА НАЧИНАЕТСЯ
 
                     currentParagraphClassIndex++;
                 }
             }
-            Console.WriteLine($"current index {currentParagraphClassIndex}, total count {paragraphClasses.Count()}");
+
 
             return paragraphsCorrections;
         }
