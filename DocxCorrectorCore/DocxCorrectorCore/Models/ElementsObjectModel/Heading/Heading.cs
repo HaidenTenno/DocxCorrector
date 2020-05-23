@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace DocxCorrectorCore.Models.ElementsObjectModel
 {
-    public class Heading : DocumentElement
+    public class Heading //: DocumentElement
     {
         //b0
-        public override bool Bold => true;
-        public override int? EmptyLinesAfter => 1;
+        // public override bool Bold => true;
+        // public override int? EmptyLinesAfter => 1;
         
         // TODO: Параграф не может быть того же типа, что и предыдущий (у заголовка недопустимы переносы строк)
         // TODO: Заголовок НЕ может заканчиватся знаком препинания
