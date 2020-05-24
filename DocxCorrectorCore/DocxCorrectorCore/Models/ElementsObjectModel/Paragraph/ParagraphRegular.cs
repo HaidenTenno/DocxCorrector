@@ -5,15 +5,18 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
     public class ParagraphRegular : DocumentElement
     {
         //c1
-        
+
+        // Класс элемента
+        public override ParagraphClass ParagraphClass => ParagraphClass.c1;
+
         // Свойства ParagraphFormat
         public override HorizontalAlignment Alignment => HorizontalAlignment.Justify;
         public override bool KeepWithNext => false;
         public override OutlineLevel OutlineLevel => OutlineLevel.BodyText;
         public override bool PageBreakBefore => false;
-        public override double SpecialIndentationLeftBorder => -1.3; // TODO: Проверить, что это cm
-        public override double SpecialIndentationRightBorder => -1.2; // TODO: Проверить, что это cm
-        
+        public override double SpecialIndentationLeftBorder => -36.85;
+        public override double SpecialIndentationRightBorder => -35.45;
+
         // Свойства CharacterFormat для всего абзаца
         public override bool WholeParagraphAllCaps => false;
         public override bool WholeParagraphBold => false;

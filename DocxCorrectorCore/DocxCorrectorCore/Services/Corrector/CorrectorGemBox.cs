@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DocxCorrectorCore.Models;
+using DocxCorrectorCore.Models.ElementsObjectModel;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
 
@@ -74,6 +75,17 @@ namespace DocxCorrectorCore.Services.Corrector
                     if (paragraph.ListFormat.IsList) { continue; }
 
                     // ПРОВЕРКА НАЧИНАЕТСЯ
+                    ParagraphCorrections? currentParagraphCorrections = null;
+                    switch (paragraphClasses[currentParagraphClassIndex])
+                    {
+                        case ParagraphClass.c1:
+                            var standardParagraph = new ParagraphRegular();
+                            currentParagraphCorrections = standardParagraph.CheckFormatting(paragraph);
+                            break;
+                        default:
+                            break;
+                    }
+                    if (currentParagraphCorrections != null) { paragraphsCorrections.Add(currentParagraphCorrections); }
 
                     currentParagraphClassIndex++;
                 }

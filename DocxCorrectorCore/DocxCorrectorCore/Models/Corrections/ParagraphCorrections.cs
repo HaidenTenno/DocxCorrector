@@ -56,18 +56,18 @@ namespace DocxCorrectorCore.Models
     // Результат проверки для параграфа
     public sealed class ParagraphCorrections
     {
-        // ID параграфа
-        public readonly int ParagraphID;
+        //// ID параграфа
+        //public readonly int ParagraphID;
         // Тип параграфа
         public readonly ParagraphClass ParagraphClass;
         // Начало параграфа (20 символов)
         public readonly string Prefix;
         // Ошибки в параграфе
-        public readonly List<ParagraphMistake> Mistakes;
+        public List<ParagraphMistake> Mistakes;
 
-        public ParagraphCorrections(int paragraphID, ParagraphClass paragraphClass, string prefix, List<ParagraphMistake> mistakes)
+        public ParagraphCorrections(/*int paragraphID, */ParagraphClass paragraphClass, string prefix, List<ParagraphMistake> mistakes)
         {
-            ParagraphID = paragraphID;
+            //ParagraphID = paragraphID;
             ParagraphClass = paragraphClass;
             Prefix = prefix;
             Mistakes = mistakes;
@@ -78,7 +78,7 @@ namespace DocxCorrectorCore.Models
             get
             {
                 ParagraphCorrections testCorrection = new ParagraphCorrections(
-                    paragraphID: 0,
+                    //paragraphID: 0,
                     paragraphClass: ParagraphClass.c0,
                     prefix: "Test prefix",
                     mistakes: new List<ParagraphMistake>

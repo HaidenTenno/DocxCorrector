@@ -1,4 +1,6 @@
-﻿using GemBox.Document;
+﻿using DocxCorrectorCore.Services.Helpers;
+using GemBox.Document;
+using System.Collections.Generic;
 
 namespace DocxCorrectorCore.Models.ElementsObjectModel
 {
@@ -12,6 +14,9 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
 
     public abstract class DocumentElement
     {
+        // Класс элемента
+        public abstract ParagraphClass ParagraphClass { get; }
+
         // Свойства ParagraphFormat
         public abstract HorizontalAlignment Alignment { get; }
         public Color BackgroundColor => Color.Empty;
@@ -98,5 +103,197 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         
         // Количество пустых строк (отбивок, SPACE, n0) после параграфа
         public abstract int EmptyLinesAfter { get; }
+
+        // Базовый метод проверки
+        public virtual ParagraphCorrections? CheckFormatting(Paragraph paragraph)
+        {
+            List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
+
+            // Свойства ParagraphFormat
+            if (paragraph.ParagraphFormat.Alignment != Alignment)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное выравнивание",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.Alignment}; Требуется {Alignment}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.BackgroundColor != BackgroundColor)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверный цвет заливки параграфа",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.BackgroundColor}; Требуется {BackgroundColor}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            // TODO: Border
+
+            if (paragraph.ParagraphFormat.KeepLinesTogether != KeepLinesTogether)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Не разрывать абзац'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.KeepLinesTogether}; Требуется {KeepLinesTogether}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.KeepWithNext != KeepWithNext)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Не отрывать от следующего'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.KeepWithNext}; Требуется {KeepWithNext}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.LeftIndentation != LeftIndentation)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение отступа слева",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.LeftIndentation}; Требуется {LeftIndentation}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.LineSpacing != LineSpacing)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение междустрочного интервала",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.LineSpacing}; Требуется {LineSpacing}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.LineSpacingRule != LineSpacingRule)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение типа междустрочного интервала",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.LineSpacingRule}; Требуется {LineSpacingRule}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.MirrorIndents != MirrorIndents)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Зеркальные отступы'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.MirrorIndents}; Требуется {MirrorIndents}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.MirrorIndents != MirrorIndents)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Зеркальные отступы'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.MirrorIndents}; Требуется {MirrorIndents}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.NoSpaceBetweenParagraphsOfSameStyle != NoSpaceBetweenParagraphsOfSameStyle)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Не добавлять интервал между параграфами одного стиля'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.NoSpaceBetweenParagraphsOfSameStyle}; Требуется {NoSpaceBetweenParagraphsOfSameStyle}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.OutlineLevel != OutlineLevel)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение уровня заголовка",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.OutlineLevel}; Требуется {OutlineLevel}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.PageBreakBefore != PageBreakBefore)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'С новой страницы'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.PageBreakBefore}; Требуется {PageBreakBefore}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.RightIndentation != RightIndentation)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Отступ справа'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.RightIndentation}; Требуется {RightIndentation}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.RightToLeft != RightToLeft)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Справа-налево'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.RightToLeft}; Требуется {RightToLeft}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.SpaceAfter != SpaceAfter)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Интервал после'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.SpaceAfter}; Требуется {SpaceAfter}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.SpaceBefore != SpaceBefore)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Интервал до'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.SpaceBefore}; Требуется {SpaceBefore}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            // IMPORTANT ОТСТУП ПЕРВОЙ СТРОКИ
+            if ((paragraph.ParagraphFormat.SpecialIndentation < SpecialIndentationLeftBorder) | ((paragraph.ParagraphFormat.SpecialIndentation > SpecialIndentationRightBorder)))
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение отступа первой строки",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.SpecialIndentation}; Требуется значение между {SpecialIndentationLeftBorder} и {SpecialIndentationRightBorder}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.ParagraphFormat.WidowControl != WidowControl)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Запрет висячих строк'",
+                    advice: $"Выбрано {paragraph.ParagraphFormat.WidowControl}; Требуется {WidowControl}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            // Свойства CharacterFormat для всего абзаца
+
+
+            // Свойства CharacterFormat для всего абзаца
+
+
+            if (paragraphMistakes.Count != 0)
+            {
+                return new ParagraphCorrections(
+                    paragraphClass: ParagraphClass,
+                    prefix: GemBoxHelper.GetParagraphPrefix(paragraph, 20),
+                    mistakes: paragraphMistakes
+                );
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
     }
 }
