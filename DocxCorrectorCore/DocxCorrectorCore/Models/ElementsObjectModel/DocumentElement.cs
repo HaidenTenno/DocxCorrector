@@ -276,7 +276,115 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
             }
 
             // Свойства CharacterFormat для всего абзаца
+            if (paragraph.CharacterFormatForParagraphMark.AllCaps != WholeParagraphAllCaps)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Все прописные' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.AllCaps}; Требуется {WholeParagraphAllCaps}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
 
+            if (paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphBackgroundColor)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Цвет заливки' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.BackgroundColor}; Требуется {WholeParagraphBackgroundColor}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.Bold != WholeParagraphBold)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Жирный' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Bold}; Требуется {WholeParagraphBold}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.DoubleStrikethrough != WholeParagraphDoubleStrikethrough)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Двойное зачеркивание' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.DoubleStrikethrough}; Требуется {WholeParagraphDoubleStrikethrough}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.FontColor != WholeParagraphFontColor)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Цвет шрифта' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.FontColor}; Требуется {WholeParagraphFontColor}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.Hidden != WholeParagraphHidden)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Скрытый' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Hidden}; Требуется {WholeParagraphHidden}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphHighlightColor)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Цвет выделения' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.HighlightColor}; Требуется {WholeParagraphHighlightColor}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.Italic != WholeParagraphItalic)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Курсив' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Italic}; Требуется {WholeParagraphItalic}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.Kerning != WholeParagraphKerning)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Кернинг' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Kerning}; Требуется {WholeParagraphKerning}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.Position != WholeParagraphPosition)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Смещение' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Position}; Требуется {WholeParagraphPosition}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.RightToLeft != WholeParagraphRightToLeft)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Справа-налево' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.RightToLeft}; Требуется {WholeParagraphRightToLeft}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            if (paragraph.CharacterFormatForParagraphMark.RightToLeft != WholeParagraphRightToLeft)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Справа-налево' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.RightToLeft}; Требуется {WholeParagraphRightToLeft}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            // TODO: ДОДЕЛАТЬ НАЧИНАЯ СО SCALING
 
             // Свойства CharacterFormat для всего абзаца
 
