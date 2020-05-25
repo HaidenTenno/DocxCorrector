@@ -278,9 +278,7 @@ namespace DocxCorrectorCore.App
         // сохранение результата в директории resultDirPath
         public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClassesFile, string resultDir)
         {
-            string? paragraphsClassesJSON = FileWorker.GetContentOfTextFile(paragraphsClassesFile);
-            if (paragraphsClassesJSON == null) { return; }
-            List<ParagraphClass>? paragraphsClassesList = JSONWorker.DeserializeParagraphsClasses(paragraphsClassesJSON);
+            List<ClassificationResult>? paragraphsClassesList = JSONWorker.DeserializeObjectFromFile<List<ClassificationResult>>(paragraphsClassesFile);
             if (paragraphsClassesList == null) { return; }
 
             Console.WriteLine($"Started {Path.GetFileName(fileToCorrect)}");

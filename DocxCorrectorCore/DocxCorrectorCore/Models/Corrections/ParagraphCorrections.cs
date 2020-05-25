@@ -53,11 +53,19 @@ namespace DocxCorrectorCore.Models
         // НЕТ P (элемент листинга)
     }
 
+    // Модель для результатов классификации
+    public sealed class ClassificationResult
+    {
+        public int Id { get; set; }
+        public ParagraphClass ParagraphClass { get; set; }
+    } 
+
+
     // Результат проверки для параграфа
     public sealed class ParagraphCorrections
     {
-        //// ID параграфа
-        //public readonly int ParagraphID;
+        // ID параграфа (Его порядковый номер)
+        public readonly int ParagraphID;
         // Тип параграфа
         public readonly ParagraphClass ParagraphClass;
         // Начало параграфа (20 символов)
@@ -65,9 +73,9 @@ namespace DocxCorrectorCore.Models
         // Ошибки в параграфе
         public List<ParagraphMistake> Mistakes;
 
-        public ParagraphCorrections(/*int paragraphID, */ParagraphClass paragraphClass, string prefix, List<ParagraphMistake> mistakes)
+        public ParagraphCorrections(int paragraphID, ParagraphClass paragraphClass, string prefix, List<ParagraphMistake> mistakes)
         {
-            //ParagraphID = paragraphID;
+            ParagraphID = paragraphID;
             ParagraphClass = paragraphClass;
             Prefix = prefix;
             Mistakes = mistakes;
@@ -78,7 +86,7 @@ namespace DocxCorrectorCore.Models
             get
             {
                 ParagraphCorrections testCorrection = new ParagraphCorrections(
-                    //paragraphID: 0,
+                    paragraphID: 0,
                     paragraphClass: ParagraphClass.c0,
                     prefix: "Test prefix",
                     mistakes: new List<ParagraphMistake>
@@ -94,15 +102,26 @@ namespace DocxCorrectorCore.Models
     }
     public sealed class ParagraphMistake
     {
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum MistakeImportance
+        {
+            Warning,
+            Regular,
+            Critical
+        }
+
         // Сообщение об ошибке
         public readonly string Message;
         // Совет по исправлению
         public readonly string Advice;
+        // Важность ошибки
+        public readonly MistakeImportance Importance;
 
-        public ParagraphMistake(string message, string advice)
+        public ParagraphMistake(string message, string advice = "Advice expected", MistakeImportance importance = MistakeImportance.Regular)
         {
             Message = message;
             Advice = advice;
+            Importance = importance;
         }
     }
 }

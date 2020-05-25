@@ -51,46 +51,46 @@ namespace DocxCorrectorCore.Services.Corrector
         // Corrector
         // Protected
         // Получить список ошибок форматирования ОТДЕЛЬНЫХ АБЗАЦЕВ для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
-        protected override List<ParagraphCorrections> GetParagraphsCorrections(string filePath, RulesModel rulesModel, List<ParagraphClass> paragraphClasses)
+        protected override List<ParagraphCorrections> GetParagraphsCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
             if (document == null) { return new List<ParagraphCorrections>(); }
+
+            if (paragraphClasses.Count() == 0) { return new List<ParagraphCorrections>(); }
 
             List<ParagraphCorrections> paragraphsCorrections = new List<ParagraphCorrections>();
 
             // TODO: Model switch
 
-            // Paragraph formatting
-            int currentParagraphClassIndex = 0;
+            int currentClassIndex = 0;
+            int currentParagraphIndex = 0;
             foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
-                if (currentParagraphClassIndex >= paragraphClasses.Count) { break; }
-
-                var paragraphs = section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph);
-                foreach (Word.Paragraph paragraph in paragraphs)
+                foreach (Word.Paragraph paragraph in section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph))
                 {
-                    if (currentParagraphClassIndex >= paragraphClasses.Count) { break; }
-
-                    if (paragraph.Content.ToString().Trim() == "") { continue; }
-                    if (paragraph.ListFormat.IsList) { continue; }
+                    if (currentParagraphIndex < paragraphClasses[currentClassIndex].Id)
+                    {
+                        currentParagraphIndex++;
+                        continue;
+                    }
 
                     // ПРОВЕРКА НАЧИНАЕТСЯ
                     ParagraphCorrections? currentParagraphCorrections = null;
-                    switch (paragraphClasses[currentParagraphClassIndex])
+                    switch (paragraphClasses[currentClassIndex].ParagraphClass)
                     {
                         case ParagraphClass.c1:
                             var standardParagraph = new ParagraphRegular();
-                            currentParagraphCorrections = standardParagraph.CheckFormatting(paragraph);
+                            currentParagraphCorrections = standardParagraph.CheckFormatting(currentParagraphIndex, paragraph);
                             break;
                         default:
                             break;
                     }
                     if (currentParagraphCorrections != null) { paragraphsCorrections.Add(currentParagraphCorrections); }
 
-                    currentParagraphClassIndex++;
+                    currentParagraphIndex++;
+                    currentClassIndex++;
                 }
             }
-
 
             return paragraphsCorrections;
         }

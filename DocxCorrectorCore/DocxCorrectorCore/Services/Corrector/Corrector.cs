@@ -8,7 +8,7 @@ namespace DocxCorrectorCore.Services.Corrector
     public abstract class Corrector
     {
         // Private
-        private async Task<List<ParagraphCorrections>> GetParagraphsCorrectionsAsync(string filePath, RulesModel rulesModel, List<ParagraphClass> paragraphsClasses)
+        private async Task<List<ParagraphCorrections>> GetParagraphsCorrectionsAsync(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses)
         {
             return await Task.Run(() =>
             {
@@ -21,12 +21,12 @@ namespace DocxCorrectorCore.Services.Corrector
 
         // Protected
         // Получить список ошибок форматирования ОТДЕЛЬНЫХ АБЗАЦЕВ для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
-        protected abstract List<ParagraphCorrections> GetParagraphsCorrections(string filePath, RulesModel rulesModel, List<ParagraphClass> paragraphsClasses);
+        protected abstract List<ParagraphCorrections> GetParagraphsCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses);
         // TODO: More
 
         // Public
         // Получить список ошибок форматирования для ВСЕГО документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
-        public virtual DocumentCorrections GetCorrections(string filePath, RulesModel rulesModel, List<ParagraphClass> paragraphsClasses)
+        public virtual DocumentCorrections GetCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses)
         {
             var paragraphsCorrectionsTask = GetParagraphsCorrectionsAsync(filePath, rulesModel, paragraphsClasses);
 

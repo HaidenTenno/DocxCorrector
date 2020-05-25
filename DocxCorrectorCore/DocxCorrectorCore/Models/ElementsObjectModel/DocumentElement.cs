@@ -105,7 +105,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public abstract int EmptyLinesAfter { get; }
 
         // Базовый метод проверки
-        public virtual ParagraphCorrections? CheckFormatting(Paragraph paragraph)
+        public virtual ParagraphCorrections? CheckFormatting(int id, Paragraph paragraph)
         {
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
@@ -388,10 +388,10 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
 
             // Свойства CharacterFormat для всего абзаца
 
-
             if (paragraphMistakes.Count != 0)
             {
                 return new ParagraphCorrections(
+                    paragraphID: id,
                     paragraphClass: ParagraphClass,
                     prefix: GemBoxHelper.GetParagraphPrefix(paragraph, 20),
                     mistakes: paragraphMistakes
