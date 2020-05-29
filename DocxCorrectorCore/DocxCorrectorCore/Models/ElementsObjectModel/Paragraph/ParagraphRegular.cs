@@ -1,4 +1,9 @@
-﻿using GemBox.Document;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using GemBox.Document;
+using DocxCorrectorCore.Services.Helpers;
+
 
 namespace DocxCorrectorCore.Models.ElementsObjectModel
 {
@@ -28,8 +33,47 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         // Особые свойства
         public override StartSymbolType? StartSymbol => StartSymbolType.Upper;
         public override int EmptyLinesAfter => 0;
-        
+
         // TODO: Сделать проверку окончания абзаца регуляркой (а нужна ли она вообще?..) 
         // public override string[] Suffixes => new string[] { ".", "!", "?" }; - могут пройти ".." и др.
+
+        // Метод проверки
+        public override ParagraphCorrections? CheckFormatting(int id, Paragraph paragraph)
+        {
+            ParagraphCorrections? result = base.CheckFormatting(id, paragraph);
+            List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
+
+            // Особые свойства
+            Console.WriteLine(paragraph.Content.ToString()[0]);
+            if ((paragraph.Content.ToString().Count() > 0) & (!Char.IsUpper(paragraph.Content.ToString()[0])))
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: "Параграф должен начинаться с большой буквы",
+                    advice: "ТУТ БУДЕТ СОВЕТ"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            // TODO: COMPLETE
+
+            if (paragraphMistakes.Count != 0)
+            {
+                if (result != null) 
+                { 
+                    result.Mistakes.AddRange(paragraphMistakes); 
+                }
+                else
+                {
+                    result = new ParagraphCorrections(
+                        paragraphID: id,
+                        paragraphClass: ParagraphClass,
+                        prefix: GemBoxHelper.GetParagraphPrefix(paragraph, 20),
+                        mistakes: paragraphMistakes
+                    );
+                }
+            }
+
+            return result;
+        }
     }
 }

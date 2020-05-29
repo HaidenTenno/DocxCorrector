@@ -1,6 +1,6 @@
-﻿using DocxCorrectorCore.Services.Helpers;
+﻿using System.Collections.Generic;
 using GemBox.Document;
-using System.Collections.Generic;
+using DocxCorrectorCore.Services.Helpers;
 
 namespace DocxCorrectorCore.Models.ElementsObjectModel
 {
@@ -53,7 +53,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public double WholeParagraphKerning => 0;
         public double WholeParagraphPosition => 0;
         public bool WholeParagraphRightToLeft => false;
-        public int WholeParagraphScaling => 100; // TODO: Проверить, что это проценты
+        public int WholeParagraphScaling => 100;
         public double WholeParagraphSizeLeftBorder => 13.5;
         public double WholeParagraphSizeRightBorder => 14.5;
         public abstract bool WholeParagraphSmallCaps { get; }
@@ -79,7 +79,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public double RunnerKerning => 0;
         public double RunnerPosition => 0;
         public bool RunnerRightToLeft => false;
-        public int RunnerScaling => 100; // TODO: Проверить, что это проценты
+        public int RunnerScaling => 100;
         public double RunnerSizeLeftBorder => 13.5;
         public double RunnerSizeRightBorder => 14.5;
         public bool? RunnerSmallCaps => null;
@@ -383,10 +383,33 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 );
                 paragraphMistakes.Add(mistake);
             }
+            
+            if (paragraph.CharacterFormatForParagraphMark.Scaling != WholeParagraphScaling)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Масштаб' для всего абзаца",
+                    advice: "ТУТ БУДЕТ СОВЕТ"//$"Выбрано {paragraph.CharacterFormatForParagraphMark.Scaling}; Требуется {WholeParagraphScaling}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
 
-            // TODO: ДОДЕЛАТЬ НАЧИНАЯ СО SCALING
+            // TODO: ДОДЕЛАТЬ НАЧИНАЯ СО SizeLeftBorder
 
-            // Свойства CharacterFormat для всего абзаца
+            // Свойства CharacterFormat для всего раннеров
+            foreach (Run runner in paragraph.GetChildElements(false, ElementType.Run))
+            {
+                if (runner.CharacterFormat.AllCaps != RunnerAllCaps)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Все прописные' для раннера",
+                        advice: "ТУТ БУДЕТ СОВЕТ"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+
+                // TODO: ДОДЕЛАТЬ НАЧИНАЯ СО BackgroundColor
+            }
+
 
             if (paragraphMistakes.Count != 0)
             {
@@ -401,7 +424,6 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
             {
                 return null;
             }
-            
         }
     }
 }
