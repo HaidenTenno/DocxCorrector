@@ -23,9 +23,6 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
         // Получить свойства секций документа filePath
         public abstract List<SectionProperties> GetAllSectionsProperties(string filePath);
 
-        // Получить нормализованные свойства параграфов документа filePath
-        public abstract List<NormalizedProperties> GetNormalizedProperties(string filePath);
-
         // Получить свойства верхних/нижних (type) колонтитулов документа filePath
         public abstract List<HeaderFooterInfo> GetHeadersFootersInfo(HeaderFooterType type, string filePath);
     }

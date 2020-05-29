@@ -147,25 +147,6 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
             return allSectionsProperties;
         }
 
-        // Получить нормализованные свойства параграфов документа filePath
-        public override List<NormalizedProperties> GetNormalizedProperties(string filePath)
-        {
-            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
-            if (document == null) { return new List<NormalizedProperties>(); }
-
-            List<NormalizedProperties> allNormalizedProperties = new List<NormalizedProperties>();
-
-            int iteration = 0;
-            foreach (Word.Paragraph paragraph in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
-            {
-                NormalizedProperties normalizedParagraphProperties = new NormalizedPropertiesGemBox(paragraph: paragraph, paragraphId: iteration);
-                allNormalizedProperties.Add(normalizedParagraphProperties);
-                iteration++;
-            }
-
-            return allNormalizedProperties;
-        }
-
         // Получить свойства верхних/нижних (type) колонтитулов документа filePath
         public override List<HeaderFooterInfo> GetHeadersFootersInfo(HeaderFooterType type, string filePath)
         {
@@ -217,11 +198,6 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
             return Task.Run(() => (ParagraphProperties)new ParagraphPropertiesGemBox(paragraph));
         }
 
-        private Task<NormalizedProperties> GetNormalizedPropertiesAsync(Word.Paragraph paragraph, int paragraphId)
-        {
-            return Task.Run(() => (NormalizedProperties)new NormalizedPropertiesGemBox(paragraph, paragraphId));
-        }
-
         // Public
         // Для уверенности, что интерфейс реализуют только наследники Correcor
         public PropertiesPuller PropertiesPuller => this;
@@ -237,25 +213,6 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
             foreach (Word.Paragraph paragraph in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
             {
                 listOfTasks.Add(GetParagraphPropertiesAsync(paragraph));
-            }
-
-            var result = await Task.WhenAll(listOfTasks);
-            return result.ToList();
-        }
-
-        // Асинхронно получить нормализованные свойства параграфов
-        public async Task<List<NormalizedProperties>> GetNormalizedPropertiesAsync(string filePath)
-        {
-            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
-            if (document == null) { return new List<NormalizedProperties>(); }
-
-            List<Task<NormalizedProperties>> listOfTasks = new List<Task<NormalizedProperties>>();
-
-            int iteration = 0;
-            foreach (Word.Paragraph paragraph in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
-            {
-                listOfTasks.Add(GetNormalizedPropertiesAsync(paragraph, iteration));
-                iteration++;
             }
 
             var result = await Task.WhenAll(listOfTasks);

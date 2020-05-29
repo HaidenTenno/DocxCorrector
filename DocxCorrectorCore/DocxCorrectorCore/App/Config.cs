@@ -13,8 +13,6 @@ namespace DocxCorrectorCore.App
         public const string HeadersFootersInfoFileName = "headersFootersInfo.json";
         // Файл со свойствами параграфов
         public const string ParagraphsPropertiesFileName = "properties.csv";
-        // Файл с нормализованными свойствами параграфов
-        public const string NormalizedPropertiesFileName = "normalizedProperties.csv";
         // Называния csv файлов для тестирования синхронных/асинхронных методов
         public const string SyncParagraphsSyncIterationFileName = "syncParagraphsSyncIteration.csv";
         public const string SyncParagraphsAsyncIterationFileName = "syncParagraphAsyncIteration.csv";

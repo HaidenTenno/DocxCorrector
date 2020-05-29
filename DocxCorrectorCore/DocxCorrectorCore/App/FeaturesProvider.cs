@@ -111,26 +111,6 @@ namespace DocxCorrectorCore.App
             });
         }
 
-        // Пройтись по всем поддиректориям rootDir и в каждой создать csv файл, где будут записаны нормализованные свойства параграфов для всех docx файлов в этой директории
-        public void GenerateNormalizedCSVFiles(string rootDir)
-        {
-            DirectoryIterator.IterateDir(rootDir, (subDir) =>
-            {
-                List<NormalizedProperties> normalizedPropertiesForDir = new List<NormalizedProperties>();
-
-                DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
-                {
-                    Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<NormalizedProperties> normalizedPropertiesForFile = PropertiesPuller.GetNormalizedProperties(filePath: filePath);
-                    Console.WriteLine($"Done {Path.GetFileName(filePath)}");
-                    normalizedPropertiesForDir.AddRange(normalizedPropertiesForFile);
-                });
-
-                string resultFilePath = Path.Combine(subDir, Config.NormalizedPropertiesFileName);
-                FileWorker.FillCSV(resultFilePath, normalizedPropertiesForDir);
-            });
-        }
-
         // GenerateCSVFiles, основанный на асинхронном методе
         public void GenerateCSVFilesAsync(string rootDir)
         {
@@ -196,30 +176,6 @@ namespace DocxCorrectorCore.App
 
                 string resultFilePath = Path.Combine(subDir, Config.AsyncParagraphsAsyncIterationFileName);
                 FileWorker.FillCSV(resultFilePath, propertiesForDir);
-            });
-        }
-
-        // GenerateNormalizedCSVFiles, основанный на асинхнонном методе
-        public void GenerateNormalizedCSVFilesAsync(string rootDir)
-        {
-            IPropertiesPullerAsync? asyncPuller = PropertiesPuller as IPropertiesPullerAsync;
-
-            if (asyncPuller == null) { return; }
-
-            DirectoryIterator.IterateDir(rootDir, (subDir) =>
-            {
-                List<NormalizedProperties> normalizedPropertiesForDir = new List<NormalizedProperties>();
-
-                DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
-                {
-                    Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<NormalizedProperties> normalizedPropertiesForFile = asyncPuller.GetNormalizedPropertiesAsync(filePath: filePath).Result;
-                    Console.WriteLine($"Done {Path.GetFileName(filePath)}");
-                    normalizedPropertiesForDir.AddRange(normalizedPropertiesForFile);
-                });
-
-                string resultFilePath = Path.Combine(subDir, Config.NormalizedPropertiesFileName);
-                FileWorker.FillCSV(resultFilePath, normalizedPropertiesForDir);
             });
         }
 

@@ -12,8 +12,5 @@ namespace DocxCorrectorCore.Services.PropertiesPuller
 
         // Асинхронно получить свойства всех параграфов
         public Task<List<ParagraphProperties>> GetAllParagraphsPropertiesAsync(string filePath);
-
-        // Асинхронно получить нормализованные свойства параграфов
-        public Task<List<NormalizedProperties>> GetNormalizedPropertiesAsync(string filePath);
     }
 }
