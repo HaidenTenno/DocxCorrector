@@ -44,7 +44,6 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
-            Console.WriteLine(paragraph.Content.ToString()[0]);
             if ((paragraph.Content.ToString().Count() > 0) & (!Char.IsUpper(paragraph.Content.ToString()[0])))
             {
                 ParagraphMistake mistake = new ParagraphMistake(

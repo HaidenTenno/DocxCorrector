@@ -80,14 +80,14 @@ namespace DocxCorrectorCore.App
             FileWorker.WriteToFile(resultFilePath, headersFootersInfoJSON);
         }
 
-        // Проанализировать документ filePath и создать csv файл в директории resultDirPath со свойствами его параграфов
-        public void GenerateParagraphsPropertiesCSV(string filePath, string resultDirPath)
+        // Проанализировать документ filePath и создать csv файл resultPath со свойствами его параграфов
+        public void GenerateParagraphsPropertiesCSV(string filePath, string resultPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
             List<ParagraphProperties> propertiesForFile = new List<ParagraphProperties>();
             string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath); }, TimeCounter.ResultType.TotalMilliseconds);
             Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}");
-            string resultFilePath = Path.Combine(resultDirPath, Config.ParagraphsPropertiesFileName);
+            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, Config.ParagraphsPropertiesFileName) : resultPath;
             FileWorker.FillCSV(resultFilePath, propertiesForFile);
         }
 
@@ -231,8 +231,8 @@ namespace DocxCorrectorCore.App
         }
 
         // Получить список ошибок форматирования для ВСЕГО документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
-        // сохранение результата в директории resultDirPath
-        public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClassesFile, string resultDir)
+        // сохранение результата в по пути resultDirPath
+        public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClassesFile, string resultPath)
         {
             List<ClassificationResult>? paragraphsClassesList = JSONWorker.DeserializeObjectFromFile<List<ClassificationResult>>(paragraphsClassesFile);
             if (paragraphsClassesList == null) { return; }
@@ -243,7 +243,7 @@ namespace DocxCorrectorCore.App
             Console.WriteLine($"Done {Path.GetFileName(fileToCorrect)} in {time}");
 
             string documentCorrectionsJSON = JSONWorker.MakeJSON(documentCorrections);
-            string resultFilePath = Path.Combine(resultDir, Config.MistakesFileName);
+            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, Config.MistakesFileName) : resultPath;
             FileWorker.WriteToFile(resultFilePath, documentCorrectionsJSON);
         }
     }

@@ -47,7 +47,7 @@ namespace DocxCorrectorCore.App
             correctCommand.AddArgument(paragraphsClassesArg);
             //resultDir
             var resultDirArg = new Argument<string>("result-dir", getDefaultValue: () => Directory.GetCurrentDirectory());
-            resultDirArg.Description = "Directory path to save the result";
+            resultDirArg.Description = "File or directory path to save the result";
             correctCommand.AddArgument(resultDirArg);
 
             //handler
@@ -66,7 +66,7 @@ namespace DocxCorrectorCore.App
             pullPropertiesCommand.AddArgument(fileToAnalyseArg);
             //resultDir
             var resultDirArg = new Argument<string>("result-dir", getDefaultValue: () => Directory.GetCurrentDirectory());
-            resultDirArg.Description = "Directory path to save the result";
+            resultDirArg.Description = "File or directory path to save the result";
             pullPropertiesCommand.AddArgument(resultDirArg);
 
             //handler

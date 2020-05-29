@@ -5,7 +5,7 @@ namespace DocxCorrectorCore.UserDialog
     public sealed class ParagraphPropertiesCSVForFileQuestionController : StringAnswerQuestionController
     {
         // Public
-        public ParagraphPropertiesCSVForFileQuestionController() : base("Введите: \nПуть к документу \nПуть к директории для сохранения CSV файла со свойствами параграфов") { }
+        public ParagraphPropertiesCSVForFileQuestionController() : base("Введите: \nПуть к документу \nПуть к файлу или директории для сохранения CSV файла со свойствами параграфов") { }
 
         public override void Load()
         {
