@@ -11,10 +11,10 @@ namespace DocxCorrectorCore.App
     {
         // Private
         /// Название параметров должно совпадать с именами при инициализации аргументов
-        private static void Correct(string fileToCorrect, RulesModel rules, string paragraphsClasses, string resultDir)
+        private static void Correct(string fileToCorrect, RulesModel rules, string paragraphsClasses, string resultPath)
         {
             FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateMistakesJSON(fileToCorrect, rules, paragraphsClasses, resultDir);
+            featuresProvider.GenerateMistakesJSON(fileToCorrect, rules, paragraphsClasses, resultPath);
         }
 
         private static void GoInteractive()
@@ -23,10 +23,10 @@ namespace DocxCorrectorCore.App
             userDialogCoordinator.Start();
         }
 
-        private static void PullProperties(string fileToAnalyse, string resultDir)
+        private static void PullProperties(string fileToAnalyse, string resultPath)
         {
             FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateParagraphsPropertiesCSV(fileToAnalyse, resultDir);
+            featuresProvider.GenerateParagraphsPropertiesCSV(fileToAnalyse, resultPath);
         }
 
         private static Command SetupCorrectCommand()
@@ -45,10 +45,10 @@ namespace DocxCorrectorCore.App
             var paragraphsClassesArg = new Argument<string>("paragraphs-classes");
             paragraphsClassesArg.Description = "Path to the file with paragraphs classes";
             correctCommand.AddArgument(paragraphsClassesArg);
-            //resultDir
-            var resultDirArg = new Argument<string>("result-dir", getDefaultValue: () => Directory.GetCurrentDirectory());
-            resultDirArg.Description = "File or directory path to save the result";
-            correctCommand.AddArgument(resultDirArg);
+            //resultPath
+            var resultPathArg = new Argument<string>("result-path", getDefaultValue: () => Directory.GetCurrentDirectory());
+            resultPathArg.Description = "File or directory path to save the result";
+            correctCommand.AddArgument(resultPathArg);
 
             //handler
             correctCommand.Handler = CommandHandler.Create<string, RulesModel, string, string>(Correct);
@@ -64,10 +64,10 @@ namespace DocxCorrectorCore.App
             var fileToAnalyseArg = new Argument<string>("file-to-analyse");
             fileToAnalyseArg.Description = "Path to ther file for analysis";
             pullPropertiesCommand.AddArgument(fileToAnalyseArg);
-            //resultDir
-            var resultDirArg = new Argument<string>("result-dir", getDefaultValue: () => Directory.GetCurrentDirectory());
-            resultDirArg.Description = "File or directory path to save the result";
-            pullPropertiesCommand.AddArgument(resultDirArg);
+            //resultPath
+            var resultPathArg = new Argument<string>("result-path", getDefaultValue: () => Directory.GetCurrentDirectory());
+            resultPathArg.Description = "File or directory path to save the result";
+            pullPropertiesCommand.AddArgument(resultPathArg);
 
             //handler
             pullPropertiesCommand.Handler = CommandHandler.Create<string, string>(PullProperties);
