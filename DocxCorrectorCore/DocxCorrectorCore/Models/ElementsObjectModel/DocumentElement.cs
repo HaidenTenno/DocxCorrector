@@ -19,8 +19,8 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
 
         // Свойства ParagraphFormat
         public abstract HorizontalAlignment Alignment { get; }
-        public Color BackgroundColor => Color.Empty;
-        public Color AlternativeBackgroungColor => Color.White;
+        public List<Color> BackgroundColors => new List<Color> { Color.Empty, Color.White };
+
         public MultipleBorders? Borders => null; // TODO: Разобраться с получением свойств границ параграфа
         public bool KeepLinesTogether => false;
         public abstract bool KeepWithNext { get; }
@@ -37,21 +37,18 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public double SpaceBefore => 0;
         public abstract double SpecialIndentationLeftBorder { get; }
         public abstract double SpecialIndentationRightBorder { get; }
-        public virtual ParagraphStyle? Style => null;
         public bool WidowControl => true;
         
         // Свойства CharacterFormat для всего абзаца
         public abstract bool WholeParagraphAllCaps { get; }
-        public Color WholeParagraphBackgroundColor => Color.Empty;
-        public Color WholeParagraphAlternativeBackgroundColor => Color.White;
+        public List<Color> WholeParagraphBackgroundColors => new List<Color> { Color.Empty, Color.White };
         public abstract bool WholeParagraphBold { get; }
         public SingleBorder WholeParagraphBorder => SingleBorder.None;
         public bool WholeParagraphDoubleStrikethrough => false;
         public Color WholeParagraphFontColor => Color.Black;
         public string WholeParagraphFontName => "Times New Roman";
         public bool WholeParagraphHidden => false;
-        public Color WholeParagraphHighlightColor => Color.Empty;
-        public Color WholeParagraphAlternativeHighlightColor => Color.White;
+        public List<Color> WholeParagraphHighlightColors => new List<Color> { Color.Empty, Color.White };
         public bool WholeParagraphItalic => false;
         public double WholeParagraphKerning => 0;
         public double WholeParagraphPosition => 0;
@@ -62,24 +59,19 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public abstract bool WholeParagraphSmallCaps { get; }
         public double WholeParagraphSpacing => 0;
         public bool WholeParagraphStrikethrough => false;
-        public virtual CharacterStyle? WholeParagraphStyle => null;
         public bool WholeParagraphSubscript => false;
         public bool WholeParagraphSuperscript => false;
         public Color? WholeParagraphUnderlineColor => null;
         public UnderlineType WholeParagraphUnderlineStyle => UnderlineType.None;
-
-        // Свойства CharacterFormat для всего абзаца
         public bool? RunnerAllCaps => null;
-        public Color RunnerBackgroundColor => Color.Empty;
-        public Color RunnerAlternativeBackgroundColor => Color.White;
+        public List<Color> RunnerBackgroundColors => new List<Color> { Color.Empty, Color.White };
         public abstract bool RunnerBold { get; }
         public SingleBorder RunnerBorder => SingleBorder.None;
         public bool RunnerDoubleStrikethrough => false;
         public Color RunnerFontColor => Color.Black;
         public string RunnerFontName => "Times New Roman";
         public bool RunnerHidden => false;
-        public Color RunnerHighlightColor => Color.Empty;
-        public Color RunnerAlternativeHighlightColor => Color.White;
+        public List<Color> RunnerHighlightColors => new List<Color> { Color.Empty, Color.White };
         public bool? RunnerItalic => null;
         public double RunnerKerning => 0;
         public double RunnerPosition => 0;
@@ -90,28 +82,31 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public bool? RunnerSmallCaps => null;
         public double RunnerSpacing => 0;
         public bool RunnerStrikethrough => false;
-        public virtual CharacterStyle? RunnerStyle => null;
         public bool? RunnerSubscript => null;
         public bool? RunnerSuperscript => null;
-        public Color? RunnerUnderlineColor => null;
         public UnderlineType RunnerUnderlineStyle => UnderlineType.None;
+
+        // TODO: Возможно нужно убать большинсмтво особых свойств из Document Element
+
+        //// Особые свойства
+        ////Особенность начального символа
+        //public virtual StartSymbolType? StartSymbol => null;
+
+        //// Префиксы
+        //public virtual string[]? Prefixes => null;
         
-        // Особые свойства
-        // Особенность начального символа
-        public virtual StartSymbolType? StartSymbol => null;
-        
-        // Префиксы
-        public virtual string[]? Prefixes => null;
-        
-        // Суффиксы
-        public virtual string[]? Suffixes => null;
+        //// Суффиксы
+        //public virtual string[]? Suffixes => null;
         
         // Количество пустых строк (отбивок, SPACE, n0) после параграфа
         public abstract int EmptyLinesAfter { get; }
 
         // Базовый метод проверки
-        public virtual ParagraphCorrections? CheckFormatting(int id, Paragraph paragraph)
+        public virtual ParagraphCorrections? CheckFormatting(int id, List<Paragraph> paragraphs)
         {
+            Paragraph paragraph;
+            try { paragraph = paragraphs[id]; } catch { return null; }
+
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Свойства ParagraphFormat
@@ -124,11 +119,11 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if ((paragraph.ParagraphFormat.BackgroundColor != BackgroundColor) & (paragraph.ParagraphFormat.BackgroundColor != AlternativeBackgroungColor))
+            if (!BackgroundColors.Contains(paragraph.ParagraphFormat.BackgroundColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверный цвет заливки параграфа",
-                    advice: $"Выбрано {paragraph.ParagraphFormat.BackgroundColor}; Требуется {BackgroundColor}"
+                    advice: $"Выбрано {paragraph.ParagraphFormat.BackgroundColor}; Требуется {BackgroundColors}"
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -281,11 +276,11 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if ((paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphBackgroundColor) & (paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphAlternativeBackgroundColor))
+            if (!WholeParagraphBackgroundColors.Contains(paragraph.CharacterFormatForParagraphMark.BackgroundColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет заливки' для всего абзаца",
-                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.BackgroundColor}; Требуется {WholeParagraphBackgroundColor}"
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.BackgroundColor}; Требуется {WholeParagraphBackgroundColors}"
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -335,11 +330,11 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if ((paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphHighlightColor) & (paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphAlternativeHighlightColor))
+            if (!WholeParagraphHighlightColors.Contains(paragraph.CharacterFormatForParagraphMark.HighlightColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет выделения' для всего абзаца",
-                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.HighlightColor}; Требуется {WholeParagraphHighlightColor}"
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.HighlightColor}; Требуется {WholeParagraphHighlightColors}"
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -384,7 +379,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Масштаб' для всего абзаца",
-                    advice: "ТУТ БУДЕТ СОВЕТ" // $"Выбрано {paragraph.CharacterFormatForParagraphMark.Scaling}; Требуется {WholeParagraphScaling}"
+                    advice: "ТУТ БУДЕТ СОВЕТ"
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -457,11 +452,11 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
             {
                 // AllCaps?
                 
-                if ((runner.CharacterFormat.BackgroundColor != RunnerBackgroundColor) & (runner.CharacterFormat.BackgroundColor != RunnerAlternativeBackgroundColor))
+                if (!RunnerBackgroundColors.Contains(runner.CharacterFormat.BackgroundColor))
                 {
                     ParagraphMistake mistake = new ParagraphMistake(
                         message: $"Неверное значение свойства 'Цвет заливки' для раннера",
-                        advice: $"Выбрано {runner.CharacterFormat.BackgroundColor}; Требуется {RunnerBackgroundColor}"
+                        advice: $"Выбрано {runner.CharacterFormat.BackgroundColor}; Требуется {RunnerBackgroundColors}"
                     );
                     paragraphMistakes.Add(mistake);
                 }
@@ -520,11 +515,11 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                     paragraphMistakes.Add(mistake);
                 }
                 
-                if ((runner.CharacterFormat.HighlightColor != RunnerHighlightColor) & (runner.CharacterFormat.HighlightColor != RunnerAlternativeHighlightColor))
+                if (!RunnerHighlightColors.Contains(runner.CharacterFormat.HighlightColor))
                 {
                     ParagraphMistake mistake = new ParagraphMistake(
                         message: $"Неверное значение свойства 'Цвет выделения' для раннера",
-                        advice: $"Выбрано {runner.CharacterFormat.HighlightColor}; Требуется {RunnerHighlightColor}"
+                        advice: $"Выбрано {runner.CharacterFormat.HighlightColor}; Требуется {RunnerHighlightColors}"
                     );
                     paragraphMistakes.Add(mistake);
                 }
@@ -609,7 +604,34 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                     paragraphMistakes.Add(mistake);
                 }
             }
-            
+
+            // Особые свойства
+            // Количество пустых строк (отбивок, SPACE, n0) после параграфа
+            int emptyLinesCount = 1;
+            while ((emptyLinesCount <= EmptyLinesAfter) & (id + emptyLinesCount < paragraphs.Count))
+            {
+                int idToCheckEmpty = id + emptyLinesCount;
+                Paragraph paragraphToCheckForEmpty = paragraphs[idToCheckEmpty];
+
+                string paragraphToCheckEmptyContent = "";
+                foreach (Run runner in paragraphToCheckForEmpty.GetChildElements(false, ElementType.Run))
+                {
+                    paragraphToCheckEmptyContent += runner.Content;
+                }
+                paragraphToCheckEmptyContent = paragraphToCheckEmptyContent.Trim();
+
+                if (paragraphToCheckEmptyContent != "")
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное количество пропущенных параграфов",
+                        advice: $"ТУТ БУДЕТ СОВЕТ"
+                    );
+                    paragraphMistakes.Add(mistake);
+                    break;
+                }
+                emptyLinesCount++;
+            }
+
             if (paragraphMistakes.Count != 0)
             {
                 return new ParagraphCorrections(

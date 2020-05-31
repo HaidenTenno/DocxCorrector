@@ -26,7 +26,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public override bool RunnerBold => false;
         
         // Особые свойства
-        public override StartSymbolType? StartSymbol => StartSymbolType.Upper;
+        //public override StartSymbolType? StartSymbol => StartSymbolType.Upper;
         public override int EmptyLinesAfter => 0;
     }
 }

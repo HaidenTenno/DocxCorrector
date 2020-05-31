@@ -31,20 +31,23 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public override bool RunnerBold => false;
         
         // Особые свойства
-        public override StartSymbolType? StartSymbol => StartSymbolType.Upper;
+        //public override StartSymbolType? StartSymbol => StartSymbolType.Upper;
         public override int EmptyLinesAfter => 0;
 
         // TODO: Сделать проверку окончания абзаца регуляркой (а нужна ли она вообще?..) 
         // public override string[] Suffixes => new string[] { ".", "!", "?" }; - могут пройти ".." и др.
 
         // Метод проверки
-        public override ParagraphCorrections? CheckFormatting(int id, Paragraph paragraph)
+        public override ParagraphCorrections? CheckFormatting(int id, List<Paragraph> paragraphs)
         {
-            ParagraphCorrections? result = base.CheckFormatting(id, paragraph);
+            Paragraph paragraph;
+            try { paragraph = paragraphs[id]; } catch { return null; }
+
+            ParagraphCorrections? result = base.CheckFormatting(id, paragraphs);
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
-            if ((paragraph.Content.ToString().Count() > 0) & (!Char.IsUpper(paragraph.Content.ToString()[0])))
+            if ((paragraph.Content.ToString().Count() > 0) & (!char.IsUpper(paragraph.Content.ToString()[0])))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: "Параграф должен начинаться с большой буквы",

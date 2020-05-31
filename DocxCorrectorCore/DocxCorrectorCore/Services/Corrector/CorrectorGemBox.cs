@@ -60,36 +60,44 @@ namespace DocxCorrectorCore.Services.Corrector
 
             List<ParagraphCorrections> paragraphsCorrections = new List<ParagraphCorrections>();
 
-            // TODO: Model switch
-
-            int currentClassIndex = 0;
-            int currentParagraphIndex = 0;
+            List<Word.Paragraph> paragraphs = new List<Word.Paragraph>();
             foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
                 foreach (Word.Paragraph paragraph in section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph))
                 {
-                    if (currentParagraphIndex < paragraphClasses[currentClassIndex].Id)
-                    {
-                        currentParagraphIndex++;
-                        continue;
-                    }
-
-                    // ПРОВЕРКА НАЧИНАЕТСЯ
-                    ParagraphCorrections? currentParagraphCorrections = null;
-                    switch (paragraphClasses[currentClassIndex].ParagraphClass)
-                    {
-                        case ParagraphClass.c1:
-                            var standardParagraph = new ParagraphRegular();
-                            currentParagraphCorrections = standardParagraph.CheckFormatting(currentParagraphIndex, paragraph);
-                            break;
-                        default:
-                            break;
-                    }
-                    if (currentParagraphCorrections != null) { paragraphsCorrections.Add(currentParagraphCorrections); }
-
-                    currentParagraphIndex++;
-                    currentClassIndex++;
+                    paragraphs.Add(paragraph);
                 }
+            }
+
+            // TODO: Model switch
+
+            int currentClassIndex = 0;
+            int currentParagraphIndex = 0;
+            foreach (Word.Paragraph paragraph in paragraphs)
+            {
+                int currentParagraphClassIndex;
+                try { currentParagraphClassIndex = paragraphClasses[currentClassIndex].Id; } catch { return paragraphsCorrections; }
+                if (currentParagraphIndex < currentParagraphClassIndex)
+                {
+                    currentParagraphIndex++;
+                    continue;
+                }
+
+                // ПРОВЕРКА НАЧИНАЕТСЯ
+                ParagraphCorrections? currentParagraphCorrections = null;
+                switch (paragraphClasses[currentClassIndex].ParagraphClass)
+                {
+                    case ParagraphClass.c1:
+                        var standardParagraph = new ParagraphRegular();
+                        currentParagraphCorrections = standardParagraph.CheckFormatting(currentParagraphIndex, paragraphs);
+                        break;
+                    default:
+                        break;
+                }
+                if (currentParagraphCorrections != null) { paragraphsCorrections.Add(currentParagraphCorrections); }
+
+                currentParagraphIndex++;
+                currentClassIndex++;
             }
 
             return paragraphsCorrections;
