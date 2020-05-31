@@ -48,7 +48,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public SingleBorder WholeParagraphBorder => SingleBorder.None;
         public bool WholeParagraphDoubleStrikethrough => false;
         public Color WholeParagraphFontColor => Color.Black;
-        public string WholeParagraphFontName => "TimesNewRoman";
+        public string WholeParagraphFontName => "Times New Roman";
         public bool WholeParagraphHidden => false;
         public Color WholeParagraphHighlightColor => Color.Empty;
         public Color WholeParagraphAlternativeHighlightColor => Color.White;
@@ -76,7 +76,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public SingleBorder RunnerBorder => SingleBorder.None;
         public bool RunnerDoubleStrikethrough => false;
         public Color RunnerFontColor => Color.Black;
-        public string RunnerFontName => "TimesNewRoman";
+        public string RunnerFontName => "Times New Roman";
         public bool RunnerHidden => false;
         public Color RunnerHighlightColor => Color.Empty;
         public Color RunnerAlternativeHighlightColor => Color.White;
@@ -124,7 +124,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if ((paragraph.ParagraphFormat.BackgroundColor != BackgroundColor) | (paragraph.ParagraphFormat.BackgroundColor != AlternativeBackgroungColor))
+            if ((paragraph.ParagraphFormat.BackgroundColor != BackgroundColor) & (paragraph.ParagraphFormat.BackgroundColor != AlternativeBackgroungColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверный цвет заливки параграфа",
@@ -281,7 +281,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if ((paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphBackgroundColor) | (paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphAlternativeBackgroundColor))
+            if ((paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphBackgroundColor) & (paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphAlternativeBackgroundColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет заливки' для всего абзаца",
@@ -335,7 +335,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if ((paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphHighlightColor) | (paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphAlternativeHighlightColor))
+            if ((paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphHighlightColor) & (paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphAlternativeHighlightColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет выделения' для всего абзаца",
@@ -457,7 +457,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
             {
                 // AllCaps?
                 
-                if ((runner.CharacterFormat.BackgroundColor != RunnerBackgroundColor) | (runner.CharacterFormat.BackgroundColor != RunnerAlternativeBackgroundColor))
+                if ((runner.CharacterFormat.BackgroundColor != RunnerBackgroundColor) & (runner.CharacterFormat.BackgroundColor != RunnerAlternativeBackgroundColor))
                 {
                     ParagraphMistake mistake = new ParagraphMistake(
                         message: $"Неверное значение свойства 'Цвет заливки' для раннера",
@@ -520,7 +520,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                     paragraphMistakes.Add(mistake);
                 }
                 
-                if ((runner.CharacterFormat.HighlightColor != RunnerHighlightColor) | (runner.CharacterFormat.HighlightColor != RunnerAlternativeHighlightColor))
+                if ((runner.CharacterFormat.HighlightColor != RunnerHighlightColor) & (runner.CharacterFormat.HighlightColor != RunnerAlternativeHighlightColor))
                 {
                     ParagraphMistake mistake = new ParagraphMistake(
                         message: $"Неверное значение свойства 'Цвет выделения' для раннера",
