@@ -20,6 +20,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         // Свойства ParagraphFormat
         public abstract HorizontalAlignment Alignment { get; }
         public Color BackgroundColor => Color.Empty;
+        public Color AlternativeBackgroungColor => Color.White;
         public MultipleBorders? Borders => null; // TODO: Разобраться с получением свойств границ параграфа
         public bool KeepLinesTogether => false;
         public abstract bool KeepWithNext { get; }
@@ -42,6 +43,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         // Свойства CharacterFormat для всего абзаца
         public abstract bool WholeParagraphAllCaps { get; }
         public Color WholeParagraphBackgroundColor => Color.Empty;
+        public Color WholeParagraphAlternativeBackgroundColor => Color.White;
         public abstract bool WholeParagraphBold { get; }
         public SingleBorder WholeParagraphBorder => SingleBorder.None;
         public bool WholeParagraphDoubleStrikethrough => false;
@@ -49,6 +51,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public string WholeParagraphFontName => "TimesNewRoman";
         public bool WholeParagraphHidden => false;
         public Color WholeParagraphHighlightColor => Color.Empty;
+        public Color WholeParagraphAlternativeHighlightColor => Color.White;
         public bool WholeParagraphItalic => false;
         public double WholeParagraphKerning => 0;
         public double WholeParagraphPosition => 0;
@@ -68,6 +71,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         // Свойства CharacterFormat для всего абзаца
         public bool? RunnerAllCaps => null;
         public Color RunnerBackgroundColor => Color.Empty;
+        public Color RunnerAlternativeBackgroundColor => Color.White;
         public abstract bool RunnerBold { get; }
         public SingleBorder RunnerBorder => SingleBorder.None;
         public bool RunnerDoubleStrikethrough => false;
@@ -75,6 +79,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
         public string RunnerFontName => "TimesNewRoman";
         public bool RunnerHidden => false;
         public Color RunnerHighlightColor => Color.Empty;
+        public Color RunnerAlternativeHighlightColor => Color.White;
         public bool? RunnerItalic => null;
         public double RunnerKerning => 0;
         public double RunnerPosition => 0;
@@ -119,7 +124,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (paragraph.ParagraphFormat.BackgroundColor != BackgroundColor)
+            if ((paragraph.ParagraphFormat.BackgroundColor != BackgroundColor) | (paragraph.ParagraphFormat.BackgroundColor != AlternativeBackgroungColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверный цвет заливки параграфа",
@@ -171,15 +176,6 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение типа междустрочного интервала",
                     advice: $"Выбрано {paragraph.ParagraphFormat.LineSpacingRule}; Требуется {LineSpacingRule}"
-                );
-                paragraphMistakes.Add(mistake);
-            }
-
-            if (paragraph.ParagraphFormat.MirrorIndents != MirrorIndents)
-            {
-                ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Зеркальные отступы'",
-                    advice: $"Выбрано {paragraph.ParagraphFormat.MirrorIndents}; Требуется {MirrorIndents}"
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -285,7 +281,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphBackgroundColor)
+            if ((paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphBackgroundColor) | (paragraph.CharacterFormatForParagraphMark.BackgroundColor != WholeParagraphAlternativeBackgroundColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет заливки' для всего абзаца",
@@ -320,6 +316,15 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 );
                 paragraphMistakes.Add(mistake);
             }
+            
+            if (paragraph.CharacterFormatForParagraphMark.FontName != WholeParagraphFontName)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Шрифт' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.FontName}; Требуется {WholeParagraphFontName}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
 
             if (paragraph.CharacterFormatForParagraphMark.Hidden != WholeParagraphHidden)
             {
@@ -330,7 +335,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphHighlightColor)
+            if ((paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphHighlightColor) | (paragraph.CharacterFormatForParagraphMark.HighlightColor != WholeParagraphAlternativeHighlightColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет выделения' для всего абзаца",
@@ -374,43 +379,237 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 );
                 paragraphMistakes.Add(mistake);
             }
-
-            if (paragraph.CharacterFormatForParagraphMark.RightToLeft != WholeParagraphRightToLeft)
-            {
-                ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Справа-налево' для всего абзаца",
-                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.RightToLeft}; Требуется {WholeParagraphRightToLeft}"
-                );
-                paragraphMistakes.Add(mistake);
-            }
             
             if (paragraph.CharacterFormatForParagraphMark.Scaling != WholeParagraphScaling)
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Масштаб' для всего абзаца",
-                    advice: "ТУТ БУДЕТ СОВЕТ"//$"Выбрано {paragraph.CharacterFormatForParagraphMark.Scaling}; Требуется {WholeParagraphScaling}"
+                    advice: "ТУТ БУДЕТ СОВЕТ" // $"Выбрано {paragraph.CharacterFormatForParagraphMark.Scaling}; Требуется {WholeParagraphScaling}"
                 );
                 paragraphMistakes.Add(mistake);
             }
 
-            // TODO: ДОДЕЛАТЬ НАЧИНАЯ СО SizeLeftBorder
+            if ((paragraph.CharacterFormatForParagraphMark.Size < WholeParagraphSizeLeftBorder) | (paragraph.CharacterFormatForParagraphMark.Size > WholeParagraphSizeRightBorder))
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Размер шрифта' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Size}; Требуется значение между {WholeParagraphSizeLeftBorder} и {WholeParagraphSizeRightBorder}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
 
-            // Свойства CharacterFormat для всего раннеров
+            if (paragraph.CharacterFormatForParagraphMark.SmallCaps != WholeParagraphSmallCaps)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Все строчные' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.SmallCaps}; Требуется {WholeParagraphSmallCaps}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+            
+            if (paragraph.CharacterFormatForParagraphMark.Spacing != WholeParagraphSpacing)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Межсимвольный интервал' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Spacing}; Требуется {WholeParagraphSpacing}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+            
+            if (paragraph.CharacterFormatForParagraphMark.Strikethrough != WholeParagraphStrikethrough)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Зачеркнутый' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Strikethrough}; Требуется {WholeParagraphStrikethrough}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+            
+            if (paragraph.CharacterFormatForParagraphMark.Subscript != WholeParagraphSubscript)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Подстрочный' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Subscript}; Требуется {WholeParagraphSubscript}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+            
+            if (paragraph.CharacterFormatForParagraphMark.Superscript != WholeParagraphSuperscript)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Надстрочный' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.Superscript}; Требуется {WholeParagraphSuperscript}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+            
+            if (paragraph.CharacterFormatForParagraphMark.UnderlineStyle != WholeParagraphUnderlineStyle)
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"Неверное значение свойства 'Подчеркнутый' для всего абзаца",
+                    advice: $"Выбрано {paragraph.CharacterFormatForParagraphMark.UnderlineStyle}; Требуется {WholeParagraphUnderlineStyle}"
+                );
+                paragraphMistakes.Add(mistake);
+            }
+
+            // Свойства CharacterFormat для раннеров
             foreach (Run runner in paragraph.GetChildElements(false, ElementType.Run))
             {
-                if (runner.CharacterFormat.AllCaps != RunnerAllCaps)
+                // AllCaps?
+                
+                if ((runner.CharacterFormat.BackgroundColor != RunnerBackgroundColor) | (runner.CharacterFormat.BackgroundColor != RunnerAlternativeBackgroundColor))
                 {
                     ParagraphMistake mistake = new ParagraphMistake(
-                        message: $"Неверное значение свойства 'Все прописные' для раннера",
-                        advice: "ТУТ БУДЕТ СОВЕТ"
+                        message: $"Неверное значение свойства 'Цвет заливки' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.BackgroundColor}; Требуется {RunnerBackgroundColor}"
                     );
                     paragraphMistakes.Add(mistake);
                 }
-
-                // TODO: ДОДЕЛАТЬ НАЧИНАЯ СО BackgroundColor
+                
+                if (runner.CharacterFormat.Bold != RunnerBold)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Жирный' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.Bold}; Требуется {RunnerBold}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if (runner.CharacterFormat.Border != RunnerBorder)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Границы' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.Border}; Требуется {RunnerBorder}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if (runner.CharacterFormat.DoubleStrikethrough != RunnerDoubleStrikethrough)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Двойное зачеркивание' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.DoubleStrikethrough}; Требуется {RunnerDoubleStrikethrough}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if (runner.CharacterFormat.FontColor != RunnerFontColor)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Цвет шрифта' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.FontColor}; Требуется {RunnerFontColor}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if (runner.CharacterFormat.FontName != RunnerFontName)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Шрифт' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.FontName}; Требуется {RunnerFontName}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if (runner.CharacterFormat.Hidden != RunnerHidden)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Скрытый' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.Hidden}; Требуется {RunnerHidden}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if ((runner.CharacterFormat.HighlightColor != RunnerHighlightColor) | (runner.CharacterFormat.HighlightColor != RunnerAlternativeHighlightColor))
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Цвет выделения' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.HighlightColor}; Требуется {RunnerHighlightColor}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                // Italic?
+                
+                if (runner.CharacterFormat.Kerning != RunnerKerning)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Кернинг' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.Kerning}; Требуется {RunnerKerning}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if (runner.CharacterFormat.Position != RunnerPosition)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Смещение' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.Position}; Требуется {RunnerPosition}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if (runner.CharacterFormat.RightToLeft != RunnerRightToLeft)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Справа-налево' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.RightToLeft}; Требуется {RunnerRightToLeft}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if (runner.CharacterFormat.Scaling != RunnerScaling)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Масштаб' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.Scaling}; Требуется {RunnerScaling}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if ((runner.CharacterFormat.Size < RunnerSizeLeftBorder) | (runner.CharacterFormat.Size > RunnerSizeRightBorder))
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Размер шрифта' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.Size}; Требуется значение между {RunnerSizeLeftBorder} и {RunnerSizeRightBorder}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                // SmallCaps?
+                
+                if (runner.CharacterFormat.Spacing != RunnerSpacing)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Межсимвольный интервал' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.Spacing}; Требуется {RunnerSpacing}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                if (runner.CharacterFormat.Strikethrough != RunnerStrikethrough)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Зачеркнутый' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.Strikethrough}; Требуется {RunnerStrikethrough}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+                
+                // Subscript?
+                
+                // Superscript?
+                
+                if (runner.CharacterFormat.UnderlineStyle != RunnerUnderlineStyle)
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное значение свойства 'Подчеркнутый' для раннера",
+                        advice: $"Выбрано {runner.CharacterFormat.UnderlineStyle}; Требуется {RunnerUnderlineStyle}"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
             }
-
-
+            
             if (paragraphMistakes.Count != 0)
             {
                 return new ParagraphCorrections(
