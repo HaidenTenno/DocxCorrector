@@ -53,7 +53,17 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            // TODO: COMPLETE
+            // Prefixes?
+            // Suffixes?
+            
+            // if ((paragraph != EmptyLinesAfter)
+            // {
+            //     ParagraphMistake mistake = new ParagraphMistake(
+            //         message: "После параграфа не должно быть пустых строк",
+            //         advice: "ТУТ БУДЕТ СОВЕТ"
+            //     );
+            //     paragraphMistakes.Add(mistake);
+            // }
 
             if (paragraphMistakes.Count != 0)
             {
