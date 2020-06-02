@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GemBox.Document;
+using System;
 using System.Linq;
 using Word = GemBox.Document;
 
@@ -101,6 +102,19 @@ namespace DocxCorrectorCore.Services.Helpers
                 if (keySymbol == lastSymbol) { return keySymbol; }
             }
             return null;
+        }
+
+        internal static string GetParagraphContentWithoutNewLine(Word.Paragraph paragraph)
+        {
+            string result = "";
+            foreach (Word.Run runner in paragraph.GetChildElements(false,  Word.ElementType.Run))
+            {
+                result += runner.Content;
+            }
+
+            result = result.Trim();
+
+            return result;
         }
     }
 }

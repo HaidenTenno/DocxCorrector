@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using DocxCorrectorCore.Models;
+using System.Data;
 
 namespace DocxCorrectorCore.Services.Corrector
 {
@@ -19,9 +20,23 @@ namespace DocxCorrectorCore.Services.Corrector
             });
         }
 
+        private async Task<List<SourcesListCorrections>> GetSourcesListCorrectionsAsync(string filePath, RulesModel rulesModel)
+        {
+            return await Task.Run(() =>
+            {
+                Console.WriteLine("Beginning of sources list errors analysis");
+                var result = GetSourcesListCorrections(filePath, rulesModel);
+                Console.WriteLine("Ending of sources list errors analysis");
+                return result;
+            });
+        }
+
         // Protected
         // Получить список ошибок форматирования ОТДЕЛЬНЫХ АБЗАЦЕВ для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
         protected abstract List<ParagraphCorrections> GetParagraphsCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses);
+        
+        // Получить список ошибок оформления списка литературы для документа filePath по требованиям (ГОСТу) rulesModel
+        protected abstract List<SourcesListCorrections> GetSourcesListCorrections(string filePath, RulesModel rulesModel);
         // TODO: More
 
         // Public
@@ -29,12 +44,14 @@ namespace DocxCorrectorCore.Services.Corrector
         public virtual DocumentCorrections GetCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses)
         {
             var paragraphsCorrectionsTask = GetParagraphsCorrectionsAsync(filePath, rulesModel, paragraphsClasses);
+            var sourcesListCorrectionsTask = GetSourcesListCorrectionsAsync(filePath, rulesModel);
 
             Task.WaitAll(paragraphsCorrectionsTask);
 
             DocumentCorrections documentCorrections = new DocumentCorrections(
                 rules: rulesModel,
-                paragraphsCorrections: paragraphsCorrectionsTask.Result
+                paragraphsCorrections: paragraphsCorrectionsTask.Result,
+                sourcesListCorrections: sourcesListCorrectionsTask.Result
             );
 
             return documentCorrections;

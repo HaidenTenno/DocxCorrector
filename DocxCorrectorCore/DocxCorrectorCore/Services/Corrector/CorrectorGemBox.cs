@@ -103,6 +103,11 @@ namespace DocxCorrectorCore.Services.Corrector
             return paragraphsCorrections;
         }
 
+        protected override List<SourcesListCorrections> GetSourcesListCorrections(string filePath, RulesModel rulesModel)
+        {
+            return new List<SourcesListCorrections> { SourcesListCorrections.TestSourcesListCorrection };
+        }
+
         // Public
         // Печать всех абзацев документа filePath
         public override void PrintAllParagraphs(string filePath)

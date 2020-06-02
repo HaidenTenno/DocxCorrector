@@ -613,12 +613,7 @@ namespace DocxCorrectorCore.Models.ElementsObjectModel
                 int idToCheckEmpty = id + emptyLinesCount;
                 Paragraph paragraphToCheckForEmpty = paragraphs[idToCheckEmpty];
 
-                string paragraphToCheckEmptyContent = "";
-                foreach (Run runner in paragraphToCheckForEmpty.GetChildElements(false, ElementType.Run))
-                {
-                    paragraphToCheckEmptyContent += runner.Content;
-                }
-                paragraphToCheckEmptyContent = paragraphToCheckEmptyContent.Trim();
+                string paragraphToCheckEmptyContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraphToCheckForEmpty);
 
                 if (paragraphToCheckEmptyContent != "")
                 {
