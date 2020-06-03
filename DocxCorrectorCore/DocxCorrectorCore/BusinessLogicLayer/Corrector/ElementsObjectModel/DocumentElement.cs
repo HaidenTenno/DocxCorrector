@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
@@ -22,7 +23,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public abstract Word.HorizontalAlignment Alignment { get; }
         public List<Word.Color> BackgroundColors => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
 
-        public Word.MultipleBorders? Borders => null; // TODO: Разобраться с получением свойств границ параграфа
+        public Word.BorderStyle BorderStyle => Word.BorderStyle.None;
         public bool KeepLinesTogether => false;
         public abstract bool KeepWithNext { get; }
         public double LeftIndentation => 0;
@@ -102,6 +103,19 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         // Количество пустых строк (отбивок, SPACE, n0) после параграфа
         public abstract int EmptyLinesAfter { get; }
 
+        // Проверка границ (Borders)
+        private bool CheckBordersFormatting(Word.Paragraph paragraph)
+        {
+            foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
+            {
+                if (paragraph.ParagraphFormat.Borders[borderType].Style != BorderStyle)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         // Базовый метод проверки
         public virtual ParagraphCorrections? CheckFormatting(int id, List<Word.Paragraph> paragraphs)
         {
@@ -129,7 +143,14 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            // TODO: Border
+            if (!CheckBordersFormatting(paragraph))
+            {
+                ParagraphMistake mistake = new ParagraphMistake(
+                    message: $"У параграфа присутствуют рамки",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                paragraphMistakes.Add(mistake);
+            }
 
             if (paragraph.ParagraphFormat.KeepLinesTogether != KeepLinesTogether)
             {
