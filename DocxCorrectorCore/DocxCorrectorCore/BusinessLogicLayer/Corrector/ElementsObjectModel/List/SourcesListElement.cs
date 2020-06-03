@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 {
-    public class SourcesList : ListElement
+    public class SourcesListElement : ListElement
     {
         // public override string[] Suffixes => new string[] {",", ":"};
 

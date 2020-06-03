@@ -19,12 +19,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             });
         }
 
-        private async Task<List<SourcesListCorrections>> GetSourcesListCorrectionsAsync(string filePath, RulesModel rulesModel)
+        private async Task<List<SourcesListCorrections>> GetSourcesListCorrectionsAsync(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses)
         {
             return await Task.Run(() =>
             {
                 Console.WriteLine("Beginning of sources list errors analysis");
-                var result = GetSourcesListCorrections(filePath, rulesModel);
+                var result = GetSourcesListCorrections(filePath, rulesModel, paragraphClasses);
                 Console.WriteLine("Ending of sources list errors analysis");
                 return result;
             });
@@ -33,9 +33,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         // Protected
         // Получить список ошибок форматирования ОТДЕЛЬНЫХ АБЗАЦЕВ для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
         protected abstract List<ParagraphCorrections> GetParagraphsCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses);
-        
-        // Получить список ошибок оформления списка литературы для документа filePath по требованиям (ГОСТу) rulesModel
-        protected abstract List<SourcesListCorrections> GetSourcesListCorrections(string filePath, RulesModel rulesModel);
+
+        // Получить список ошибок оформления списка литературы для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
+        protected abstract List<SourcesListCorrections> GetSourcesListCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses);
         // TODO: More
 
         // Public
@@ -43,7 +43,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         public virtual DocumentCorrections GetCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses)
         {
             var paragraphsCorrectionsTask = GetParagraphsCorrectionsAsync(filePath, rulesModel, paragraphsClasses);
-            var sourcesListCorrectionsTask = GetSourcesListCorrectionsAsync(filePath, rulesModel);
+            var sourcesListCorrectionsTask = GetSourcesListCorrectionsAsync(filePath, rulesModel, paragraphsClasses);
 
             Task.WaitAll(paragraphsCorrectionsTask);
 

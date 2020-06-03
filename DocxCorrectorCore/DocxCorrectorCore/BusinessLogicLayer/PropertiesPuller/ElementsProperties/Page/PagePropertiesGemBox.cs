@@ -4,10 +4,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 {
     public sealed class PagePropertiesGemBox : PageProperties
     {
-        // TODO: SET ONLY??
-        public int PageNumber { get; set; }
-        public double Height { get; set; }
-        public double Width { get; set; }
+        public int PageNumber { get; }
+        public double Height { get; }
+        public double Width { get; }
 
         public PagePropertiesGemBox(Word.DocumentModelPage page, int pageNumber)
         {

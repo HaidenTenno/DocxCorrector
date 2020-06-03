@@ -22,7 +22,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         // Свойства ParagraphFormat
         public abstract Word.HorizontalAlignment Alignment { get; }
         public List<Word.Color> BackgroundColors => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
-
         public Word.BorderStyle BorderStyle => Word.BorderStyle.None;
         public bool KeepLinesTogether => false;
         public abstract bool KeepWithNext { get; }
@@ -87,18 +86,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public bool? RunnerSubscript => null;
         public bool? RunnerSuperscript => null;
         public Word.UnderlineType RunnerUnderlineStyle => Word.UnderlineType.None;
-
-        // TODO: REMOVE??
-
-        //// Особые свойства
-        ////Особенность начального символа
-        //public virtual StartSymbolType? StartSymbol => null;
-
-        //// Префиксы
-        //public virtual string[]? Prefixes => null;
-
-        //// Суффиксы
-        //public virtual string[]? Suffixes => null;
 
         // Количество пустых строк (отбивок, SPACE, n0) после параграфа
         public abstract int EmptyLinesAfter { get; }

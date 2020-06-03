@@ -103,9 +103,30 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return paragraphsCorrections;
         }
 
-        // Получить список ошибок оформления списка литературы для документа filePath по требованиям (ГОСТу) rulesModel
-        protected override List<SourcesListCorrections> GetSourcesListCorrections(string filePath, RulesModel rulesModel)
+        // Получить список ошибок оформления списка литературы для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
+        protected override List<SourcesListCorrections> GetSourcesListCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses)
         {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return new List<SourcesListCorrections>(); }
+
+            List<Word.Paragraph> paragraphs = new List<Word.Paragraph>();
+            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
+            {
+                foreach (Word.Paragraph paragraph in section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph))
+                {
+                    paragraphs.Add(paragraph);
+                }
+            }
+
+            // TODO: Model switch
+            var standartParagraph = new SourcesListElement();
+
+            int currentParagraphIndex = 0;
+
+            // Найти первый ЗАГОЛОВОК, в котором присутствует одно из ключевых слов (список источников, список литературы, список использованных...)
+            // Пока не достигнут конец документа, или пока не достигнут следующий заголовок
+            //  Проверка абзаца на свойства элемента списка литературы
+
             return new List<SourcesListCorrections> { SourcesListCorrections.TestSourcesListCorrection };
         }
 
