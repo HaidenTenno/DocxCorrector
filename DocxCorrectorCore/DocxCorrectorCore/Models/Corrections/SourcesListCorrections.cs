@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DocxCorrectorCore.Models
+﻿
+namespace DocxCorrectorCore.Models.Corrections
 {
     public sealed class SourcesListCorrections
     {
-        // ID параграфа (Его порядковый номер)
+        // ID параграфа ЗАГОЛОВКА СПИСКА ЛИТЕРАТУРЫ (Его порядковый номер)
         public readonly int ParagraphID;
         // Начало параграфа (20 символов)
         public readonly string Prefix;

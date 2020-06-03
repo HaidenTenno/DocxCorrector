@@ -1,5 +1,4 @@
-﻿using GemBox.Document;
-using System;
+﻿using System;
 using System.Linq;
 using Word = GemBox.Document;
 

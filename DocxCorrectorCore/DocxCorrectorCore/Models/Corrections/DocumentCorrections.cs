@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace DocxCorrectorCore.Models
+namespace DocxCorrectorCore.Models.Corrections
 {
-    // TODO: Find another place
     public enum RulesModel
     {
         GOST,

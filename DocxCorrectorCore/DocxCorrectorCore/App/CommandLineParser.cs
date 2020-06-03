@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using DocxCorrectorCore.Models;
 using DocxCorrectorCore.UserDialog;
+using DocxCorrectorCore.Models.Corrections;
 
 namespace DocxCorrectorCore.App
 {

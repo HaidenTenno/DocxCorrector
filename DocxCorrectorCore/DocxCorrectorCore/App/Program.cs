@@ -1,5 +1,4 @@
-﻿
-namespace DocxCorrectorCore.App
+﻿namespace DocxCorrectorCore.App
 {
     class Program
     {

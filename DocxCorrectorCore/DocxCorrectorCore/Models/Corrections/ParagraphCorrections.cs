@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace DocxCorrectorCore.Models
+namespace DocxCorrectorCore.Models.Corrections
 {
     // Тип параграфа
     [JsonConverter(typeof(StringEnumConverter))]

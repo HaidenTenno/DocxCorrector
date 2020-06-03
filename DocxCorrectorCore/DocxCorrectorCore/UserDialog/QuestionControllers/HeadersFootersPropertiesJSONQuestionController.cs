@@ -1,5 +1,6 @@
 ﻿using System;
 using DocxCorrectorCore.App;
+using DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller;
 
 namespace DocxCorrectorCore.UserDialog
 {
@@ -16,14 +17,14 @@ namespace DocxCorrectorCore.UserDialog
 
             if (CheckIfWrongArgumentsCountPassed(3)) { return; }
 
-            Models.HeaderFooterType? chosenHeaderFooterType;
+            HeaderFooterType? chosenHeaderFooterType;
             switch (UserAnswer[0])
             {
                 case "0":
-                    chosenHeaderFooterType = Models.HeaderFooterType.Header;
+                    chosenHeaderFooterType = HeaderFooterType.Header;
                     break;
                 case "1":
-                    chosenHeaderFooterType = Models.HeaderFooterType.Footer;
+                    chosenHeaderFooterType = HeaderFooterType.Footer;
                     break;
                 default:
                     Console.WriteLine("Выбрана некорректная опция");
@@ -32,7 +33,7 @@ namespace DocxCorrectorCore.UserDialog
 
             FeaturesProvider featuresProvider = new FeaturesProvider();
 
-            featuresProvider.GenerateHeadersFootersInfoJSON((Models.HeaderFooterType)chosenHeaderFooterType, UserAnswer[1], UserAnswer[2]);
+            featuresProvider.GenerateHeadersFootersInfoJSON((HeaderFooterType)chosenHeaderFooterType, UserAnswer[1], UserAnswer[2]);
         }
     }
 }

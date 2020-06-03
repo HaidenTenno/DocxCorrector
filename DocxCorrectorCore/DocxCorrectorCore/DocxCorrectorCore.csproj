@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ElementsObjectModel\TableCaption" />
+    <Folder Include="BusinessLogicLayer\Corrector\ElementsObjectModel\TableCaption" />
   </ItemGroup>
 
 </Project>

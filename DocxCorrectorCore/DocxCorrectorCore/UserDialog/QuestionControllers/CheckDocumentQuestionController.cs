@@ -1,5 +1,6 @@
-﻿using DocxCorrectorCore.App;
-using System;
+﻿using System;
+using DocxCorrectorCore.App;
+using DocxCorrectorCore.Models.Corrections;
 
 namespace DocxCorrectorCore.UserDialog
 {
@@ -16,10 +17,10 @@ namespace DocxCorrectorCore.UserDialog
 
             if (CheckIfWrongArgumentsCountPassed(4)) { return; }
 
-            Models.RulesModel chosenRules;
+            RulesModel chosenRules;
             try
             {
-                chosenRules = (Models.RulesModel)Enum.Parse(typeof(Models.RulesModel), UserAnswer[1]);
+                chosenRules = (RulesModel)Enum.Parse(typeof(RulesModel), UserAnswer[1]);
             }
             catch
             {
