@@ -104,10 +104,10 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         }
 
         // Базовый метод проверки
-        public virtual ParagraphCorrections? CheckFormatting(int id, List<Word.Paragraph> paragraphs)
+        public virtual ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
             Word.Paragraph paragraph;
-            try { paragraph = paragraphs[id]; } catch { return null; }
+            try { paragraph = classifiedParagraphs[id].Paragraph; } catch { return null; }
 
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
@@ -617,10 +617,10 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             // Особые свойства
             // Количество пустых строк (отбивок, SPACE, n0) после параграфа
             int emptyLinesCount = 1;
-            while ((emptyLinesCount <= EmptyLinesAfter) & (id + emptyLinesCount < paragraphs.Count))
+            while ((emptyLinesCount <= EmptyLinesAfter) & (id + emptyLinesCount < classifiedParagraphs.Count))
             {
                 int idToCheckEmpty = id + emptyLinesCount;
-                Word.Paragraph paragraphToCheckForEmpty = paragraphs[idToCheckEmpty];
+                Word.Paragraph paragraphToCheckForEmpty = classifiedParagraphs[idToCheckEmpty].Paragraph;
 
                 string paragraphToCheckEmptyContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraphToCheckForEmpty);
 

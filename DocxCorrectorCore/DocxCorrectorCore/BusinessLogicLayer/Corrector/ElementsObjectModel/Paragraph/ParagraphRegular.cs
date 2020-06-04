@@ -38,12 +38,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         // public override string[] Suffixes => new string[] { ".", "!", "?" }; - могут пройти ".." и др.
 
         // Метод проверки
-        public override ParagraphCorrections? CheckFormatting(int id, List<Word.Paragraph> paragraphs)
+        public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
             Word.Paragraph paragraph;
-            try { paragraph = paragraphs[id]; } catch { return null; }
+            try { paragraph = classifiedParagraphs[id].Paragraph; } catch { return null; }
 
-            ParagraphCorrections? result = base.CheckFormatting(id, paragraphs);
+            ParagraphCorrections? result = base.CheckFormatting(id, classifiedParagraphs);
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
@@ -55,18 +55,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 );
                 paragraphMistakes.Add(mistake);
             }
-
-            // Prefixes?
-            // Suffixes?
-            
-            // if ((paragraph != EmptyLinesAfter)
-            // {
-            //     ParagraphMistake mistake = new ParagraphMistake(
-            //         message: "После параграфа не должно быть пустых строк",
-            //         advice: "ТУТ БУДЕТ СОВЕТ"
-            //     );
-            //     paragraphMistakes.Add(mistake);
-            // }
 
             if (paragraphMistakes.Count != 0)
             {

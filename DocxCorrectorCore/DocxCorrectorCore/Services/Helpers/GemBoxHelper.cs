@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
+using DocxCorrectorCore.BusinessLogicLayer.Corrector;
 using Word = GemBox.Document;
+using DocxCorrectorCore.Models.Corrections;
 
 namespace DocxCorrectorCore.Services.Helpers
 {
@@ -72,6 +75,12 @@ namespace DocxCorrectorCore.Services.Helpers
             return result.Trim();
         }
 
+        internal static string GetStringPrefix(string content, int prefixLength)
+        {
+            string result = content.Length > prefixLength ? content.Substring(0, prefixLength) : content.ToString();
+            return result.Trim();
+        }
+
         // Проверить, что первое слово в параграфе явлется одним из keyWords и вернуть его, если это так
         internal static string? CheckIfFirtWordOfParagraphIsOneOf(Word.Paragraph paragraph, string[] keyWords)
         {
@@ -103,6 +112,7 @@ namespace DocxCorrectorCore.Services.Helpers
             return null;
         }
 
+        // Получить текстовое содержимое параграфа (без символа следующей строки)
         internal static string GetParagraphContentWithoutNewLine(Word.Paragraph paragraph)
         {
             string result = "";
@@ -114,6 +124,42 @@ namespace DocxCorrectorCore.Services.Helpers
             result = result.Trim();
 
             return result;
+        }
+
+        // Получить список классифицированных параграфов для документа с помощью результатов классификации
+        internal static List<ClassifiedParagraph> CombineParagraphsWithClassificationResult(Word.DocumentModel document, List<ClassificationResult> classificationResultList)
+        {
+            List<ClassifiedParagraph> classifiedParagraphs = new List<ClassifiedParagraph>();
+
+            List<Word.Paragraph> paragraphs = new List<Word.Paragraph>();
+            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
+            {
+                foreach (Word.Paragraph paragraph in section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph))
+                {
+                    paragraphs.Add(paragraph);
+                }
+            }
+
+            int classificationResultIndex = 0;
+            int paragraphIndex = 0;
+            foreach (Word.Paragraph paragraph in paragraphs)
+            {
+                int classifiedParagraphIndex;
+                try { classifiedParagraphIndex = classificationResultList[classificationResultIndex].Id; } catch { return classifiedParagraphs; }
+                if (paragraphIndex < classifiedParagraphIndex)
+                {
+                    classifiedParagraphs.Add(new ClassifiedParagraph(paragraphs[paragraphIndex]));
+                    paragraphIndex++;
+                    continue;
+                }
+
+                classifiedParagraphs.Add(new ClassifiedParagraph(paragraphs[paragraphIndex], classificationResultList[classificationResultIndex].ParagraphClass));
+
+                classificationResultIndex++;
+                paragraphIndex++;
+            }
+
+            return classifiedParagraphs;
         }
     }
 }

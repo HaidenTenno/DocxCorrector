@@ -60,36 +60,25 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
             List<ParagraphCorrections> paragraphsCorrections = new List<ParagraphCorrections>();
 
-            List<Word.Paragraph> paragraphs = new List<Word.Paragraph>();
-            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
-            {
-                foreach (Word.Paragraph paragraph in section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph))
-                {
-                    paragraphs.Add(paragraph);
-                }
-            }
+            List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
             // TODO: Model switch
-
-            int currentClassIndex = 0;
             int currentParagraphIndex = 0;
-            foreach (Word.Paragraph paragraph in paragraphs)
+            foreach (ClassifiedParagraph classifiedParagraph in classifiedParagraphs)
             {
-                int currentParagraphClassIndex;
-                try { currentParagraphClassIndex = paragraphClasses[currentClassIndex].Id; } catch { return paragraphsCorrections; }
-                if (currentParagraphIndex < currentParagraphClassIndex)
+                if (classifiedParagraph.ParagraphClass == null) 
                 {
                     currentParagraphIndex++;
-                    continue;
+                    continue; 
                 }
 
                 // ПРОВЕРКА НАЧИНАЕТСЯ
                 ParagraphCorrections? currentParagraphCorrections = null;
-                switch (paragraphClasses[currentClassIndex].ParagraphClass)
+                switch (classifiedParagraph.ParagraphClass)
                 {
                     case ParagraphClass.c1:
                         var standardParagraph = new ParagraphRegular();
-                        currentParagraphCorrections = standardParagraph.CheckFormatting(currentParagraphIndex, paragraphs);
+                        currentParagraphCorrections = standardParagraph.CheckFormatting(currentParagraphIndex, classifiedParagraphs);
                         break;
                     default:
                         break;
@@ -97,7 +86,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                 if (currentParagraphCorrections != null) { paragraphsCorrections.Add(currentParagraphCorrections); }
 
                 currentParagraphIndex++;
-                currentClassIndex++;
             }
 
             return paragraphsCorrections;
@@ -109,25 +97,37 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
             if (document == null) { return new List<SourcesListCorrections>(); }
 
-            List<Word.Paragraph> paragraphs = new List<Word.Paragraph>();
-            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
-            {
-                foreach (Word.Paragraph paragraph in section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph))
-                {
-                    paragraphs.Add(paragraph);
-                }
-            }
+            List<SourcesListCorrections> sourcesListCorrections = new List<SourcesListCorrections>();
+
+            List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
             // TODO: Model switch
             var standartParagraph = new SourcesListElement();
 
-            int currentParagraphIndex = 0;
+            // Идти по списку классифицированных элементов
+            for (int classifiedParagraphIndex = 0; classifiedParagraphIndex < classifiedParagraphs.Count(); classifiedParagraphIndex++)
+            {
+                // Если класс не b1, то пропускаем
+                if (classifiedParagraphs[classifiedParagraphIndex].ParagraphClass != ParagraphClass.b1) { continue; }
 
-            // Найти первый ЗАГОЛОВОК, в котором присутствует одно из ключевых слов (список источников, список литературы, список использованных...)
-            // Пока не достигнут конец документа, или пока не достигнут следующий заголовок
-            //  Проверка абзаца на свойства элемента списка литературы
+                // Если в параграфе нет ключевой фразы, то пропускаем
+                if (!standartParagraph.KeyWords.Any(keyword => classifiedParagraphs[classifiedParagraphIndex].Paragraph.Content.ToString().Contains(keyword, StringComparison.OrdinalIgnoreCase))) { continue; }
 
-            return new List<SourcesListCorrections> { SourcesListCorrections.TestSourcesListCorrection };
+                // Идем до конца документа ИЛИ пока не встретим следующий заголовок
+                for (int sourcesListParagraphIndex = classifiedParagraphIndex + 1; sourcesListParagraphIndex < classifiedParagraphs.Count(); sourcesListParagraphIndex++)
+                {
+                    if (classifiedParagraphs[sourcesListParagraphIndex].ParagraphClass == null) { continue; }
+
+                    if (classifiedParagraphs[sourcesListParagraphIndex].ParagraphClass == ParagraphClass.b1) { break; }
+
+                    // ПРОВЕРКА НАЧИНАЕТСЯ
+                    SourcesListCorrections? currentSourcesListCorrections = standartParagraph.CheckSourcesList(sourcesListParagraphIndex, classifiedParagraphs);
+
+                    if (currentSourcesListCorrections != null) { sourcesListCorrections.Add(currentSourcesListCorrections); }
+                }
+            }
+
+            return sourcesListCorrections;
         }
 
         // Public
