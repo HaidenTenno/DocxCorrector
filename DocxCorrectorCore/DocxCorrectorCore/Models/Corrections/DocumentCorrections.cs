@@ -13,12 +13,19 @@ namespace DocxCorrectorCore.Models.Corrections
         public readonly RulesModel RulesModel;
         public readonly List<ParagraphCorrections> ParagraphsCorrections;
         public readonly List<SourcesListCorrections> SourcesListCorrections;
+        public readonly List<TableCorrections> TablesCorrections;
 
-        public DocumentCorrections(RulesModel rules, List<ParagraphCorrections> paragraphsCorrections, List<SourcesListCorrections> sourcesListCorrections)
+        public DocumentCorrections(
+            RulesModel rules,
+            List<ParagraphCorrections> paragraphsCorrections,
+            List<SourcesListCorrections> sourcesListCorrections,
+            List<TableCorrections> tablesCorrections
+        )
         {
             RulesModel = rules;
             ParagraphsCorrections = paragraphsCorrections;
             SourcesListCorrections = sourcesListCorrections;
+            TablesCorrections = tablesCorrections;
         }
 
         public DocumentCorrections(RulesModel rules)
@@ -26,6 +33,7 @@ namespace DocxCorrectorCore.Models.Corrections
             RulesModel = rules;
             ParagraphsCorrections = new List<ParagraphCorrections>();
             SourcesListCorrections = new List<SourcesListCorrections>();
+            TablesCorrections = new List<TableCorrections>();
         }
     }
 }

@@ -130,6 +130,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return sourcesListCorrections;
         }
 
+        // Получить список ошибок оформления таблиц для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
+        protected override List<TableCorrections> GetTableCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses)
+        {
+            return new List<TableCorrections> { TableCorrections.TestTableCorrection };
+        }
+
         // Public
         // Печать всех абзацев документа filePath
         public override void PrintAllParagraphs(string filePath)

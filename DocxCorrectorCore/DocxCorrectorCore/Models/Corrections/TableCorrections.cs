@@ -1,6 +1,6 @@
 ﻿namespace DocxCorrectorCore.Models.Corrections
 {
-    public sealed class SourcesListCorrections
+    public sealed class TableCorrections
     {
         // ID параграфа ЗАГОЛОВКА СПИСКА ЛИТЕРАТУРЫ (Его порядковый номер)
         public readonly int ParagraphID;
@@ -9,18 +9,18 @@
         // Сообщение об ошибке
         public string Message;
 
-        public SourcesListCorrections(int paragraphID, string prefix, string message)
+        public TableCorrections(int paragraphID, string prefix, string message)
         {
             ParagraphID = paragraphID;
             Prefix = prefix;
             Message = message;
         }
 
-        public static SourcesListCorrections TestSourcesListCorrection
+        public static TableCorrections TestTableCorrection
         {
             get
             {
-                SourcesListCorrections testCorrection = new SourcesListCorrections(
+                TableCorrections testCorrection = new TableCorrections(
                     paragraphID: 0,
                     prefix: "Test prefix",
                     message: "NO MISTAKE"

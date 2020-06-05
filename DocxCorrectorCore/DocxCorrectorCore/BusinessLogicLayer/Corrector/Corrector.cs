@@ -30,12 +30,26 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             });
         }
 
+        private async Task<List<TableCorrections>> GetTableCorrectionsAsync(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses)
+        {
+            return await Task.Run(() =>
+            {
+                Console.WriteLine("Beginning of table errors analysis");
+                var result = GetTableCorrections(filePath, rulesModel, paragraphClasses);
+                Console.WriteLine("Ending of table errors analysis");
+                return result;
+            });
+        }
+
         // Protected
         // Получить список ошибок форматирования ОТДЕЛЬНЫХ АБЗАЦЕВ для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
         protected abstract List<ParagraphCorrections> GetParagraphsCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses);
 
         // Получить список ошибок оформления списка литературы для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
         protected abstract List<SourcesListCorrections> GetSourcesListCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses);
+
+        // Получить список ошибок оформления таблиц для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
+        protected abstract List<TableCorrections> GetTableCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses);
         // TODO: More
 
         // Public
@@ -44,13 +58,15 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         {
             var paragraphsCorrectionsTask = GetParagraphsCorrectionsAsync(filePath, rulesModel, paragraphsClasses);
             var sourcesListCorrectionsTask = GetSourcesListCorrectionsAsync(filePath, rulesModel, paragraphsClasses);
+            var tablesCorrectionsTask = GetTableCorrectionsAsync(filePath, rulesModel, paragraphsClasses);
 
             Task.WaitAll(paragraphsCorrectionsTask);
 
             DocumentCorrections documentCorrections = new DocumentCorrections(
                 rules: rulesModel,
                 paragraphsCorrections: paragraphsCorrectionsTask.Result,
-                sourcesListCorrections: sourcesListCorrectionsTask.Result
+                sourcesListCorrections: sourcesListCorrectionsTask.Result,
+                tablesCorrections: tablesCorrectionsTask.Result
             );
 
             return documentCorrections;
