@@ -64,6 +64,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public bool WholeParagraphSuperscript => false;
         public Word.Color? WholeParagraphUnderlineColor => null;
         public Word.UnderlineType WholeParagraphUnderlineStyle => Word.UnderlineType.None;
+
+        // Свойства CharacterFormat для раннеров
         public bool? RunnerAllCaps => null;
         public List<Word.Color> RunnerBackgroundColors => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
         public abstract bool RunnerBold { get; }

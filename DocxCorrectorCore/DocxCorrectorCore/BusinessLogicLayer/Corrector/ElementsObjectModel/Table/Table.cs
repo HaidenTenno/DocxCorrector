@@ -32,7 +32,14 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
         // TODO: Предыдущий элемент - подпись к таблице (f-элементы) или начало/продолжение таблицы (e1/e2)
 
-        // Табличные свойства
+        // ТАБЛИЧНЫЕ СВОЙСТВА
+        // Свойства TableFormat
+
+
+        // Свойства TableRowFormat
+
+
+        // Свойства TableCellFormat
 
 
         public TableCorrections? CheckTable(int id, List<ClassifiedParagraph> classifiedParagraphs)
@@ -40,9 +47,50 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             Word.Tables.Table table;
             try { table = (Word.Tables.Table)classifiedParagraphs[id].Element; } catch { return null; }
 
-            System.Console.WriteLine("!!!TABLE!!!");
+            List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            return TableCorrections.TestTableCorrection;
+            // Свойства TableFormat
+
+
+            // Свойства TableRowFormat
+            foreach (Word.Tables.TableRow tableRow in table.Rows)
+            {
+                    
+
+                // Свойства TableCellFormat
+                foreach (Word.Tables.TableCell tableCell in tableRow.Cells)
+                {
+                    
+
+
+                    foreach (Word.Paragraph paragraph in tableCell.GetChildElements(false, Word.ElementType.Paragraph))
+                    {
+                        // Свойства ParagraphFormat для абзаца внутри ячейки таблицы
+
+
+                        // Свойства CharacterFormat для всего абзаца внутри ячейки таблицы
+
+
+                        // Свойства CharacterFormat для раннеров внутри ячейки таблицы
+                        foreach (Word.Run runner in paragraph.GetChildElements(false, Word.ElementType.Run))
+                        {
+
+                        }
+                    }
+                }
+            }
+
+            if (tableMistakes.Count != 0)
+            {
+                return new TableCorrections(
+                    paragraphID: id,
+                    mistakes: tableMistakes
+                );
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
