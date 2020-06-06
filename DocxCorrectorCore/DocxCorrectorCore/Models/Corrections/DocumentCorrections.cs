@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace DocxCorrectorCore.Models.Corrections
 {
@@ -6,6 +8,14 @@ namespace DocxCorrectorCore.Models.Corrections
     {
         GOST,
         ITMO
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum MistakeImportance
+    {
+        Warning,
+        Regular,
+        Critical
     }
 
     public sealed class DocumentCorrections

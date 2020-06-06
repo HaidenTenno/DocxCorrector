@@ -92,24 +92,17 @@ namespace DocxCorrectorCore.Models.Corrections
                     mistakes: new List<ParagraphMistake>
                     {
                         new ParagraphMistake(
-                        message: "No mistake",
+                        message: "No mistake (PARAGRAPH)",
                         advice: "Nothing to advice"
-                    )
-                });
+                        )
+                    }
+                );
                 return testCorrection;
             }
         }
     }
     public sealed class ParagraphMistake
     {
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum MistakeImportance
-        {
-            Warning,
-            Regular,
-            Critical
-        }
-
         // Сообщение об ошибке
         public readonly string Message;
         // Совет по исправлению

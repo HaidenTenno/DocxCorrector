@@ -1,19 +1,18 @@
-﻿namespace DocxCorrectorCore.Models.Corrections
+﻿using System.Collections.Generic;
+
+namespace DocxCorrectorCore.Models.Corrections
 {
     public sealed class TableCorrections
     {
-        // ID параграфа ЗАГОЛОВКА СПИСКА ЛИТЕРАТУРЫ (Его порядковый номер)
+        // ID параграфа ТАБЛИЦЫ (Его порядковый номер)
         public readonly int ParagraphID;
-        // Начало параграфа (20 символов)
-        public readonly string Prefix;
-        // Сообщение об ошибке
-        public string Message;
+        // Ошибки в таблице
+        public List<TableMistake> Mistakes;
 
-        public TableCorrections(int paragraphID, string prefix, string message)
+        public TableCorrections(int paragraphID, List<TableMistake> mistakes)
         {
             ParagraphID = paragraphID;
-            Prefix = prefix;
-            Message = message;
+            Mistakes = mistakes;
         }
 
         public static TableCorrections TestTableCorrection
@@ -22,11 +21,33 @@
             {
                 TableCorrections testCorrection = new TableCorrections(
                     paragraphID: 0,
-                    prefix: "Test prefix",
-                    message: "NO MISTAKE"
+                    mistakes: new List<TableMistake>
+                    {
+                        new TableMistake(
+                            message: "No mistake (SOURCES LIST)",
+                            advice: "Nothing to advice"
+                        )
+                    }
                 );
                 return testCorrection;
             }
+        }
+    }
+
+    public sealed class TableMistake
+    {
+        // Сообщение об ошибке
+        public readonly string Message;
+        // Совет по исправлению
+        public readonly string Advice;
+        // Важность ошибки
+        public readonly MistakeImportance Importance;
+
+        public TableMistake(string message, string advice = "Advice expected", MistakeImportance importance = MistakeImportance.Regular)
+        {
+            Message = message;
+            Advice = advice;
+            Importance = importance;
         }
     }
 }

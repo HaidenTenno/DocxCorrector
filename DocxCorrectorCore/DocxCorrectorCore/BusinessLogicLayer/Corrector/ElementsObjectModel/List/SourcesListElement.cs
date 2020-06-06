@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
@@ -6,16 +7,34 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 {
-    public class SourcesListElement : ListElement
+    public class SourcesListElement //: DocumentElement
     {
-        // public override string[] Suffixes => new string[] {",", ":"};
 
-        // TODO: Начинается с тире ИЛИ цифры 1 ИЛИ русской буквы "a"
-        // TODO: Предыдущий параграф заканчивается на ":"
+        public SourcesListMistake? CheckSourcesListElement(int id, List<Regex> regexes, Word.Paragraph sourcesListElementParagraph)
+        {
+            ParsedListElement parsedListElement = new ParsedListElement(sourcesListElementParagraph);
 
+            foreach (Regex regex in regexes)
+            {
+                if (regex.IsMatch(parsedListElement.Content))
+                {
+                    return null;
+                }
+            }
+
+            return new SourcesListMistake(
+                paragraphID: id,
+                prefix: GemBoxHelper.GetParagraphPrefix(sourcesListElementParagraph, 20),
+                message: "Элемент списка литературы не соответствует ни одному из шаблонов"
+            );
+        }
+    }
+
+    public class SourcesList
+    {
         public List<string> KeyWords = new List<string> { "Список литературы", "Список источников", "Список использованных", "Список использованной" };
 
-        public override List<Regex> Regexes => new List<Regex>
+        public List<Regex> Regexes => new List<Regex>
         {
             new Regex(@"\d( [A-ZА-Я][a-zа-я]*\,? ([A-ZА-Я]\.){1,2}\,?){1,3} [A-ZА-Я].* (- ([A-ZА-Я]\. ?){1,3})?\: [A-ZА-Я][a-zа-я].*\, [1-9]\d{2,3}\. - [1-9]\d*( \- [1-9]\d*)? с\."),
             new Regex(@"\d ([А-ЯA-Z][a-zа-я]{1,} ([A-ZА-Я]\.\,?){1,2}){1,3} [А-ЯA-Z].* \/\/ ([А-ЯA-Z].*\: [А-ЯA-Z].*\/ ([а-яa-z].*\; [А-ЯA-Z].*(\. - [А-ЯA-Z].*\: )?\,) [1-9]\d{2,3}\. - С.[1-9]\d{1,}-\d*\.|[А-ЯA-Z].*\: [А-ЯA-Z].*\/ г.[А-ЯA-Z].*\, [(][а-я]* [1-9]\d{2,3} г\.[)]\.( - [A-ZА-Яа-яa-z]\.([1-9]\d*\.)?){0,4}\, [1-9]\d*\. - С.[1-9]\d*(\.|\-[1-9]\d*)\.|[A-ZА-Я].* \- [1-9]\d{2,3}\. - [A-Z] \d*\. - С\.[1-9]\d*(\-|\,)[1-9]\d*\.)"),
@@ -25,24 +44,34 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
         public SourcesListCorrections? CheckSourcesList(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
-            Word.Paragraph paragraph;
-            try { paragraph = classifiedParagraphs[id].Paragraph; } catch { return null; }
+            List<SourcesListMistake> sourcesListMistakes = new List<SourcesListMistake>();
 
-            ParsedListElement parsedListElement = new ParsedListElement(paragraph);
-
-            foreach (Regex regex in Regexes)
+            // Идем до конца документа ИЛИ пока не встретим следующий заголовок
+            for (int sourcesListElementIndex = id + 1; sourcesListElementIndex < classifiedParagraphs.Count(); sourcesListElementIndex++)
             {
-                if (regex.IsMatch(parsedListElement.Content))
-                {
-                    return null;
-                }
+                if (classifiedParagraphs[sourcesListElementIndex].ParagraphClass == null) { continue; }
+
+                if (classifiedParagraphs[sourcesListElementIndex].ParagraphClass == ParagraphClass.b1) { break; }
+
+                var standartSourcesListElement = new SourcesListElement();
+
+                // ПРОВЕРКА НАЧИНАЕТСЯ
+                SourcesListMistake? currentSourcesListMistakes = standartSourcesListElement.CheckSourcesListElement(sourcesListElementIndex, Regexes, classifiedParagraphs[sourcesListElementIndex].Paragraph);
+                if (currentSourcesListMistakes != null) { sourcesListMistakes.Add(currentSourcesListMistakes); }
             }
 
-            return new SourcesListCorrections(
-                paragraphID: id,
-                prefix: GemBoxHelper.GetParagraphPrefix(paragraph, 20),
-                message: "Элемент списка литературы не соответствует ни одному из шаблонов"
-            );
+            if (sourcesListMistakes.Count != 0)
+            {
+                return new SourcesListCorrections(
+                    paragraphID: id,
+                    prefix: GemBoxHelper.GetParagraphPrefix(classifiedParagraphs[id].Paragraph, 20),
+                    mistakes: sourcesListMistakes
+                );
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -63,29 +63,26 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
             // TODO: Model switch
-            int currentParagraphIndex = 0;
-            foreach (ClassifiedParagraph classifiedParagraph in classifiedParagraphs)
+
+            // Идти по списку классифицированных элементов
+            for (int classifiedParagraphIndex = 0; classifiedParagraphIndex < classifiedParagraphs.Count(); classifiedParagraphIndex++)
             {
-                if (classifiedParagraph.ParagraphClass == null) 
-                {
-                    currentParagraphIndex++;
-                    continue; 
-                }
+                // Если клас не определен, то пропускаем
+                if (classifiedParagraphs[classifiedParagraphIndex].ParagraphClass == null) { continue; }
 
                 // ПРОВЕРКА НАЧИНАЕТСЯ
                 ParagraphCorrections? currentParagraphCorrections = null;
-                switch (classifiedParagraph.ParagraphClass)
+
+                switch (classifiedParagraphs[classifiedParagraphIndex].ParagraphClass)
                 {
                     case ParagraphClass.c1:
                         var standardParagraph = new ParagraphRegular();
-                        currentParagraphCorrections = standardParagraph.CheckFormatting(currentParagraphIndex, classifiedParagraphs);
+                        currentParagraphCorrections = standardParagraph.CheckFormatting(classifiedParagraphIndex, classifiedParagraphs);
                         break;
                     default:
                         break;
                 }
                 if (currentParagraphCorrections != null) { paragraphsCorrections.Add(currentParagraphCorrections); }
-
-                currentParagraphIndex++;
             }
 
             return paragraphsCorrections;
@@ -102,7 +99,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
             // TODO: Model switch
-            var standartParagraph = new SourcesListElement();
+            var standartSourcesList = new SourcesList();
 
             // Идти по списку классифицированных элементов
             for (int classifiedParagraphIndex = 0; classifiedParagraphIndex < classifiedParagraphs.Count(); classifiedParagraphIndex++)
@@ -111,20 +108,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                 if (classifiedParagraphs[classifiedParagraphIndex].ParagraphClass != ParagraphClass.b1) { continue; }
 
                 // Если в параграфе нет ключевой фразы, то пропускаем
-                if (!standartParagraph.KeyWords.Any(keyword => classifiedParagraphs[classifiedParagraphIndex].Paragraph.Content.ToString().Contains(keyword, StringComparison.OrdinalIgnoreCase))) { continue; }
+                if (!standartSourcesList.KeyWords.Any(keyword => classifiedParagraphs[classifiedParagraphIndex].Paragraph.Content.ToString().Contains(keyword, StringComparison.OrdinalIgnoreCase))) { continue; }
 
-                // Идем до конца документа ИЛИ пока не встретим следующий заголовок
-                for (int sourcesListParagraphIndex = classifiedParagraphIndex + 1; sourcesListParagraphIndex < classifiedParagraphs.Count(); sourcesListParagraphIndex++)
-                {
-                    if (classifiedParagraphs[sourcesListParagraphIndex].ParagraphClass == null) { continue; }
+                // ПРОВЕРКА НАЧИНАЕТСЯ
+                SourcesListCorrections? currentSourcesListCorrections = standartSourcesList.CheckSourcesList(classifiedParagraphIndex, classifiedParagraphs);
 
-                    if (classifiedParagraphs[sourcesListParagraphIndex].ParagraphClass == ParagraphClass.b1) { break; }
-
-                    // ПРОВЕРКА НАЧИНАЕТСЯ
-                    SourcesListCorrections? currentSourcesListCorrections = standartParagraph.CheckSourcesList(sourcesListParagraphIndex, classifiedParagraphs);
-
-                    if (currentSourcesListCorrections != null) { sourcesListCorrections.Add(currentSourcesListCorrections); }
-                }
+                if (currentSourcesListCorrections != null) { sourcesListCorrections.Add(currentSourcesListCorrections); }
             }
 
             return sourcesListCorrections;
