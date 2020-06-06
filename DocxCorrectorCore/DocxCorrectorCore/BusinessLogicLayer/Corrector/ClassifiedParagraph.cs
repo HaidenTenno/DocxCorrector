@@ -5,12 +5,13 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 {
     public sealed class ClassifiedParagraph
     {
-        public readonly Word.Paragraph Paragraph;
+        // Тут может быть Paragraph либо Table
+        public readonly Word.Element Element;
         public readonly ParagraphClass? ParagraphClass;
 
-        public ClassifiedParagraph(Word.Paragraph paragraph, ParagraphClass? paragraphClass = null)
+        public ClassifiedParagraph(Word.Element element, ParagraphClass? paragraphClass = null)
         {
-            Paragraph = paragraph;
+            Element = element;
             ParagraphClass = paragraphClass;
         }
     }

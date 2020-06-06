@@ -107,7 +107,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public virtual ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
             Word.Paragraph paragraph;
-            try { paragraph = classifiedParagraphs[id].Paragraph; } catch { return null; }
+            // Если текущий элемент не параграф, то вернуть null
+            try { paragraph = (Word.Paragraph)classifiedParagraphs[id].Element; } catch { return null; }
 
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
@@ -616,11 +617,23 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
             // Особые свойства
             // Количество пустых строк (отбивок, SPACE, n0) после параграфа
+            // Проверка, что пустых строк достаточно
             int emptyLinesCount = 1;
             while ((emptyLinesCount <= EmptyLinesAfter) & (id + emptyLinesCount < classifiedParagraphs.Count))
             {
                 int idToCheckEmpty = id + emptyLinesCount;
-                Word.Paragraph paragraphToCheckForEmpty = classifiedParagraphs[idToCheckEmpty].Paragraph;
+                Word.Paragraph paragraphToCheckForEmpty;
+                // Если следующий элемент не параграф, то он не пустой
+                try { paragraphToCheckForEmpty = (Word.Paragraph)classifiedParagraphs[idToCheckEmpty].Element; } 
+                catch 
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверное количество пропущенных параграфов",
+                        advice: $"ТУТ БУДЕТ СОВЕТ"
+                    );
+                    paragraphMistakes.Add(mistake);
+                    break;
+                }
 
                 string paragraphToCheckEmptyContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraphToCheckForEmpty);
 
@@ -635,6 +648,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 }
                 emptyLinesCount++;
             }
+            // TODO: Проверка, что пустых строк не слишком много
+
 
             if (paragraphMistakes.Count != 0)
             {

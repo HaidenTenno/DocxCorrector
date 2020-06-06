@@ -41,7 +41,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
             Word.Paragraph paragraph;
-            try { paragraph = classifiedParagraphs[id].Paragraph; } catch { return null; }
+            try { paragraph = (Word.Paragraph)classifiedParagraphs[id].Element; } catch { return null; }
 
             ParagraphCorrections? result = base.CheckFormatting(id, classifiedParagraphs);
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();

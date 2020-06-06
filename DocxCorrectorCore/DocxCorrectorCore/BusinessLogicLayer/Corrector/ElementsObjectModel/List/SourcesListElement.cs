@@ -10,8 +10,19 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
     public class SourcesListElement //: DocumentElement
     {
 
-        public SourcesListMistake? CheckSourcesListElement(int id, List<Regex> regexes, Word.Paragraph sourcesListElementParagraph)
+        public SourcesListMistake? CheckSourcesListElement(int id, List<Regex> regexes, Word.Element sourcesListElement)
         {
+            Word.Paragraph sourcesListElementParagraph;
+            try { sourcesListElementParagraph = (Word.Paragraph)sourcesListElement; }
+            catch
+            {
+                return new SourcesListMistake(
+                    paragraphID: id,
+                    prefix: "TABLE",
+                    message: $"В списке литературы не может стоять таблица"
+                );
+            }
+
             ParsedListElement parsedListElement = new ParsedListElement(sourcesListElementParagraph);
 
             foreach (Regex regex in regexes)
@@ -56,7 +67,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 var standartSourcesListElement = new SourcesListElement();
 
                 // ПРОВЕРКА НАЧИНАЕТСЯ
-                SourcesListMistake? currentSourcesListMistakes = standartSourcesListElement.CheckSourcesListElement(sourcesListElementIndex, Regexes, classifiedParagraphs[sourcesListElementIndex].Paragraph);
+                SourcesListMistake? currentSourcesListMistakes = standartSourcesListElement.CheckSourcesListElement(sourcesListElementIndex, Regexes, classifiedParagraphs[sourcesListElementIndex].Element);
                 if (currentSourcesListMistakes != null) { sourcesListMistakes.Add(currentSourcesListMistakes); }
             }
 
@@ -64,7 +75,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             {
                 return new SourcesListCorrections(
                     paragraphID: id,
-                    prefix: GemBoxHelper.GetParagraphPrefix(classifiedParagraphs[id].Paragraph, 20),
+                    prefix: GemBoxHelper.GetParagraphPrefix((Word.Paragraph)classifiedParagraphs[id].Element, 20),
                     mistakes: sourcesListMistakes
                 );
             }

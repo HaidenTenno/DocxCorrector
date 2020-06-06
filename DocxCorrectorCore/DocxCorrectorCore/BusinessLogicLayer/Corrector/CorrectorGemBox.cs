@@ -94,6 +94,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
             if (document == null) { return new List<SourcesListCorrections>(); }
 
+            if (paragraphClasses.Count() == 0) { return new List<SourcesListCorrections>(); }
+
             List<SourcesListCorrections> sourcesListCorrections = new List<SourcesListCorrections>();
 
             List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
@@ -108,7 +110,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                 if (classifiedParagraphs[classifiedParagraphIndex].ParagraphClass != ParagraphClass.b1) { continue; }
 
                 // Если в параграфе нет ключевой фразы, то пропускаем
-                if (!standartSourcesList.KeyWords.Any(keyword => classifiedParagraphs[classifiedParagraphIndex].Paragraph.Content.ToString().Contains(keyword, StringComparison.OrdinalIgnoreCase))) { continue; }
+                if (!standartSourcesList.KeyWords.Any(keyword => classifiedParagraphs[classifiedParagraphIndex].Element.Content.ToString().Contains(keyword, StringComparison.OrdinalIgnoreCase))) { continue; }
 
                 // ПРОВЕРКА НАЧИНАЕТСЯ
                 SourcesListCorrections? currentSourcesListCorrections = standartSourcesList.CheckSourcesList(classifiedParagraphIndex, classifiedParagraphs);
@@ -122,7 +124,30 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         // Получить список ошибок оформления таблиц для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
         protected override List<TableCorrections> GetTableCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses)
         {
-            return new List<TableCorrections> { TableCorrections.TestTableCorrection };
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return new List<TableCorrections>(); }
+
+            if (paragraphClasses.Count() == 0) { return new List<TableCorrections>(); }
+
+            List<TableCorrections> tableCorrections = new List<TableCorrections>();
+
+            List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
+
+            // TODO: Model switch
+            var standartTable = new Table();
+
+            for (int classifiedParagraphIndex = 0; classifiedParagraphIndex < classifiedParagraphs.Count(); classifiedParagraphIndex++)
+            {
+                // Если класс не e0, то пропускаем
+                if (classifiedParagraphs[classifiedParagraphIndex].ParagraphClass != ParagraphClass.e0) { continue; }
+
+                // ПРОВЕРКА НАЧИНАЕТСЯ
+                TableCorrections? currentTableCorrections = standartTable.CheckTable(classifiedParagraphIndex, classifiedParagraphs);
+
+                if (currentTableCorrections != null) { tableCorrections.Add(currentTableCorrections); }
+            }
+
+            return tableCorrections;
         }
 
         // Public

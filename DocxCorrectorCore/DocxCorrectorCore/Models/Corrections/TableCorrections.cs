@@ -24,7 +24,7 @@ namespace DocxCorrectorCore.Models.Corrections
                     mistakes: new List<TableMistake>
                     {
                         new TableMistake(
-                            message: "No mistake (SOURCES LIST)",
+                            message: "No mistake (TABLE)",
                             advice: "Nothing to advice"
                         )
                     }

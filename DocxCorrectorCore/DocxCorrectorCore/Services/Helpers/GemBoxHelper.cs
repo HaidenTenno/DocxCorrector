@@ -131,29 +131,29 @@ namespace DocxCorrectorCore.Services.Helpers
         {
             List<ClassifiedParagraph> classifiedParagraphs = new List<ClassifiedParagraph>();
 
-            List<Word.Paragraph> paragraphs = new List<Word.Paragraph>();
+            List<Word.Element> elements = new List<Word.Element>();
             foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
-                foreach (Word.Paragraph paragraph in section.GetChildElements(recursively: false, filterElements: Word.ElementType.Paragraph))
+                foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
                 {
-                    paragraphs.Add(paragraph);
+                    elements.Add(element);
                 }
             }
 
             int classificationResultIndex = 0;
             int paragraphIndex = 0;
-            foreach (Word.Paragraph paragraph in paragraphs)
+            foreach (Word.Element _ in elements)
             {
                 int classifiedParagraphIndex;
                 try { classifiedParagraphIndex = classificationResultList[classificationResultIndex].Id; } catch { return classifiedParagraphs; }
                 if (paragraphIndex < classifiedParagraphIndex)
                 {
-                    classifiedParagraphs.Add(new ClassifiedParagraph(paragraphs[paragraphIndex]));
+                    classifiedParagraphs.Add(new ClassifiedParagraph(elements[paragraphIndex]));
                     paragraphIndex++;
                     continue;
                 }
 
-                classifiedParagraphs.Add(new ClassifiedParagraph(paragraphs[paragraphIndex], classificationResultList[classificationResultIndex].ParagraphClass));
+                classifiedParagraphs.Add(new ClassifiedParagraph(elements[paragraphIndex], classificationResultList[classificationResultIndex].ParagraphClass));
 
                 classificationResultIndex++;
                 paragraphIndex++;
