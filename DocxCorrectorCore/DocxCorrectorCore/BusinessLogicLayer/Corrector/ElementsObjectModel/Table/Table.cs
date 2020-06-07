@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DocxCorrectorCore.Models.Corrections;
 using Word = GemBox.Document;
@@ -41,6 +42,85 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
         // Свойства TableCellFormat
 
+        private List<TableMistake> CheckTableFormat(int id, Word.Tables.Table table)
+        {
+            List<TableMistake> tableMistakes = new List<TableMistake>();
+
+            //foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
+            //{
+            //    Console.WriteLine($"{borderType} === {table.TableFormat.Borders[borderType].Style}");//(table.TableFormat.Borders[borderType].Style);
+            //}
+
+            return tableMistakes;
+        }
+
+        private List<TableMistake> CheckTableRowFormat(int id, int tableRowIndex, Word.Tables.TableRow tableRow)
+        {
+            List<TableMistake> tableMistakes = new List<TableMistake>();
+
+            if (tableRowIndex == 0)
+            {
+                // Проверка первой строки таблицы
+            }
+
+            return tableMistakes;
+        }
+
+        private List<TableMistake> CheckTableCellFormat(int id, int tableRowIndex, int tableCellIndex, Word.Tables.TableCell tableCell)
+        {
+            List<TableMistake> tableMistakes = new List<TableMistake>();
+
+            if (tableRowIndex == 0)
+            {
+                // Проверка первой строки таблицы
+            }
+
+            if (tableCellIndex == 0)
+            {
+                // Проверка ячейки в первом столбце таблицы
+            }
+
+
+            //foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
+            //{
+            //    Console.WriteLine($"{borderType} === {tableCell.CellFormat.Borders[borderType].Style}");//(tableCell.CellFormat.Borders[borderType].Style);
+            //}
+
+            return tableMistakes;
+        }
+
+        private List<TableMistake> CheckParagraphFormat(int id, Word.Paragraph paragraph)
+        {
+            List<TableMistake> tableMistakes = new List<TableMistake>();
+
+            //foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
+            //{
+            //    Console.WriteLine($"{borderType} === {paragraph.ParagraphFormat.Borders[borderType].Style}");//(paragraph.ParagraphFormat.Borders[borderType].Style);
+            //}
+
+            return tableMistakes;
+        }
+
+        private List<TableMistake> CheckParagraphCharacterFormat(int id, Word.Paragraph paragraph)
+        {
+            List<TableMistake> tableMistakes = new List<TableMistake>();
+
+
+
+            return tableMistakes;
+        }
+
+        private List<TableMistake> CheckRunnerCharacterFormat(int id, Word.Run run)
+        {
+            List<TableMistake> tableMistakes = new List<TableMistake>();
+
+            //foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
+            //{
+            //    Console.WriteLine($"{borderType} === {runner.CharacterFormat.Border.Style}");//(runner.CharacterFormat.Border.Style);
+            //}
+
+            return tableMistakes;
+        }
 
         public TableCorrections? CheckTable(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
@@ -50,31 +130,34 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
             // Свойства TableFormat
+            tableMistakes.AddRange(CheckTableFormat(id, table));
 
-
-            // Свойства TableRowFormat
-            foreach (Word.Tables.TableRow tableRow in table.Rows)
+            for (int tableRowIndex = 0; tableRowIndex < table.Rows.Count; tableRowIndex++)
             {
-                    
+                Word.Tables.TableRow tableRow = table.Rows[tableRowIndex];
 
-                // Свойства TableCellFormat
-                foreach (Word.Tables.TableCell tableCell in tableRow.Cells)
+                // Свойства TableRowFormat
+                tableMistakes.AddRange(CheckTableRowFormat(id, tableRowIndex, tableRow));
+
+                for (int tableCellIndex = 0; tableCellIndex < tableRow.Cells.Count; tableCellIndex++) 
                 {
-                    
+                    Word.Tables.TableCell tableCell = tableRow.Cells[tableCellIndex];
 
+                    // Свойства TableCellFormat
+                    tableMistakes.AddRange(CheckTableCellFormat(id, tableRowIndex, tableCellIndex, tableCell));
 
                     foreach (Word.Paragraph paragraph in tableCell.GetChildElements(false, Word.ElementType.Paragraph))
                     {
                         // Свойства ParagraphFormat для абзаца внутри ячейки таблицы
-
+                        tableMistakes.AddRange(CheckParagraphFormat(id, paragraph));
 
                         // Свойства CharacterFormat для всего абзаца внутри ячейки таблицы
+                        tableMistakes.AddRange(CheckParagraphCharacterFormat(id, paragraph));
 
-
-                        // Свойства CharacterFormat для раннеров внутри ячейки таблицы
                         foreach (Word.Run runner in paragraph.GetChildElements(false, Word.ElementType.Run))
                         {
-
+                            // Свойства CharacterFormat для раннеров внутри ячейки таблицы
+                            tableMistakes.AddRange(CheckRunnerCharacterFormat(id, runner));
                         }
                     }
                 }
