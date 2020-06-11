@@ -41,10 +41,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
     public class ListElement : IRegexSupportable //: DocumentElement
     {
         //d0
-        // TODO: Каждый элемент перечисления начинается с тире (-) ИЛИ
-        // public override string[] Prefixes => new string[] { "-", "־", "᠆", "‐", "‑", "‒", "–", "—", "―", "﹘", "﹣", "－" };
-        //  TODO: ИЛИ строчной буквы, начиная с буквы "а" (за исключением букв ё, з, й, о, ч, ъ, ы, ь), ИЛИ арабской цифры, после которых ставится скобка
         public virtual List<Regex> Regexes => throw new NotImplementedException();
-        // TODO: Если элемент сделан НЕ средствами Word, то после маркера (любого вида), должен стоять пробел
     }
 }

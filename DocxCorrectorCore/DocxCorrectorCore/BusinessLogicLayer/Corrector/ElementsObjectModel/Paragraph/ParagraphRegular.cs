@@ -15,27 +15,29 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public override ParagraphClass ParagraphClass => ParagraphClass.c1;
 
         // Свойства ParagraphFormat
-        public override Word.HorizontalAlignment Alignment => Word.HorizontalAlignment.Justify;
-        public override bool KeepWithNext => false;
-        public override Word.OutlineLevel OutlineLevel => Word.OutlineLevel.BodyText;
-        public override bool PageBreakBefore => false;
-        public override double SpecialIndentationLeftBorder => -36.85;
-        public override double SpecialIndentationRightBorder => -35.45;
 
         // Свойства CharacterFormat для всего абзаца
-        public override bool WholeParagraphAllCaps => false;
-        public override bool WholeParagraphBold => false;
-        public override bool WholeParagraphSmallCaps => false;
-        
+
         // Свойства CharacterFormat для всего абзаца
-        public override bool RunnerBold => false;
-        
+
         // Особые свойства
-        //public override StartSymbolType? StartSymbol => StartSymbolType.Upper;
-        public override int EmptyLinesAfter => 0;
 
-        // TODO: Сделать проверку окончания абзаца регуляркой (а нужна ли она вообще?..) 
-        // public override string[] Suffixes => new string[] { ".", "!", "?" }; - могут пройти ".." и др.
+        // TODO: Переписать для Enum
+        private ParagraphMistake? CheckStartSymbol(Word.Paragraph paragraph)
+        {
+            char firstSymbol;
+            try { firstSymbol = paragraph.Content.ToString()[0]; } catch { return null; }
+
+            if ((firstSymbol != '"') & (!char.IsUpper(firstSymbol)))
+            {
+                return new ParagraphMistake(
+                    message: "Параграф должен начинаться с большой буквы",
+                    advice: "ТУТ БУДЕТ СОВЕТ"
+                );
+            }
+
+            return null;
+        }
 
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
@@ -47,14 +49,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
-            if ((paragraph.Content.ToString().Count() > 0) & (!char.IsUpper(paragraph.Content.ToString()[0])))
-            {
-                ParagraphMistake mistake = new ParagraphMistake(
-                    message: "Параграф должен начинаться с большой буквы",
-                    advice: "ТУТ БУДЕТ СОВЕТ"
-                );
-                paragraphMistakes.Add(mistake);
-            }
+            // Проверка первого символа
+            ParagraphMistake? startSymbolMistake = CheckStartSymbol(paragraph);
+            if (startSymbolMistake != null) { paragraphMistakes.Add(startSymbolMistake); }
 
             if (paragraphMistakes.Count != 0)
             {

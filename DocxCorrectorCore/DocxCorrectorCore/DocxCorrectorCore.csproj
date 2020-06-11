@@ -9,15 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BusinessLogicLayer\Corrector\ElementsObjectModel\TableCaption\**" />
+    <EmbeddedResource Remove="BusinessLogicLayer\Corrector\ElementsObjectModel\TableCaption\**" />
+    <None Remove="BusinessLogicLayer\Corrector\ElementsObjectModel\TableCaption\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="GB" Version="1.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="ServiceStack.Text" Version="5.8.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20214.1" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="BusinessLogicLayer\Corrector\ElementsObjectModel\TableCaption" />
   </ItemGroup>
 
 </Project>

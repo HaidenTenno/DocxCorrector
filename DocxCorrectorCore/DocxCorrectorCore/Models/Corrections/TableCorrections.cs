@@ -24,6 +24,8 @@ namespace DocxCorrectorCore.Models.Corrections
                     mistakes: new List<TableMistake>
                     {
                         new TableMistake(
+                            row: 0,
+                            column: 0,
                             message: "No mistake (TABLE)",
                             advice: "Nothing to advice"
                         )
@@ -36,6 +38,10 @@ namespace DocxCorrectorCore.Models.Corrections
 
     public sealed class TableMistake
     {
+        // Строка
+        public int Row;
+        // Столбец
+        public int Column;
         // Сообщение об ошибке
         public readonly string Message;
         // Совет по исправлению
@@ -43,8 +49,10 @@ namespace DocxCorrectorCore.Models.Corrections
         // Важность ошибки
         public readonly MistakeImportance Importance;
 
-        public TableMistake(string message, string advice = "Advice expected", MistakeImportance importance = MistakeImportance.Regular)
+        public TableMistake(int row, int column, string message, string advice = "Advice expected", MistakeImportance importance = MistakeImportance.Regular)
         {
+            Row = row;
+            Column = column;
             Message = message;
             Advice = advice;
             Importance = importance;

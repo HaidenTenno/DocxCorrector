@@ -32,18 +32,6 @@ namespace DocxCorrectorCore.Services.Utilities
             WriteToFile(filePath, csvString);
         }
 
-        // TODO: REMOVE??
-        //// Заполнить CSV файл для свойств параграфов
-        //public static void FillCSV(string filePath, List<ParagraphProperties> listData)
-        //{
-        //    List<ParagraphPropertiesGemBox> listDataGemBox = listData.OfType<ParagraphPropertiesGemBox>().ToList();
-        //    if (listDataGemBox.Count != 0)
-        //    {
-        //        FillCSV(filePath: filePath, listData: listDataGemBox);
-        //        return;
-        //    }
-        //}
-
         // Сохранить документ filePath как pdf в директории resultDirPath
         public static void SaveDocumentAsPdf(string filePath, string resultDirPath)
         {
@@ -70,20 +58,5 @@ namespace DocxCorrectorCore.Services.Utilities
                 pageNumber++;
             }
         }
-
-        // TODO: REMOVE??
-        //// Получить все текстовое содержимое файла
-        //public static string? GetContentOfTextFile(string filePath)
-        //{
-        //    try
-        //    {
-        //        return File.ReadAllText(filePath);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e.Message);
-        //        return null;
-        //    }
-        //}
     }
 }
