@@ -72,16 +72,23 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
                 // ПРОВЕРКА НАЧИНАЕТСЯ
                 ParagraphCorrections? currentParagraphCorrections = null;
+                DocumentElement? standardParagraph = null;
 
                 switch (classifiedParagraphs[classifiedParagraphIndex].ParagraphClass)
                 {
                     case ParagraphClass.c1:
-                        var standardParagraph = new ParagraphRegular();
-                        currentParagraphCorrections = standardParagraph.CheckFormatting(classifiedParagraphIndex, classifiedParagraphs);
+                        standardParagraph = new ParagraphRegular();
+                        break;
+                    case ParagraphClass.c2:
+                        standardParagraph = new ParagraphBeforeList();
+                        break;
+                    case ParagraphClass.c3:
+                        standardParagraph = new ParagraphBeforeEquation();
                         break;
                     default:
                         break;
                 }
+                if (standardParagraph != null) { currentParagraphCorrections = standardParagraph.CheckFormatting(classifiedParagraphIndex, classifiedParagraphs); }
                 if (currentParagraphCorrections != null) { paragraphsCorrections.Add(currentParagraphCorrections); }
             }
 

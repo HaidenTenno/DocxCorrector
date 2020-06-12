@@ -23,8 +23,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         // Особые свойства
 
         // Свойства TableFormat
-        public virtual Word.HorizontalAlignment TableFormatFirstRowAlignment => Word.HorizontalAlignment.Center;
-        public virtual Word.HorizontalAlignment TableFormatFirstColumnAlignment => Word.HorizontalAlignment.Justify;
+        public virtual Word.HorizontalAlignment FirstRowAlignment => Word.HorizontalAlignment.Center;
+        public virtual Word.HorizontalAlignment FirstColumnAlignment => Word.HorizontalAlignment.Justify;
         public virtual List<Word.Color> TableFormatBackgroundColors => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
         public virtual Word.BorderStyle TableFormatOuterBorders => Word.BorderStyle.Single;
         public virtual Word.BorderStyle TableFormatDiagonalBorders => Word.BorderStyle.None;
@@ -32,19 +32,55 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public virtual int TableFormatColumnBandSize => 1;
         public virtual double TableFormatDefaultCellSpacing => 0;
         public virtual double TableFormatIndentFromLeft => 0;
+        public virtual Word.Padding TableFormatDistanceFromSurroundingText => new Word.Padding(0, 0, 0, 0);
+        public virtual Word.HorizontalPosition TableFormatHorizontalPosition => new Word.HorizontalPosition(Word.HorizontalPositionType.Absolute, Word.HorizontalPositionAnchor.Margin);
+        public virtual Word.VerticalPosition TableFormatVerticalPosition => new Word.VerticalPosition(0, Word.LengthUnit.Centimeter, Word.VerticalPositionAnchor.Margin);
+        public virtual bool TableFormatRightToLeft => false;
+        public virtual int TableFormatRowBandSize => 1;
 
         // Свойства TableRowFormat
-
+        public virtual bool TableRowFormatAllowBreakAcrossPages => true;
+        public virtual bool TableRowFormatHidden => false;
 
         // Свойства TableCellFormat
-
+        public virtual List<Word.Color> TableCellFormatBackgroundColors => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
+        public virtual List<Word.BorderStyle> TableCellFormatAvailableBorders => new List<Word.BorderStyle> { Word.BorderStyle.None, Word.BorderStyle.Single };
+        public virtual Word.Tables.TableCellTextDirection TableCellFormatTextDirection => Word.Tables.TableCellTextDirection.LeftToRight;
 
         // Проверка границ
         private bool CheckTableFormatBorder(Word.Tables.Table table)
         {
             foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
             {
-                
+                switch (borderType)
+                {
+                    case Word.SingleBorderType.Top:
+                    case Word.SingleBorderType.Bottom:
+                    case Word.SingleBorderType.Left:
+                    case Word.SingleBorderType.Right:
+                        if (table.TableFormat.Borders[borderType].Style != TableFormatOuterBorders) { return false; }
+                        break;
+
+                    case Word.SingleBorderType.InsideVertical:
+                    case Word.SingleBorderType.InsideHorizontal:
+                        if (!TableFormatAvailableInnerBorders.Contains(table.TableFormat.Borders[borderType].Style)) { return false; }
+                        break;
+
+                    case Word.SingleBorderType.DiagonalDown:
+                    case Word.SingleBorderType.DiagonalUp:
+                        if (table.TableFormat.Borders[borderType].Style != TableFormatDiagonalBorders) { return false; }
+                        break;
+                }
+            }
+
+            return true;
+        }
+
+        private bool CheckTableCellFormatBorder(Word.Tables.TableCell cell)
+        {
+            foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
+            {
+                if (!TableCellFormatAvailableBorders.Contains(cell.CellFormat.Borders[borderType].Style)) { return false; }
             }
 
             return true;
@@ -138,17 +174,117 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            //Console.WriteLine(table.TableFormat.Positioning.DistanceFromSurroundingText);
-            //Console.WriteLine(new Word.Padding(0,0,0,0));
-            //Console.WriteLine();
+            // Проверка Alignment в других методах
 
-            //Console.WriteLine(table.TableFormat.Positioning.HorizontalPosition);
-            //Console.WriteLine(new Word.HorizontalPosition(Word.HorizontalPositionType.Center, Word.HorizontalPositionAnchor.Margin));
-            //Console.WriteLine();
+            if (!TableFormatBackgroundColors.Contains(table.TableFormat.BackgroundColor))
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Неверный цвет заливки таблицы",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
 
-            //Console.WriteLine(table.TableFormat.Positioning.VerticalPosition);
-            //Console.WriteLine(new Word.VerticalPosition(0, Word.LengthUnit.Centimeter, Word.VerticalPositionAnchor.Paragraph));
-            //Console.WriteLine();
+            if (!CheckTableFormatBorder(table))
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Ошибка в рамках таблицы",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
+
+            if (table.TableFormat.ColumnBandSize != TableFormatColumnBandSize)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Ошибка в объединении столбцов",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
+
+            if (table.TableFormat.DefaultCellSpacing != TableFormatDefaultCellSpacing)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Ошибка в интервале между ячейками по умолчанию",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
+
+            if (table.TableFormat.IndentFromLeft != TableFormatIndentFromLeft)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Ошибка в отступе слева",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
+
+            if (table.TableFormat.Positioning.DistanceFromSurroundingText != TableFormatDistanceFromSurroundingText)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Ошибка в расстоянии до текста при обтекании",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
+
+            if (table.TableFormat.Positioning.HorizontalPosition != TableFormatHorizontalPosition)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Ошибка в горизонтальном положении при обтекании текстом",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
+
+            if (table.TableFormat.Positioning.VerticalPosition != TableFormatVerticalPosition)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Ошибка в вертикальном положении при обтекании текстом",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
+
+            if (table.TableFormat.RightToLeft != TableFormatRightToLeft)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Ошибка в свойстве 'слева-направо' для таблиц",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
+
+            if (table.TableFormat.RowBandSize != TableFormatRowBandSize)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: -1,
+                    column: -1,
+                    message: $"Ошибка в объединении строк",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
 
             return tableMistakes;
         }
@@ -157,11 +293,27 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (tableRowIndex == 0)
+            if (tableRow.RowFormat.AllowBreakAcrossPages != TableRowFormatAllowBreakAcrossPages)
             {
-                // Проверка первой строки таблицы
+                TableMistake mistake = new TableMistake(
+                    row: tableRowIndex,
+                    column: -1,
+                    message: $"Ошибка в свойстве 'Разрешить перенос строк на следующую страницу'",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
             }
 
+            if (tableRow.RowFormat.Hidden != TableRowFormatHidden)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: tableRowIndex,
+                    column: -1,
+                    message: $"Ошибка в свойстве 'скрытый'",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
 
             return tableMistakes;
         }
@@ -170,17 +322,38 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (tableRowIndex == 0)
+            if (!TableCellFormatBackgroundColors.Contains(tableCell.CellFormat.BackgroundColor))
             {
-                // Проверка первой строки таблицы
+                TableMistake mistake = new TableMistake(
+                    row: tableRowIndex,
+                    column: tableCellIndex,
+                    message: $"Ошибка в цвете заливки ячейки",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
             }
 
-            if (tableCellIndex == 0)
+            if (!CheckTableCellFormatBorder(tableCell))
             {
-                // Проверка ячейки в первом столбце таблицы
+                TableMistake mistake = new TableMistake(
+                    row: tableRowIndex,
+                    column: tableCellIndex,
+                    message: $"Ошибка в цвете заливки ячейки",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
             }
 
-
+            if (tableCell.CellFormat.TextDirection != TableCellFormatTextDirection)
+            {
+                TableMistake mistake = new TableMistake(
+                    row: tableRowIndex,
+                    column: tableCellIndex,
+                    message: $"Ошибка в направлении текста в ячейке",
+                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                );
+                tableMistakes.Add(mistake);
+            }
 
             return tableMistakes;
         }
@@ -228,6 +401,34 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         private List<TableMistake> CheckParagraphCharacterFormat(int tableRowIndex, int tableCellIndex, Word.Paragraph paragraph)
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
+
+            if (tableRowIndex == 0)
+            {
+                if (paragraph.ParagraphFormat.Alignment != FirstRowAlignment)
+                {
+                    TableMistake mistake = new TableMistake(
+                        row: tableRowIndex,
+                        column: tableCellIndex,
+                        message: $"Ошибка в выравнивании первой строки",
+                        advice: $"ТУТ БУДЕТ СОВЕТ"
+                    );
+                    tableMistakes.Add(mistake);
+                }
+            }
+
+            if ((tableCellIndex == 0) & (tableRowIndex != 0))
+            {
+                if (paragraph.ParagraphFormat.Alignment != FirstColumnAlignment)
+                {
+                    TableMistake mistake = new TableMistake(
+                        row: tableRowIndex,
+                        column: tableCellIndex,
+                        message: $"Ошибка в выравнивании первого столбца",
+                        advice: $"ТУТ БУДЕТ СОВЕТ"
+                    );
+                    tableMistakes.Add(mistake);
+                }
+            }
 
             if (!WholeParagraphBackgroundColors.Contains(paragraph.CharacterFormatForParagraphMark.BackgroundColor))
             {

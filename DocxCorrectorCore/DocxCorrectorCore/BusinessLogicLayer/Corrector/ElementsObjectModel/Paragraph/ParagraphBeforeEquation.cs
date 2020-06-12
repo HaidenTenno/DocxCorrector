@@ -3,7 +3,7 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 {
-    public class ParagrapghBeforeEquation : DocumentElement
+    public class ParagraphBeforeEquation : ParagraphRegular
     {
         //c3
 

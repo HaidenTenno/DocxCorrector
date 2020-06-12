@@ -22,6 +22,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
         // Особые свойства
 
+        // Проверка первого симола
         // TODO: Переписать для Enum
         private ParagraphMistake? CheckStartSymbol(Word.Paragraph paragraph)
         {
