@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using ServiceStack.Text;
+using System.Linq;
+using DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
+using ServiceStack.Text;
 
 namespace DocxCorrectorCore.Services.Utilities
 {
@@ -56,6 +58,17 @@ namespace DocxCorrectorCore.Services.Utilities
                 string resultFilePath = Path.Combine(resultDirPath, $"{pageNumber}.pdf");
                 page.Save(resultFilePath);
                 pageNumber++;
+            }
+        }
+
+        // Заполнить CSV файл для свойств параграфов
+        public static void FillCSV(string filePath, List<ParagraphProperties> listData)
+        {
+            List<ParagraphPropertiesGemBox> listDataGemBox = listData.OfType<ParagraphPropertiesGemBox>().ToList();
+            if (listDataGemBox.Count != 0)
+            {
+                FillCSV(filePath: filePath, listData: listDataGemBox);
+                return;
             }
         }
     }
