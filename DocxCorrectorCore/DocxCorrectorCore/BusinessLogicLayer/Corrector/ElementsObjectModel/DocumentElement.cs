@@ -22,7 +22,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public virtual double LineSpacing => 1.5;
         public virtual Word.LineSpacingRule LineSpacingRule => Word.LineSpacingRule.Multiple;
         public virtual bool MirrorIndents => false;
-        public virtual bool NoSpaceBetweenParagraphsOfSameStyle => false;
+        public virtual bool? NoSpaceBetweenParagraphsOfSameStyle => false;
         public virtual Word.OutlineLevel OutlineLevel => Word.OutlineLevel.BodyText;
         public virtual bool PageBreakBefore => false;
         public virtual double RightIndentation => 0;
@@ -34,7 +34,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public virtual bool WidowControl => true;
 
         // Свойства CharacterFormat для всего абзаца
-        public virtual bool WholeParagraphAllCaps => false;
+        public virtual bool? WholeParagraphAllCaps => false;
         public virtual List<Word.Color> WholeParagraphBackgroundColors => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
         public virtual bool WholeParagraphBold => false;
         public virtual Word.SingleBorder WholeParagraphBorder => Word.SingleBorder.None;
@@ -195,7 +195,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (paragraph.ParagraphFormat.NoSpaceBetweenParagraphsOfSameStyle != NoSpaceBetweenParagraphsOfSameStyle)
+            if ((NoSpaceBetweenParagraphsOfSameStyle != null) & (paragraph.ParagraphFormat.NoSpaceBetweenParagraphsOfSameStyle != NoSpaceBetweenParagraphsOfSameStyle))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Не добавлять интервал между параграфами одного стиля'",
@@ -284,7 +284,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         {
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
-            if (paragraph.CharacterFormatForParagraphMark.AllCaps != WholeParagraphAllCaps)
+            if ((WholeParagraphAllCaps != null) & (paragraph.CharacterFormatForParagraphMark.AllCaps != WholeParagraphAllCaps))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Все прописные' для всего абзаца",

@@ -85,6 +85,15 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                     case ParagraphClass.c3:
                         standardParagraph = new ParagraphBeforeEquation();
                         break;
+                    case ParagraphClass.b1:
+                        standardParagraph = new Heading1stLevel();
+                        break;
+                    case ParagraphClass.b2:
+                    case ParagraphClass.b3:
+                    case ParagraphClass.b4:
+                        var paragraphClass = classifiedParagraphs[classifiedParagraphIndex].ParagraphClass;
+                        if (paragraphClass != null) { standardParagraph = new HeadingOtherLevels((ParagraphClass)paragraphClass); }
+                        break;
                     default:
                         break;
                 }
@@ -155,6 +164,25 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             }
 
             return tableCorrections;
+        }
+
+        // Получить список ошибок оформления заголовков для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
+        protected override List<HeadlingCorrections> GetHeadlingCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return new List<HeadlingCorrections>(); }
+
+            if (paragraphClasses.Count() == 0) { return new List<HeadlingCorrections>(); }
+
+            List<HeadlingCorrections> headlingCorrections = new List<HeadlingCorrections>();
+
+            List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
+
+            // TODO: Model switch
+
+            // TODO: ПРОДОЛЖИТЬ ТУТ
+
+            return new List<HeadlingCorrections> { HeadlingCorrections.TestHeadlingCorrection };
         }
 
         // Public

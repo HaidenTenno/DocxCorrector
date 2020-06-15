@@ -9,16 +9,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 {
     public class SourcesListElement //: DocumentElement
     {
-        //private static SourcesListElement instance;
-
-        //private SourcesListElement() { }
-
-        //public static SourcesListElement getInstance()
-        //{
-        //    if (instance == null)
-        //        instance = new SourcesListElement();
-        //    return instance;
-        //}
 
         public SourcesListMistake? CheckSourcesListElement(int id, List<Regex> regexes, Word.Element sourcesListElement)
         {
