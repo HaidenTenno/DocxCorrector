@@ -81,25 +81,35 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 
             List<ParagraphProperties> allParagraphProperties = new List<ParagraphProperties>();
 
+            int paragraphID = 0;
+
             foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
                 foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
                 {
                     ParagraphProperties paragraphProperties;
-                    switch (element)
-                    {
-                        case Word.Paragraph paragraph:
-                            paragraphProperties = new ParagraphPropertiesGemBox(paragraph: paragraph);
-                            allParagraphProperties.Add(paragraphProperties);
-                            break;
-                        case Word.Tables.Table _:
-                            paragraphProperties = new ParagraphPropertiesGemBox(placeHolder: "TABLE");
-                            allParagraphProperties.Add(paragraphProperties);
-                            break;
-                        default:
-                            Console.WriteLine("Unsupported element");
-                            break;
-                    }
+
+                    // Пропуск НЕ параграфов
+                    if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
+                    // Пропуск списков
+                    if (paragraph.ListFormat.IsList) { paragraphID++; continue; }
+
+                    string paragraphContentWithSkippables = GemBoxHelper.GetParagraphContentWithSkippables(paragraph);
+                    // Пропуск картинок
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Picture]) { paragraphID++; continue; }
+                    // Пропуск графиков
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Chart]) { paragraphID++; continue; }
+                    // Пропуск фигур
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Shape]) { paragraphID++; continue; }
+                    // Пропуск старых элементов doc (preserved inline)
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.PreservedInline]) { paragraphID++; continue; }
+                    // Пропуск SPACEов
+                    if (paragraphContentWithSkippables == "!SPACE!") { paragraphID++; continue; }
+
+                    paragraphProperties = new ParagraphPropertiesGemBox(paragraphID, paragraph);
+                    allParagraphProperties.Add(paragraphProperties);
+
+                    paragraphID++;
                 }
             }
 
@@ -192,9 +202,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 
         // IPropertiesPullerAsync
         // Private
-        private Task<ParagraphProperties> GetParagraphPropertiesAsync(Word.Paragraph paragraph)
+        private Task<ParagraphProperties> GetParagraphPropertiesAsync(int id, Word.Paragraph paragraph)
         {
-            return Task.Run(() => (ParagraphProperties)new ParagraphPropertiesGemBox(paragraph));
+            return Task.Run(() => (ParagraphProperties)new ParagraphPropertiesGemBox(id, paragraph));
         }
 
         // Public
@@ -209,9 +219,36 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 
             List<Task<ParagraphProperties>> listOfTasks = new List<Task<ParagraphProperties>>();
 
-            foreach (Word.Paragraph paragraph in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Paragraph))
+            int paragraphID = 0;
+
+            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
-                listOfTasks.Add(GetParagraphPropertiesAsync(paragraph));
+                foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
+                {
+                    Task<ParagraphProperties> paragraphPropertiesTask;
+
+                    // Пропуск НЕ параграфов
+                    if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
+                    // Пропуск списков
+                    if (paragraph.ListFormat.IsList) { paragraphID++; continue; }
+
+                    string paragraphContentWithSkippables = GemBoxHelper.GetParagraphContentWithSkippables(paragraph);
+                    // Пропуск картинок
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Picture]) { paragraphID++; continue; }
+                    // Пропуск графиков
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Chart]) { paragraphID++; continue; }
+                    // Пропуск фигур
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Shape]) { paragraphID++; continue; }
+                    // Пропуск старых элементов doc (preserved inline)
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.PreservedInline]) { paragraphID++; continue; }
+                    // Пропуск SPACEов
+                    if (paragraphContentWithSkippables == "!SPACE!") { paragraphID++; continue; }
+
+                    paragraphPropertiesTask = GetParagraphPropertiesAsync(paragraphID, paragraph);
+                    listOfTasks.Add(paragraphPropertiesTask);
+
+                    paragraphID++;
+                }
             }
 
             var result = await Task.WhenAll(listOfTasks);

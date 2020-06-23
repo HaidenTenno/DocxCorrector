@@ -10,9 +10,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         public HeaderFooterInfoGemBox(Word.HeaderFooter headerFooter)
         {
             HeaderFooterParagraphProperties = new List<ParagraphProperties>();
+
+            int paragraphID = 0;
             foreach(Word.Paragraph paragraph in headerFooter.GetChildElements(true, Word.ElementType.Paragraph))
             {
-                HeaderFooterParagraphProperties.Add(new ParagraphPropertiesGemBox(paragraph));
+                HeaderFooterParagraphProperties.Add(new ParagraphPropertiesGemBox(paragraphID, paragraph));
+                paragraphID++;
             }
         }
         

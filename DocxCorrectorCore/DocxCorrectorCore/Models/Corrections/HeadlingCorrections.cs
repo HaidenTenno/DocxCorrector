@@ -9,7 +9,6 @@ namespace DocxCorrectorCore.Models.Corrections
 
         public HeadlingCorrections(List<HeadlingMistake> mistakes)
         {
-
             Mistakes = mistakes;
         }
 

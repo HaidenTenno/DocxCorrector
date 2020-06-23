@@ -65,11 +65,7 @@ namespace DocxCorrectorCore.Services.Utilities
         public static void FillCSV(string filePath, List<ParagraphProperties> listData)
         {
             List<ParagraphPropertiesGemBox> listDataGemBox = listData.OfType<ParagraphPropertiesGemBox>().ToList();
-            if (listDataGemBox.Count != 0)
-            {
-                FillCSV(filePath: filePath, listData: listDataGemBox);
-                return;
-            }
+            FillCSV(filePath: filePath, listData: listDataGemBox);
         }
     }
 }

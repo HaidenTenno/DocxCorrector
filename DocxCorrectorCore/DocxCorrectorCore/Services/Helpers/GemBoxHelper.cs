@@ -9,6 +9,14 @@ namespace DocxCorrectorCore.Services.Helpers
 {
     internal static class GemBoxHelper
     {
+        internal static readonly Dictionary<Word.ElementType, string> SkippableElements = new Dictionary<Word.ElementType, string>
+        {
+            { Word.ElementType.Picture, "!PICTURE!" },
+            { Word.ElementType.Chart, "!CHART!" },
+            { Word.ElementType.Shape, "!SHAPE!" },
+            { Word.ElementType.PreservedInline, "!PRESERVEDINLINE!" }
+        };
+
         // Ввод лицензионного ключа
         internal static void SetLicense()
         {
@@ -36,80 +44,11 @@ namespace DocxCorrectorCore.Services.Helpers
             }
         }
 
-        // Проверить, что первый символ абзаца принадлежит множеству символов
-        internal static int CheckIfFirstSymbolOfParagraphIs(Word.Paragraph paragraph, string[] symbols)
-        {
-            return Array.IndexOf(symbols, paragraph.Content.ToString()[0].ToString()) != -1 ? 1 : 0;
-        }
-
-        // Проверить, что последний символ абзаца принадлежит можнеству символов
-        internal static int CheckIfLastSymbolOfParagraphIs(Word.Paragraph paragraph, string[] symbols)
-        {
-            if (paragraph.Content.ToString().Length > 2)
-            {
-                return Array.IndexOf(symbols, paragraph.Content.ToString()[paragraph.Content.ToString().Length - 3].ToString()) != -1 ? 1 : 0;
-            }
-            else
-            {
-                return CheckIfFirstSymbolOfParagraphIs(paragraph, symbols);
-            }
-        }
-
-        // Проверить, что параграф содержит хотя бы один из символов
-        internal static int CheckIfParagraphsContainsOneOf(Word.Paragraph paragraph, string[] symbols)
-        {
-            foreach (string symbol in symbols)
-            {
-                if (paragraph.Content.ToString().Contains(symbol))
-                {
-                    return 1;
-                }
-            }
-            return 0;
-        }
-
-        // Получить первые prefixLength символов параграфа paragraph (если длина меньшье, то вернуть весь параграф)
+        // Получить первые prefixLength символов параграфа paragraph (если длина меньше, то вернуть весь параграф)
         internal static string GetParagraphPrefix(Word.Paragraph paragraph, int prefixLength)
         {
             string result = paragraph.Content.ToString().Length > prefixLength ? paragraph.Content.ToString().Substring(0, prefixLength) : paragraph.Content.ToString();
             return result.Trim();
-        }
-
-        internal static string GetStringPrefix(string content, int prefixLength)
-        {
-            string result = content.Length > prefixLength ? content.Substring(0, prefixLength) : content.ToString();
-            return result.Trim();
-        }
-
-        // Проверить, что первое слово в параграфе явлется одним из keyWords и вернуть его, если это так
-        internal static string? CheckIfFirtWordOfParagraphIsOneOf(Word.Paragraph paragraph, string[] keyWords)
-        {
-            string firstWord = paragraph.Content.ToString().Split(" ")[0];
-            foreach (var keyWord in keyWords)
-            {
-                if (keyWord == firstWord) { return keyWord; }
-            }
-            return null;
-        }
-
-        // Проверить, что последний символ в параграфе явлется одним из keySymbols и вернуть его, если это так
-        internal static string? CheckIfLastSymbolOfParagraphIsOneOf(Word.Paragraph paragraph, string[] keySymbols)
-        {
-            string lastSymbol;
-            try
-            {
-                lastSymbol = paragraph.Content.ToString().Trim().Last().ToString();
-            }
-            catch
-            {
-                return null;
-            }
-            
-            foreach (var keySymbol in keySymbols)
-            {
-                if (keySymbol == lastSymbol) { return keySymbol; }
-            }
-            return null;
         }
 
         // Получить текстовое содержимое параграфа (без символа следующей строки)
@@ -123,6 +62,40 @@ namespace DocxCorrectorCore.Services.Helpers
 
             result = result.Trim();
 
+            return result;
+        }
+
+        // Получить содержимое параграфа с учетом пропускаемых элементов
+        internal static string GetParagraphContentWithSkippables(Word.Paragraph paragraph)
+        {
+            string result = "";
+            foreach (var element in paragraph.GetChildElements(false, new Word.ElementType[] { Word.ElementType.Run, Word.ElementType.Picture, Word.ElementType.Chart, Word.ElementType.Shape, Word.ElementType.PreservedInline }))
+            {
+                switch (element)
+                {
+                    case Word.Run run:
+                        result += run.Content;
+                        break;
+                    case Word.Picture picture:
+                        result += SkippableElements[Word.ElementType.Picture];
+                        break;
+                    case Word.Chart _:
+                        result += SkippableElements[Word.ElementType.Chart];
+                        break;
+                    case Word.Drawing.Shape _:
+                        result += SkippableElements[Word.ElementType.Shape];
+                        break;
+                    case Word.PreservedInline _:
+                        result += SkippableElements[Word.ElementType.PreservedInline];
+                        break;
+                    default:
+                        Console.WriteLine("Unsupported element");
+                        break;
+                }
+            }
+
+            result = result.Trim();
+            if (result == "") { result = "!SPACE!"; }
             return result;
         }
 
@@ -142,13 +115,31 @@ namespace DocxCorrectorCore.Services.Helpers
 
             int classificationResultIndex = 0;
             int paragraphIndex = 0;
-            foreach (Word.Element _ in elements)
+            foreach (Word.Element element in elements)
             {
                 int classifiedParagraphIndex;
                 try { classifiedParagraphIndex = classificationResultList[classificationResultIndex].Id; } catch { return classifiedParagraphs; }
                 if (paragraphIndex < classifiedParagraphIndex)
                 {
-                    classifiedParagraphs.Add(new ClassifiedParagraph(elements[paragraphIndex]));
+                    ParagraphClass? paragraphClass = null;
+
+                    // Пропускаемые элементы
+                    // Таблицы
+                    if (element is Word.Tables.Table) { paragraphClass = ParagraphClass.e0; }
+                   
+                    if (element is Word.Paragraph paragraph)
+                    {
+                        // Списки
+                        // TODO: Какой конкретный класс перечисления
+                        if (paragraph.ListFormat.IsList) { paragraphClass = ParagraphClass.d0; }
+
+                        string paragraphContentWithSkippables = GemBoxHelper.GetParagraphContentWithSkippables(paragraph);
+                        // Картинки
+                        // TODO: Какой конкретный класс картинки
+                        if (paragraphContentWithSkippables == SkippableElements[Word.ElementType.Picture]) { paragraphClass = ParagraphClass.g0; }
+                    }
+
+                    classifiedParagraphs.Add(new ClassifiedParagraph(elements[paragraphIndex], paragraphClass));
                     paragraphIndex++;
                     continue;
                 }
