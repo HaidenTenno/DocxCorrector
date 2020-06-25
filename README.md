@@ -21,7 +21,7 @@ Commands:
   correct <file-to-correct> <GOST|ITMO> <paragraphs-classes> <result-path>    Analyze the document for formatting
                                                                               errors using the selected rules and
                                                                               class list and save the result
-  pull <file-to-analyse> <result-path>                                        Pull out the properties of document
+  pull <file-to-analyse> <result-path1> <result-path2>                        Pull out the properties of document
                                                                               paragraphs and save them in csv
   interactive                                                                 Start the program interactively
 ```

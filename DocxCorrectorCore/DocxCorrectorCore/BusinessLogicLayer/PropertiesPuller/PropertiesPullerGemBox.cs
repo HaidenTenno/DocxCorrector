@@ -74,12 +74,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         }
 
         // Получить свойства всех параграфов документа filePath
-        public override List<ParagraphProperties> GetAllParagraphsProperties(string filePath)
+        public override List<ParagraphPropertiesGemBox> GetAllParagraphsProperties(string filePath)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
-            if (document == null) { return new List<ParagraphProperties>(); }
+            if (document == null) { return new List<ParagraphPropertiesGemBox>(); }
 
-            List<ParagraphProperties> allParagraphProperties = new List<ParagraphProperties>();
+            List<ParagraphPropertiesGemBox> allParagraphProperties = new List<ParagraphPropertiesGemBox>();
 
             int paragraphID = 0;
 
@@ -87,7 +87,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             {
                 foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
                 {
-                    ParagraphProperties paragraphProperties;
+                    ParagraphPropertiesGemBox paragraphProperties;
 
                     // Пропуск НЕ параграфов
                     if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
@@ -116,20 +116,51 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             return allParagraphProperties;
         }
 
-        // Получить свойства страниц документа filePath
-        public override List<PageProperties> GetAllPagesProperties(string filePath)
+        // Получить свойства всех параграфов документа filePath (для таблицы 0)
+        public override List<ParagraphPropertiesTableZero> GetAllParagraphsPropertiesForTableZero(string filePath)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
-            if (document == null) { return new List<PageProperties>(); }
+            if (document == null) { return new List<ParagraphPropertiesTableZero>(); }
 
-            List<PageProperties> pageProperties = new List<PageProperties>();
+            List<ParagraphPropertiesTableZero> allParagraphProperties = new List<ParagraphPropertiesTableZero>();
+
+            int paragraphID = 0;
+
+            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
+            {
+                foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
+                {
+                    ParagraphPropertiesTableZero paragraphProperties;
+
+                    if (element is Word.Tables.Table) { paragraphProperties = new ParagraphPropertiesTableZero(paragraphID, GemBoxHelper.SkippableElements[Word.ElementType.Table]); }
+                    else
+                    {
+                        if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
+                        paragraphProperties = new ParagraphPropertiesTableZero(paragraphID, paragraph);
+                    }
+                    allParagraphProperties.Add(paragraphProperties);
+
+                    paragraphID++;
+                }
+            }
+
+            return allParagraphProperties;
+        }
+
+        // Получить свойства страниц документа filePath
+        public override List<PagePropertiesGemBox> GetAllPagesProperties(string filePath)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return new List<PagePropertiesGemBox>(); }
+
+            List<PagePropertiesGemBox> pageProperties = new List<PagePropertiesGemBox>();
 
             var pages = document.GetPaginator().Pages;
 
             int pageNumber = 1;
             foreach (var page in pages)
             {
-                PageProperties currentPageProperties = new PagePropertiesGemBox(page: page, pageNumber: pageNumber);
+                PagePropertiesGemBox currentPageProperties = new PagePropertiesGemBox(page: page, pageNumber: pageNumber);
                 pageProperties.Add(currentPageProperties);
                 pageNumber++;
             }
@@ -138,17 +169,17 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         }
 
         // Получить свойства секций документа filePath
-        public override List<SectionProperties> GetAllSectionsProperties(string filePath)
+        public override List<SectionPropertiesGemBox> GetAllSectionsProperties(string filePath)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
-            if (document == null) { return new List<SectionProperties>(); }
+            if (document == null) { return new List<SectionPropertiesGemBox>(); }
 
-            List<SectionProperties> allSectionsProperties = new List<SectionProperties>();
+            List<SectionPropertiesGemBox> allSectionsProperties = new List<SectionPropertiesGemBox>();
 
             int sectionNumber = 1;
             foreach (Word.Section section in document.GetChildElements(recursively: true, filterElements: Word.ElementType.Section))
             {
-                SectionProperties currentSectionProperties = new SectionPropertiesGemBox(section: section, sectionNumber: sectionNumber);
+                SectionPropertiesGemBox currentSectionProperties = new SectionPropertiesGemBox(section: section, sectionNumber: sectionNumber);
                 allSectionsProperties.Add(currentSectionProperties);
                 sectionNumber++;
             }
@@ -157,7 +188,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         }
 
         // Получить свойства верхних/нижних (type) колонтитулов документа filePath
-        public override List<HeaderFooterInfo> GetHeadersFootersInfo(HeaderFooterType type, string filePath)
+        public override List<HeaderFooterInfoGemBox> GetHeadersFootersInfo(HeaderFooterType type, string filePath)
         {
             static List<Word.HeaderFooterType> GetChosenHeaderFooterType(HeaderFooterType type)
             {
@@ -180,9 +211,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             }
 
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
-            if (document == null) { return new List<HeaderFooterInfo>(); }
+            if (document == null) { return new List<HeaderFooterInfoGemBox>(); }
 
-            List<HeaderFooterInfo> headersFootersInfo = new List<HeaderFooterInfo>();
+            List<HeaderFooterInfoGemBox> headersFootersInfo = new List<HeaderFooterInfoGemBox>();
 
             List<Word.HeaderFooterType> chosenTypes = GetChosenHeaderFooterType(type);
 
@@ -192,7 +223,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
                 {
                     if (chosenTypes.Contains(headerFooter.HeaderFooterType))
                     {
-                        HeaderFooterInfo headerFooterInfo = new HeaderFooterInfoGemBox(headerFooter);
+                        HeaderFooterInfoGemBox headerFooterInfo = new HeaderFooterInfoGemBox(headerFooter);
                         headersFootersInfo.Add(headerFooterInfo);
                     }
                 }
@@ -202,9 +233,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 
         // IPropertiesPullerAsync
         // Private
-        private Task<ParagraphProperties> GetParagraphPropertiesAsync(int id, Word.Paragraph paragraph)
+        private Task<ParagraphPropertiesGemBox> GetParagraphPropertiesAsync(int id, Word.Paragraph paragraph)
         {
-            return Task.Run(() => (ParagraphProperties)new ParagraphPropertiesGemBox(id, paragraph));
+            return Task.Run(() => new ParagraphPropertiesGemBox(id, paragraph));
         }
 
         // Public
@@ -212,12 +243,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         public PropertiesPuller PropertiesPuller => this;
 
         // Асинхронно получить свойства всех параграфов
-        public async Task<List<ParagraphProperties>> GetAllParagraphsPropertiesAsync(string filePath)
+        public async Task<List<ParagraphPropertiesGemBox>> GetAllParagraphsPropertiesAsync(string filePath)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
-            if (document == null) { return new List<ParagraphProperties>(); }
+            if (document == null) { return new List<ParagraphPropertiesGemBox>(); }
 
-            List<Task<ParagraphProperties>> listOfTasks = new List<Task<ParagraphProperties>>();
+            List<Task<ParagraphPropertiesGemBox>> listOfTasks = new List<Task<ParagraphPropertiesGemBox>>();
 
             int paragraphID = 0;
 
@@ -225,7 +256,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             {
                 foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
                 {
-                    Task<ParagraphProperties> paragraphPropertiesTask;
+                    Task<ParagraphPropertiesGemBox> paragraphPropertiesTask;
 
                     // Пропуск НЕ параграфов
                     if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }

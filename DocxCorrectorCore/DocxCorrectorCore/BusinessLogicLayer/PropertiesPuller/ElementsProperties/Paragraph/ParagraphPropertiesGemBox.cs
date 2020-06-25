@@ -7,10 +7,10 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 {
-    // TODO: Наиль должен скинуть окончательный вид
-    public sealed class ParagraphPropertiesGemBox : ParagraphProperties
+    public class ParagraphPropertiesGemBox
     {
         public int ID { get; }
+        public virtual string Content { get; }
         public int SpecialSymbolsCount { get; }
         public int WordsCount { get; }
         public int SymbolCount { get; }
@@ -182,6 +182,18 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             if (letterBracketRegex.IsMatch(firstWord)) { return "listLevel1"; }
 
             //Сочетание цифр и точек с окончанием на запятую или точку с запятой
+            if (paragraphContent.Count() > 3)
+            {
+                for (int letterIndex = 0; letterIndex < firstWord.Count() - 1; letterIndex++)
+                {
+                    char letter = firstWord[letterIndex];
+                    if ((!Char.IsDigit(letter)) & (letter != '.'))
+                    {
+                        return null;
+                    }
+                }
+                if ((paragraphContent.Last() == ',') | (paragraphContent.Last() == ';')) { return "listLevel1"; }
+            }
 
             return null;
         }
@@ -190,6 +202,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         public ParagraphPropertiesGemBox(int id, Word.Paragraph paragraph)
         {
             ID = id;
+            Content = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraph);
             SpecialSymbolsCount = CountSpecialSymbols(paragraph);
             WordsCount = CountWords(paragraph);
             SymbolCount = CountSymbols(paragraph);
@@ -211,6 +224,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             SpaceAfter = paragraph.ParagraphFormat.SpaceAfter.ToString();
             SpaceBefore = paragraph.ParagraphFormat.SpaceBefore.ToString();
             SpecialIndentation = paragraph.ParagraphFormat.SpecialIndentation.ToString();
-        }      
+        }
+
+        public ParagraphPropertiesGemBox(int id, string content)
+        {
+            ID = id;
+            Content = content;
+        }
     }
 }

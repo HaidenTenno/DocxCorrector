@@ -60,12 +60,5 @@ namespace DocxCorrectorCore.Services.Utilities
                 pageNumber++;
             }
         }
-
-        // Заполнить CSV файл для свойств параграфов
-        public static void FillCSV(string filePath, List<ParagraphProperties> listData)
-        {
-            List<ParagraphPropertiesGemBox> listDataGemBox = listData.OfType<ParagraphPropertiesGemBox>().ToList();
-            FillCSV(filePath: filePath, listData: listDataGemBox);
-        }
     }
 }

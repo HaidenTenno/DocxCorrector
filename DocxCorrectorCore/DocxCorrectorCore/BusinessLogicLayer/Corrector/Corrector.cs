@@ -75,7 +75,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             var tablesCorrectionsTask = GetTableCorrectionsAsync(filePath, rulesModel, paragraphsClasses);
             var headlingCorrectionsTask = GetHeadlingCorrectionsAsync(filePath, rulesModel, paragraphsClasses);
 
-            Task.WaitAll(paragraphsCorrectionsTask);
+            Task.WaitAll(paragraphsCorrectionsTask, sourcesListCorrectionsTask, tablesCorrectionsTask, headlingCorrectionsTask);
 
             DocumentCorrections documentCorrections = new DocumentCorrections(
                 rules: rulesModel,

@@ -3,7 +3,7 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 {
-    public sealed class SectionPropertiesGemBox : SectionProperties
+    public sealed class SectionPropertiesGemBox
     {
         public int SectionNumber { get; }
         public List<Dictionary<string,string>> HeadersFooters { get; }

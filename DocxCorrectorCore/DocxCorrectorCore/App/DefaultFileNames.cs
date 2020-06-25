@@ -12,6 +12,8 @@
         public const string HeadersFootersInfoFileName = "headersFootersInfo.json";
         // Файл со свойствами параграфов
         public const string ParagraphsPropertiesFileName = "properties.csv";
+        // Файл со свойствами параграфов (ДЛЯ ТАБЛИЦЫ 0)
+        public const string ParagraphsPropertiesForTableZeroFileName = "propertiesTable0.csv";
         // Называния csv файлов для тестирования синхронных/асинхронных методов
         public const string SyncParagraphsSyncIterationFileName = "syncParagraphsSyncIteration.csv";
         public const string SyncParagraphsAsyncIterationFileName = "syncParagraphAsyncIteration.csv";

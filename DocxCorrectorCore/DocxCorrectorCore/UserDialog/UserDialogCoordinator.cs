@@ -19,6 +19,7 @@ namespace DocxCorrectorCore.UserDialog
         //SavePagesAsPdf,
         //ReadPdfGemboxDocument,
         //ReadPdfGemboxPdf,
+        TwoCSVs,
         CheckDocument
     }
 
@@ -46,6 +47,7 @@ namespace DocxCorrectorCore.UserDialog
                     //("Сохранение каждой страницы документа отдельным pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.SavePagesAsPdf))),
                     //("Чтение pdf документа библиотекой Gembox.Document", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ReadPdfGemboxDocument))),
                     //("Чтение pdf документа библиотекой Gembox.Pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ReadPdfGemboxPdf))),
+                    ("Генерация CSV для свойств параграфов (один файл) + CSV для таблицы 0", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.TwoCSVs))),
                     ("Проверить оформление docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CheckDocument)))
                 }
             );
@@ -69,6 +71,7 @@ namespace DocxCorrectorCore.UserDialog
                 //QuestionControllerType.SavePagesAsPdf => new SavePagesAsPdfQuestionController(),
                 //QuestionControllerType.ReadPdfGemboxDocument => new ReadPdfGemBoxDocumentQuestionController(),
                 //QuestionControllerType.ReadPdfGemboxPdf => new ReadPdfGemBoxPdfQuestionController(),
+                QuestionControllerType.TwoCSVs => new TwoCSVsQuestionController(),
                 QuestionControllerType.CheckDocument => new CheckDocumentQuestionController(),
                 _ => throw new NotImplementedException()
             };

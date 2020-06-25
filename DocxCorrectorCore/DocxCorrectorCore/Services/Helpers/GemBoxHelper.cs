@@ -14,7 +14,8 @@ namespace DocxCorrectorCore.Services.Helpers
             { Word.ElementType.Picture, "!PICTURE!" },
             { Word.ElementType.Chart, "!CHART!" },
             { Word.ElementType.Shape, "!SHAPE!" },
-            { Word.ElementType.PreservedInline, "!PRESERVEDINLINE!" }
+            { Word.ElementType.PreservedInline, "!PRESERVEDINLINE!" },
+            { Word.ElementType.Table, "!TABLE!" }
         };
 
         // Ввод лицензионного ключа
@@ -121,25 +122,25 @@ namespace DocxCorrectorCore.Services.Helpers
                 try { classifiedParagraphIndex = classificationResultList[classificationResultIndex].Id; } catch { return classifiedParagraphs; }
                 if (paragraphIndex < classifiedParagraphIndex)
                 {
-                    ParagraphClass? paragraphClass = null;
+                    //ParagraphClass? paragraphClass = null;
 
-                    // Пропускаемые элементы
-                    // Таблицы
-                    if (element is Word.Tables.Table) { paragraphClass = ParagraphClass.e0; }
+                    //// Пропускаемые элементы
+                    //// Таблицы
+                    //if (element is Word.Tables.Table) { paragraphClass = ParagraphClass.e0; }
                    
-                    if (element is Word.Paragraph paragraph)
-                    {
-                        // Списки
-                        // TODO: Какой конкретный класс перечисления
-                        if (paragraph.ListFormat.IsList) { paragraphClass = ParagraphClass.d0; }
+                    //if (element is Word.Paragraph paragraph)
+                    //{
+                    //    // Списки
+                    //    // TODO: Какой конкретный класс перечисления
+                    //    if (paragraph.ListFormat.IsList) { paragraphClass = ParagraphClass.d0; }
 
-                        string paragraphContentWithSkippables = GemBoxHelper.GetParagraphContentWithSkippables(paragraph);
-                        // Картинки
-                        // TODO: Какой конкретный класс картинки
-                        if (paragraphContentWithSkippables == SkippableElements[Word.ElementType.Picture]) { paragraphClass = ParagraphClass.g0; }
-                    }
+                    //    string paragraphContentWithSkippables = GemBoxHelper.GetParagraphContentWithSkippables(paragraph);
+                    //    // Картинки
+                    //    // TODO: Какой конкретный класс картинки
+                    //    if (paragraphContentWithSkippables == SkippableElements[Word.ElementType.Picture]) { paragraphClass = ParagraphClass.g0; }
+                    //}
 
-                    classifiedParagraphs.Add(new ClassifiedParagraph(elements[paragraphIndex], paragraphClass));
+                    //classifiedParagraphs.Add(new ClassifiedParagraph(elements[paragraphIndex], paragraphClass));
                     paragraphIndex++;
                     continue;
                 }

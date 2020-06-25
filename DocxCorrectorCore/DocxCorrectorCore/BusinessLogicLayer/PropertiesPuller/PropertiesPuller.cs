@@ -14,15 +14,18 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         public abstract void PrintTableOfContenstsInfo(string filePath);
 
         // Получить свойства всех параграфов документа filePath
-        public abstract List<ParagraphProperties> GetAllParagraphsProperties(string filePath);
+        public abstract List<ParagraphPropertiesGemBox> GetAllParagraphsProperties(string filePath);
+
+        // Получить свойства всех параграфов документа filePath (для таблицы 0)
+        public abstract List<ParagraphPropertiesTableZero> GetAllParagraphsPropertiesForTableZero(string filePath);
 
         // Получить свойства страниц документа filePath
-        public abstract List<PageProperties> GetAllPagesProperties(string filePath);
+        public abstract List<PagePropertiesGemBox> GetAllPagesProperties(string filePath);
 
         // Получить свойства секций документа filePath
-        public abstract List<SectionProperties> GetAllSectionsProperties(string filePath);
+        public abstract List<SectionPropertiesGemBox> GetAllSectionsProperties(string filePath);
 
         // Получить свойства верхних/нижних (type) колонтитулов документа filePath
-        public abstract List<HeaderFooterInfo> GetHeadersFootersInfo(HeaderFooterType type, string filePath);
+        public abstract List<HeaderFooterInfoGemBox> GetHeadersFootersInfo(HeaderFooterType type, string filePath);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 {
-    public sealed class PagePropertiesGemBox : PageProperties
+    public sealed class PagePropertiesGemBox
     {
         public int PageNumber { get; }
         public double Height { get; }

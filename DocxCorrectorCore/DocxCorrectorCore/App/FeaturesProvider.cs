@@ -51,7 +51,7 @@ namespace DocxCorrectorCore.App
         public void GeneratePagesPropertiesJSON(string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            List<PageProperties> pagesProperties = PropertiesPuller.GetAllPagesProperties(filePath: filePath);
+            List<PagePropertiesGemBox> pagesProperties = PropertiesPuller.GetAllPagesProperties(filePath: filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
             string pagesPropertiesJSON = JSONWorker.MakeJSON(pagesProperties);
             string resultFilePath = Path.Combine(resultDirPath, DefaultFileNames.PagesPropertiesFileName);
@@ -62,7 +62,7 @@ namespace DocxCorrectorCore.App
         public void GenerateSectionsPropertiesJSON(string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            List<SectionProperties> sectionsProperties = PropertiesPuller.GetAllSectionsProperties(filePath: filePath);
+            List<SectionPropertiesGemBox> sectionsProperties = PropertiesPuller.GetAllSectionsProperties(filePath: filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
             string sectionsPropertiesJSON = JSONWorker.MakeJSON(sectionsProperties);
             string resultFilePath = Path.Combine(resultDirPath, DefaultFileNames.SectionsPropertiesFileName);
@@ -73,7 +73,7 @@ namespace DocxCorrectorCore.App
         public void GenerateHeadersFootersInfoJSON(HeaderFooterType type, string filePath, string resultDirPath)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            List<HeaderFooterInfo> headersFootersInfo = PropertiesPuller.GetHeadersFootersInfo(type: type, filePath: filePath);
+            List<HeaderFooterInfoGemBox> headersFootersInfo = PropertiesPuller.GetHeadersFootersInfo(type: type, filePath: filePath);
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
             string headersFootersInfoJSON = JSONWorker.MakeJSON(headersFootersInfo);
             string resultFilePath = Path.Combine(resultDirPath, DefaultFileNames.HeadersFootersInfoFileName);
@@ -81,12 +81,12 @@ namespace DocxCorrectorCore.App
         }
 
         // Проанализировать документ filePath и создать csv файл resultPath со свойствами его параграфов
-        public void GenerateParagraphsPropertiesCSV(string filePath, string resultPath)
+        public void GenerateParagraphsPropertiesCSV(string filePath, string resultPath, bool silent = false)
         {
-            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            List<ParagraphProperties> propertiesForFile = new List<ParagraphProperties>();
+            if (!silent) { Console.WriteLine($"Started {Path.GetFileName(filePath)}"); }
+            List<ParagraphPropertiesGemBox> propertiesForFile = new List<ParagraphPropertiesGemBox>();
             string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath); }, TimeCounter.ResultType.TotalMilliseconds);
-            Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}");
+            if (!silent) { Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}"); }
             string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesFileName) : resultPath;
             FileWorker.FillCSV(resultFilePath, propertiesForFile);
         }
@@ -96,12 +96,12 @@ namespace DocxCorrectorCore.App
         {
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
-                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+                List<ParagraphPropertiesGemBox> propertiesForDir = new List<ParagraphPropertiesGemBox>();
 
                 DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphProperties> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
+                    List<ParagraphPropertiesGemBox> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 });
@@ -109,6 +109,27 @@ namespace DocxCorrectorCore.App
                 string resultFilePath = Path.Combine(subDir, DefaultFileNames.ParagraphsPropertiesFileName);
                 FileWorker.FillCSV(resultFilePath, propertiesForDir);
             });
+        }
+
+        // Проанализировать документ filePath и создать csv файл resultPath со свойствами его параграфов (ДЛЯ ТАБЛИЦЫ 0)
+        public void GenerateParagraphsPropertiesCSVForTableZero(string filePath, string resultPath, bool silent = false)
+        {
+            if (!silent) { Console.WriteLine($"Started {Path.GetFileName(filePath)}"); }
+            List<ParagraphPropertiesTableZero> propertiesForFile = new List<ParagraphPropertiesTableZero>();
+            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsPropertiesForTableZero(filePath: filePath); }, TimeCounter.ResultType.TotalMilliseconds);
+            if (!silent) { Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}"); }
+            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesForTableZeroFileName) : resultPath;
+            FileWorker.FillCSV(resultFilePath, propertiesForFile);
+        }
+
+        // Запустить обычный GenerateParagraphProperties и GenerateParagraphsPropertiesCSVForTableZero
+        public void GenerateParagraphsPropertiesForAllTables(string filePath, string resultPath1, string resultPath2)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            Task firstTableTask = Task.Run(() => GenerateParagraphsPropertiesCSV(filePath, resultPath1, silent: true));
+            Task secondTableTask = Task.Run(() => GenerateParagraphsPropertiesCSVForTableZero(filePath, resultPath2, silent: true));
+            string time = TimeCounter.GetExecutionTime(() => { Task.WaitAll(firstTableTask, secondTableTask); }, TimeCounter.ResultType.TotalMilliseconds);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}");
         }
 
         // GenerateCSVFiles, основанный на асинхронном методе
@@ -120,12 +141,12 @@ namespace DocxCorrectorCore.App
 
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
-                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+                List<ParagraphPropertiesGemBox> propertiesForDir = new List<ParagraphPropertiesGemBox>();
 
                 DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphProperties> propertiesForFile = asyncPuller.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
+                    List<ParagraphPropertiesGemBox> propertiesForFile = asyncPuller.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 });
@@ -140,12 +161,12 @@ namespace DocxCorrectorCore.App
         {
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
-                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+                List<ParagraphPropertiesGemBox> propertiesForDir = new List<ParagraphPropertiesGemBox>();
 
                 Task.WaitAll(DirectoryIterator.IterateDocxFilesAsync(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphProperties> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
+                    List<ParagraphPropertiesGemBox> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 }));
@@ -164,12 +185,12 @@ namespace DocxCorrectorCore.App
 
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
             {
-                List<ParagraphProperties> propertiesForDir = new List<ParagraphProperties>();
+                List<ParagraphPropertiesGemBox> propertiesForDir = new List<ParagraphPropertiesGemBox>();
 
                 Task.WaitAll(DirectoryIterator.IterateDocxFilesAsync(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphProperties> propertiesForFile = asyncPuller.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
+                    List<ParagraphPropertiesGemBox> propertiesForFile = asyncPuller.GetAllParagraphsPropertiesAsync(filePath: filePath).Result;
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 }));

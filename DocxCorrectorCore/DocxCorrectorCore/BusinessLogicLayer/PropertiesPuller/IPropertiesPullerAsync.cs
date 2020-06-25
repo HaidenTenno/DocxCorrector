@@ -9,6 +9,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         public PropertiesPuller PropertiesPuller { get; }
 
         // Асинхронно получить свойства всех параграфов
-        public Task<List<ParagraphProperties>> GetAllParagraphsPropertiesAsync(string filePath);
+        public Task<List<ParagraphPropertiesGemBox>> GetAllParagraphsPropertiesAsync(string filePath);
     }
 }

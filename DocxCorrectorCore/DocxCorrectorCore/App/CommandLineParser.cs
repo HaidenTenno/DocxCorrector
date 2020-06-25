@@ -22,10 +22,10 @@ namespace DocxCorrectorCore.App
             userDialogCoordinator.Start();
         }
 
-        private static void PullProperties(string fileToAnalyse, string resultPath)
+        private static void PullProperties(string fileToAnalyse, string resultPath1, string resultPath2)
         {
             FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateParagraphsPropertiesCSV(fileToAnalyse, resultPath);
+            featuresProvider.GenerateParagraphsPropertiesForAllTables(fileToAnalyse, resultPath1, resultPath2);
         }
 
         private static Command SetupCorrectCommand()
@@ -63,13 +63,17 @@ namespace DocxCorrectorCore.App
             var fileToAnalyseArg = new Argument<string>("file-to-analyse");
             fileToAnalyseArg.Description = "Path to ther file for analysis";
             pullPropertiesCommand.AddArgument(fileToAnalyseArg);
-            //resultPath
-            var resultPathArg = new Argument<string>("result-path", getDefaultValue: () => Directory.GetCurrentDirectory());
-            resultPathArg.Description = "File or directory path to save the result";
-            pullPropertiesCommand.AddArgument(resultPathArg);
+            //resultPath1
+            var resultPath1Arg = new Argument<string>("result-path1", getDefaultValue: () => Directory.GetCurrentDirectory());
+            resultPath1Arg.Description = "File or directory path to save the result";
+            pullPropertiesCommand.AddArgument(resultPath1Arg);
+            //resultPath2
+            var resultPath2Arg = new Argument<string>("result-path2", getDefaultValue: () => Directory.GetCurrentDirectory());
+            resultPath2Arg.Description = "File or directory path to save the result (table zero)";
+            pullPropertiesCommand.AddArgument(resultPath2Arg);
 
             //handler
-            pullPropertiesCommand.Handler = CommandHandler.Create<string, string>(PullProperties);
+            pullPropertiesCommand.Handler = CommandHandler.Create<string, string, string>(PullProperties);
 
             return pullPropertiesCommand;
         }
