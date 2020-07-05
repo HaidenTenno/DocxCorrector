@@ -6,13 +6,13 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 {
-    public class ImageSign : DocumentElement, IRegexSupportable
+    public class TableSign : DocumentElement, IRegexSupportable
     {
-        // TODO: Обратить внимание (пока класс h0)
-        //h0
+        // TODO: Обратить внимание (пока класс f0)
+        //f0
 
         // Класс элемента
-        public override ParagraphClass ParagraphClass => ParagraphClass.h0;
+        public override ParagraphClass ParagraphClass => ParagraphClass.f0;
 
         // Свойства ParagraphFormat
 
@@ -23,9 +23,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         // Особые свойства
 
         // IRegexSupportable
-        public List<Regex> Regexes => new List<Regex> 
-        { 
-            new Regex (@"^Рисунок (?>[А-ЕЖИК-НП-ЦШЩЭЮЯ]\.[\d]+|[\d]+(?>\.[\d]+)?)(?> - .*)?$") 
+        public List<Regex> Regexes => new List<Regex>
+        {
+            new Regex (@"^Таблица (?>[А-ЕЖИК-НП-ЦШЩЭЮЯ]\.[\d]+|[\d]+(?>\.[\d]+)?)(?> - .*)?")
         };
 
         // Метод проверки

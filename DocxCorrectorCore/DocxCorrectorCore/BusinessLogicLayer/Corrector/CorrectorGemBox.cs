@@ -74,7 +74,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                 ParagraphCorrections? currentParagraphCorrections = null;
                 DocumentElement? standardParagraph = null;
 
-                switch (classifiedParagraphs[classifiedParagraphIndex].ParagraphClass)
+                ParagraphClass? paragraphClass = classifiedParagraphs[classifiedParagraphIndex].ParagraphClass;
+                switch (paragraphClass)
                 {
                     case ParagraphClass.c1:
                         standardParagraph = new ParagraphRegular();
@@ -91,8 +92,34 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                     case ParagraphClass.b2:
                     case ParagraphClass.b3:
                     case ParagraphClass.b4:
-                        var paragraphClass = classifiedParagraphs[classifiedParagraphIndex].ParagraphClass;
-                        if (paragraphClass != null) { standardParagraph = new HeadingOtherLevels((ParagraphClass)paragraphClass); }
+                        standardParagraph = new HeadingOtherLevels((ParagraphClass)paragraphClass);
+                        break;
+                    case ParagraphClass.d1:
+                        standardParagraph = new SimpleListFirstElement();
+                        break;
+                    case ParagraphClass.d2:
+                        standardParagraph = new SimpleListMiddleElement();
+                        break;
+                    case ParagraphClass.d3:
+                        standardParagraph = new SimpleListLastElement();
+                        break;
+                    case ParagraphClass.d4:
+                        standardParagraph = new ComplexListFirstElement();
+                        break;
+                    case ParagraphClass.d5:
+                        standardParagraph = new ComplexListMiddleElement();
+                        break;
+                    case ParagraphClass.d6:
+                        standardParagraph = new ComplexListLastElement();
+                        break;
+                    case ParagraphClass.h0:
+                        standardParagraph = new ImageSign();
+                        break;
+                    case ParagraphClass.f0:
+                        standardParagraph = new TableSign();
+                        break;
+                    case ParagraphClass.r0:
+                        standardParagraph = new SourcesListElement();
                         break;
                     default:
                         break;

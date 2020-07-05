@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
 
+
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 {
-    public class ImageSign : DocumentElement, IRegexSupportable
+    public class SimpleListLastElement : ListElement
     {
-        // TODO: Обратить внимание (пока класс h0)
-        //h0
+        //d3
 
         // Класс элемента
-        public override ParagraphClass ParagraphClass => ParagraphClass.h0;
+        public override ParagraphClass ParagraphClass => ParagraphClass.d3;
 
         // Свойства ParagraphFormat
 
@@ -21,12 +20,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
-
-        // IRegexSupportable
-        public List<Regex> Regexes => new List<Regex> 
-        { 
-            new Regex (@"^Рисунок (?>[А-ЕЖИК-НП-ЦШЩЭЮЯ]\.[\d]+|[\d]+(?>\.[\d]+)?)(?> - .*)?$") 
-        };
 
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
