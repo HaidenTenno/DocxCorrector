@@ -122,25 +122,7 @@ namespace DocxCorrectorCore.Services.Helpers
                 try { classifiedParagraphIndex = classificationResultList[classificationResultIndex].Id; } catch { return classifiedParagraphs; }
                 if (paragraphIndex < classifiedParagraphIndex)
                 {
-                    //ParagraphClass? paragraphClass = null;
-
-                    //// Пропускаемые элементы
-                    //// Таблицы
-                    //if (element is Word.Tables.Table) { paragraphClass = ParagraphClass.e0; }
-                   
-                    //if (element is Word.Paragraph paragraph)
-                    //{
-                    //    // Списки
-                    //    // TODO: Какой конкретный класс перечисления
-                    //    if (paragraph.ListFormat.IsList) { paragraphClass = ParagraphClass.d0; }
-
-                    //    string paragraphContentWithSkippables = GemBoxHelper.GetParagraphContentWithSkippables(paragraph);
-                    //    // Картинки
-                    //    // TODO: Какой конкретный класс картинки
-                    //    if (paragraphContentWithSkippables == SkippableElements[Word.ElementType.Picture]) { paragraphClass = ParagraphClass.g0; }
-                    //}
-
-                    //classifiedParagraphs.Add(new ClassifiedParagraph(elements[paragraphIndex], paragraphClass));
+                    classifiedParagraphs.Add(new ClassifiedParagraph(elements[paragraphIndex]));
                     paragraphIndex++;
                     continue;
                 }

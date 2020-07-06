@@ -59,22 +59,22 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public virtual Word.UnderlineType WholeParagraphUnderlineStyle => Word.UnderlineType.None;
 
         // Свойства CharacterFormat для раннеров
-        public virtual List<Word.Color> RunnerBackgroundColors => WholeParagraphBackgroundColors;//new List<Word.Color> { Word.Color.Empty, Word.Color.White };
-        public virtual Word.SingleBorder RunnerBorder => WholeParagraphBorder;//Word.SingleBorder.None;
-        public virtual bool RunnerDoubleStrikethrough => WholeParagraphDoubleStrikethrough;//false;
-        public virtual Word.Color RunnerFontColor => WholeParagraphFontColor;//Word.Color.Black;
-        public virtual string RunnerFontName => WholeParagraphFontName;//"Times New Roman";
-        public virtual bool RunnerHidden => WholeParagraphHidden;//false;
-        public virtual List<Word.Color> RunnerHighlightColors => WholeParagraphHighlightColors;//new List<Word.Color> { Word.Color.Empty, Word.Color.White };
-        public virtual double RunnerKerning => WholeParagraphKerning;//0;
-        public virtual double RunnerPosition => WholeParagraphPosition;//0;
-        public virtual bool RunnerRightToLeft => WholeParagraphRightToLeft;//false;
-        public virtual int RunnerScaling => WholeParagraphScaling;//100;
-        public virtual double RunnerSizeLeftBorder => WholeParagraphSizeLeftBorder;//13.5;
-        public virtual double RunnerSizeRightBorder => WholeParagraphSizeRightBorder;//14.5;
-        public virtual double RunnerSpacing => WholeParagraphSpacing;//0;
-        public virtual bool RunnerStrikethrough => WholeParagraphStrikethrough;//false;
-        public virtual Word.UnderlineType RunnerUnderlineStyle => WholeParagraphUnderlineStyle;//Word.UnderlineType.None;
+        public virtual List<Word.Color> RunnerBackgroundColors => WholeParagraphBackgroundColors;
+        public virtual Word.SingleBorder RunnerBorder => WholeParagraphBorder;
+        public virtual bool RunnerDoubleStrikethrough => WholeParagraphDoubleStrikethrough;
+        public virtual Word.Color RunnerFontColor => WholeParagraphFontColor;
+        public virtual string RunnerFontName => WholeParagraphFontName;
+        public virtual bool RunnerHidden => WholeParagraphHidden;
+        public virtual List<Word.Color> RunnerHighlightColors => WholeParagraphHighlightColors;
+        public virtual double RunnerKerning => WholeParagraphKerning;
+        public virtual double RunnerPosition => WholeParagraphPosition;
+        public virtual bool RunnerRightToLeft => WholeParagraphRightToLeft;
+        public virtual int RunnerScaling => WholeParagraphScaling;
+        public virtual double RunnerSizeLeftBorder => WholeParagraphSizeLeftBorder;
+        public virtual double RunnerSizeRightBorder => WholeParagraphSizeRightBorder;
+        public virtual double RunnerSpacing => WholeParagraphSpacing;
+        public virtual bool RunnerStrikethrough => WholeParagraphStrikethrough;
+        public virtual Word.UnderlineType RunnerUnderlineStyle => WholeParagraphUnderlineStyle;
 
         // Количество пустых строк (отбивок, SPACE, n0) после параграфа
         public virtual int EmptyLinesAfter => 0;

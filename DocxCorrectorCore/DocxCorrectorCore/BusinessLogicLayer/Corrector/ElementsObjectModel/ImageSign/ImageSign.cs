@@ -15,6 +15,11 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public override ParagraphClass ParagraphClass => ParagraphClass.h0;
 
         // Свойства ParagraphFormat
+        public override Word.HorizontalAlignment Alignment => Word.HorizontalAlignment.Center;
+        public override bool KeepLinesTogether => true;
+        public override double SpecialIndentationLeftBorder => 0;
+        public override double SpecialIndentationRightBorder => 0;
+
 
         // Свойства CharacterFormat для всего абзаца
 
@@ -28,6 +33,23 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             new Regex (@"^Рисунок (?>[А-ЕЖИК-НП-ЦШЩЭЮЯ]\.[\d]+|[\d]+(?>\.[\d]+)?)(?> - .*)?$") 
         };
 
+        private ParagraphMistake? CheckRegexMatch(Word.Paragraph paragraph)
+        {
+            string paragraphContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraph);
+            foreach (Regex regex in Regexes)
+            {
+                if (regex.IsMatch(paragraphContent))
+                {
+                    return null;
+                }
+            }
+
+            return new ParagraphMistake(
+                message: "Запись подписи к рисунку не соответствует ни одному из шаблонов",
+                advice: "ТУТ БУДЕТ СОВЕТ"
+            );
+        }
+
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
@@ -38,6 +60,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
+            // Проверка соответствия шаблону
+            ParagraphMistake? regexMistake = CheckRegexMatch(paragraph);
+            if (regexMistake != null) { paragraphMistakes.Add(regexMistake); }
 
             if (paragraphMistakes.Count != 0)
             {

@@ -13,6 +13,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
         // Класс элемента
         public override ParagraphClass ParagraphClass => ParagraphClass.f0;
+        public override bool KeepLinesTogether => true;
+        public override bool KeepWithNext => true;
 
         // Свойства ParagraphFormat
 
@@ -28,6 +30,23 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             new Regex (@"^Таблица (?>[А-ЕЖИК-НП-ЦШЩЭЮЯ]\.[\d]+|[\d]+(?>\.[\d]+)?)(?> - .*)?")
         };
 
+        private ParagraphMistake? CheckRegexMatch(Word.Paragraph paragraph)
+        {
+            string paragraphContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraph);
+            foreach (Regex regex in Regexes)
+            {
+                if (regex.IsMatch(paragraphContent))
+                {
+                    return null;
+                }
+            }
+
+            return new ParagraphMistake(
+                message: "Запись подписи к таблице не соответствует ни одному из шаблонов",
+                advice: "ТУТ БУДЕТ СОВЕТ"
+            );
+        }
+
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
@@ -38,6 +57,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
+            ParagraphMistake? regexMistake = CheckRegexMatch(paragraph);
+            if (regexMistake != null) { paragraphMistakes.Add(regexMistake); }
 
             if (paragraphMistakes.Count != 0)
             {
