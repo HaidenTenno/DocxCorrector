@@ -31,8 +31,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if ((firstSymbol != '"') & (!char.IsUpper(firstSymbol)))
             {
                 return new ParagraphMistake(
-                    message: "Параграф должен начинаться с большой буквы",
-                    advice: "ТУТ БУДЕТ СОВЕТ"
+                    message: "Параграф должен начинаться с большой буквы"
                 );
             }
 

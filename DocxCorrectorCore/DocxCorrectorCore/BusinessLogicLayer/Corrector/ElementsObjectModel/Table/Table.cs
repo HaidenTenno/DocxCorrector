@@ -23,29 +23,29 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         // Особые свойства
 
         // Свойства TableFormat
-        public virtual Word.HorizontalAlignment FirstRowAlignment => Word.HorizontalAlignment.Center;
-        public virtual Word.HorizontalAlignment FirstColumnAlignment => Word.HorizontalAlignment.Justify;
-        public virtual List<Word.Color> TableFormatBackgroundColors => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
-        public virtual Word.BorderStyle TableFormatOuterBorders => Word.BorderStyle.Single;
-        public virtual Word.BorderStyle TableFormatDiagonalBorders => Word.BorderStyle.None;
+        public virtual List<Word.HorizontalAlignment> FirstRowAlignment => new List<Word.HorizontalAlignment> { Word.HorizontalAlignment.Center };
+        public virtual List<Word.HorizontalAlignment> FirstColumnAlignment => new List<Word.HorizontalAlignment> { Word.HorizontalAlignment.Justify };
+        public virtual List<Word.Color> TableFormatBackgroundColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
+        public virtual List<Word.BorderStyle> TableFormatOuterBorders => new List<Word.BorderStyle> { Word.BorderStyle.Single };
+        public virtual List<Word.BorderStyle> TableFormatDiagonalBorders => new List<Word.BorderStyle> { Word.BorderStyle.None };
         public virtual List<Word.BorderStyle> TableFormatAvailableInnerBorders => new List<Word.BorderStyle> { Word.BorderStyle.None, Word.BorderStyle.Single };
-        public virtual int TableFormatColumnBandSize => 1;
-        public virtual double TableFormatDefaultCellSpacing => 0;
-        public virtual double TableFormatIndentFromLeft => 0;
-        public virtual Word.Padding TableFormatDistanceFromSurroundingText => new Word.Padding(0, 0, 0, 0);
-        public virtual Word.HorizontalPosition TableFormatHorizontalPosition => new Word.HorizontalPosition(Word.HorizontalPositionType.Absolute, Word.HorizontalPositionAnchor.Margin);
-        public virtual Word.VerticalPosition TableFormatVerticalPosition => new Word.VerticalPosition(0, Word.LengthUnit.Centimeter, Word.VerticalPositionAnchor.Margin);
-        public virtual bool TableFormatRightToLeft => false;
-        public virtual int TableFormatRowBandSize => 1;
+        public virtual List<int> TableFormatColumnBandSize => new List<int> { 1 };
+        public virtual List<double> TableFormatDefaultCellSpacing => new List<double> { 0 };
+        public virtual List<double> TableFormatIndentFromLeft => new List<double> { 0 };
+        public virtual List<Word.Padding> TableFormatDistanceFromSurroundingText => new List<Word.Padding> { new Word.Padding(0, 0, 0, 0) };
+        public virtual List<Word.HorizontalPosition> TableFormatHorizontalPosition => new List<Word.HorizontalPosition> { new Word.HorizontalPosition(Word.HorizontalPositionType.Absolute, Word.HorizontalPositionAnchor.Margin) };
+        public virtual List<Word.VerticalPosition> TableFormatVerticalPosition => new List<Word.VerticalPosition> { new Word.VerticalPosition(0, Word.LengthUnit.Centimeter, Word.VerticalPositionAnchor.Margin) };
+        public virtual List<bool> TableFormatRightToLeft => new List<bool> { false };
+        public virtual List<int> TableFormatRowBandSize => new List<int> { 1 };
 
         // Свойства TableRowFormat
-        public virtual bool TableRowFormatAllowBreakAcrossPages => true;
-        public virtual bool TableRowFormatHidden => false;
+        public virtual List<bool> TableRowFormatAllowBreakAcrossPages => new List<bool> { true };
+        public virtual List<bool> TableRowFormatHidden => new List<bool> { false };
 
         // Свойства TableCellFormat
-        public virtual List<Word.Color> TableCellFormatBackgroundColors => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
+        public virtual List<Word.Color> TableCellFormatBackgroundColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
         public virtual List<Word.BorderStyle> TableCellFormatAvailableBorders => new List<Word.BorderStyle> { Word.BorderStyle.None, Word.BorderStyle.Single };
-        public virtual Word.Tables.TableCellTextDirection TableCellFormatTextDirection => Word.Tables.TableCellTextDirection.LeftToRight;
+        public virtual List<Word.Tables.TableCellTextDirection> TableCellFormatTextDirection => new List<Word.Tables.TableCellTextDirection> { Word.Tables.TableCellTextDirection.LeftToRight };
 
         // Проверка границ
         private bool CheckTableFormatBorder(Word.Tables.Table table)
@@ -58,7 +58,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                     case Word.SingleBorderType.Bottom:
                     case Word.SingleBorderType.Left:
                     case Word.SingleBorderType.Right:
-                        if (table.TableFormat.Borders[borderType].Style != TableFormatOuterBorders) { return false; }
+                        if (!TableFormatOuterBorders.Contains(table.TableFormat.Borders[borderType].Style)) { return false; }
                         break;
 
                     case Word.SingleBorderType.InsideVertical:
@@ -68,7 +68,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
                     case Word.SingleBorderType.DiagonalDown:
                     case Word.SingleBorderType.DiagonalUp:
-                        if (table.TableFormat.Borders[borderType].Style != TableFormatDiagonalBorders) { return false; }
+                        if (!TableFormatDiagonalBorders.Contains(table.TableFormat.Borders[borderType].Style)) { return false; }
                         break;
                 }
             }
@@ -90,7 +90,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         {
             foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
             {
-                if (paragraph.ParagraphFormat.Borders[borderType].Style != BorderStyle)
+                if (!BorderStyle.Contains(paragraph.ParagraphFormat.Borders[borderType].Style))
                 {
                     return false;
                 }
@@ -100,7 +100,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
         private bool CheckWholeParagraphBorder(Word.Paragraph paragraph)
         {
-            if (paragraph.CharacterFormatForParagraphMark.Border != WholeParagraphBorder)
+            if (!WholeParagraphBorder.Contains(paragraph.CharacterFormatForParagraphMark.Border))
             {
                 return false;
             }
@@ -109,7 +109,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
         private bool CheckRunnerBorder(Word.Run runner)
         {
-            if (runner.CharacterFormat.Border != WholeParagraphBorder)
+            if (!WholeParagraphBorder.Contains(runner.CharacterFormat.Border))
             {
                 return false;
             }
@@ -118,52 +118,28 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
         private TableMistake? CheckEmptyLines(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
-            // Проверка, что пустых строк достаточно
+            // Посчитать количество строк до следующего параграфа
             int emptyLinesCount = 1;
-            while ((emptyLinesCount <= EmptyLinesAfter) & (id + emptyLinesCount < classifiedParagraphs.Count))
+            while (id + emptyLinesCount < classifiedParagraphs.Count)
             {
                 int idToCheckEmpty = id + emptyLinesCount;
 
                 Word.Paragraph paragraphToCheckForEmpty;
                 // Если следующий элемент не параграф, то он не пустой
                 try { paragraphToCheckForEmpty = (Word.Paragraph)classifiedParagraphs[idToCheckEmpty].Element; }
-                catch
-                {
-                    return new TableMistake(
-                        row: -1,
-                        column: -1,
-                        message: $"Неверное количество пропущенных параграфов (недостаточно)",
-                        advice: $"ТУТ БУДЕТ СОВЕТ"
-                    );
-                }
+                catch { break; }
 
-                if (GemBoxHelper.GetParagraphContentWithoutNewLine(paragraphToCheckForEmpty) != "")
-                {
-                    return new TableMistake(
-                        row: -1,
-                        column: -1,
-                        message: $"Неверное количество пропущенных параграфов (недостаточно)",
-                        advice: $"ТУТ БУДЕТ СОВЕТ"
-                    );
-                }
+                if (GemBoxHelper.GetParagraphContentWithoutNewLine(paragraphToCheckForEmpty) == "") { break; }
 
                 emptyLinesCount++;
             }
 
-            // Проверка, что пустых строк не слишком много (проверка, что id + emptyLinesCount параграф не пустой)
-            int idToCheckNotEmpty = id + emptyLinesCount;
-
-            Word.Paragraph paragraphToCheckForNotEmpty;
-            // Если следующий элемент не параграф, то он не пустой
-            try { paragraphToCheckForNotEmpty = (Word.Paragraph)classifiedParagraphs[idToCheckNotEmpty].Element; } catch { return null; }
-
-            if (GemBoxHelper.GetParagraphContentWithoutNewLine(paragraphToCheckForNotEmpty) == "")
+            if (!EmptyLinesAfter.Contains(emptyLinesCount - 1))
             {
                 return new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Неверное количество пропущенных параграфов (слишком много)",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное количество пропущенных параграфов"
                 );
             }
 
@@ -176,13 +152,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
             // Проверка Alignment в других методах
 
-            if (!TableFormatBackgroundColors.Contains(table.TableFormat.BackgroundColor))
+            if (!TableFormatBackgroundColor.Contains(table.TableFormat.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Неверный цвет заливки таблицы",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверный цвет заливки таблицы"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -192,96 +167,87 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Ошибка в рамках таблицы",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в рамках таблицы"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (table.TableFormat.ColumnBandSize != TableFormatColumnBandSize)
+            if (!TableFormatColumnBandSize.Contains(table.TableFormat.ColumnBandSize))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Ошибка в объединении столбцов",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в объединении столбцов"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (table.TableFormat.DefaultCellSpacing != TableFormatDefaultCellSpacing)
+            if (!TableFormatDefaultCellSpacing.Contains(table.TableFormat.DefaultCellSpacing))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Ошибка в интервале между ячейками по умолчанию",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в интервале между ячейками по умолчанию"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (table.TableFormat.IndentFromLeft != TableFormatIndentFromLeft)
+            if (!TableFormatIndentFromLeft.Contains(table.TableFormat.IndentFromLeft))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Ошибка в отступе слева",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в отступе слева"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (table.TableFormat.Positioning.DistanceFromSurroundingText != TableFormatDistanceFromSurroundingText)
+            if (!TableFormatDistanceFromSurroundingText.Contains(table.TableFormat.Positioning.DistanceFromSurroundingText))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Ошибка в расстоянии до текста при обтекании",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в расстоянии до текста при обтекании"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (table.TableFormat.Positioning.HorizontalPosition != TableFormatHorizontalPosition)
+            if (!TableFormatHorizontalPosition.Contains(table.TableFormat.Positioning.HorizontalPosition))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Ошибка в горизонтальном положении при обтекании текстом",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в горизонтальном положении при обтекании текстом"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (table.TableFormat.Positioning.VerticalPosition != TableFormatVerticalPosition)
+            if (!TableFormatVerticalPosition.Contains(table.TableFormat.Positioning.VerticalPosition))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Ошибка в вертикальном положении при обтекании текстом",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в вертикальном положении при обтекании текстом"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (table.TableFormat.RightToLeft != TableFormatRightToLeft)
+            if (!TableFormatRightToLeft.Contains(table.TableFormat.RightToLeft))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Ошибка в свойстве 'слева-направо' для таблиц",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в свойстве 'слева-направо' для таблиц"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (table.TableFormat.RowBandSize != TableFormatRowBandSize)
+            if (!TableFormatRowBandSize.Contains(table.TableFormat.RowBandSize))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
                     column: -1,
-                    message: $"Ошибка в объединении строк",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в объединении строк"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -293,24 +259,22 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (tableRow.RowFormat.AllowBreakAcrossPages != TableRowFormatAllowBreakAcrossPages)
+            if (!TableRowFormatAllowBreakAcrossPages.Contains(tableRow.RowFormat.AllowBreakAcrossPages))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: -1,
-                    message: $"Ошибка в свойстве 'Разрешить перенос строк на следующую страницу'",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в свойстве 'Разрешить перенос строк на следующую страницу'"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (tableRow.RowFormat.Hidden != TableRowFormatHidden)
+            if (!TableRowFormatHidden.Contains(tableRow.RowFormat.Hidden))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: -1,
-                    message: $"Ошибка в свойстве 'скрытый'",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в свойстве 'скрытый'"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -322,13 +286,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (!TableCellFormatBackgroundColors.Contains(tableCell.CellFormat.BackgroundColor))
+            if (!TableCellFormatBackgroundColor.Contains(tableCell.CellFormat.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Ошибка в цвете заливки ячейки",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в цвете заливки ячейки"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -338,19 +301,17 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Ошибка в цвете заливки ячейки",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в цвете заливки ячейки"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (tableCell.CellFormat.TextDirection != TableCellFormatTextDirection)
+            if (!TableCellFormatTextDirection.Contains(tableCell.CellFormat.TextDirection))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Ошибка в направлении текста в ячейке",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Ошибка в направлении текста в ячейке"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -362,13 +323,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (!BackgroundColors.Contains(paragraph.ParagraphFormat.BackgroundColor))
+            if (!BackgroundColor.Contains(paragraph.ParagraphFormat.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверный цвет заливки параграфа",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверный цвет заливки параграфа"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -378,19 +338,17 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"У параграфа присутствуют рамки",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"У параграфа присутствуют рамки"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.ParagraphFormat.RightToLeft != RightToLeft)
+            if (!RightToLeft.Contains(paragraph.ParagraphFormat.RightToLeft))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Справа-налево'",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Справа-налево'"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -404,13 +362,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
             if (tableRowIndex == 0)
             {
-                if (paragraph.ParagraphFormat.Alignment != FirstRowAlignment)
+                if (!FirstRowAlignment.Contains(paragraph.ParagraphFormat.Alignment))
                 {
                     TableMistake mistake = new TableMistake(
                         row: tableRowIndex,
                         column: tableCellIndex,
-                        message: $"Ошибка в выравнивании первой строки",
-                        advice: $"ТУТ БУДЕТ СОВЕТ"
+                        message: $"Ошибка в выравнивании первой строки"
                     );
                     tableMistakes.Add(mistake);
                 }
@@ -418,25 +375,23 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
             if ((tableCellIndex == 0) & (tableRowIndex != 0))
             {
-                if (paragraph.ParagraphFormat.Alignment != FirstColumnAlignment)
+                if (!FirstColumnAlignment.Contains(paragraph.ParagraphFormat.Alignment))
                 {
                     TableMistake mistake = new TableMistake(
                         row: tableRowIndex,
                         column: tableCellIndex,
-                        message: $"Ошибка в выравнивании первого столбца",
-                        advice: $"ТУТ БУДЕТ СОВЕТ"
+                        message: $"Ошибка в выравнивании первого столбца"
                     );
                     tableMistakes.Add(mistake);
                 }
             }
 
-            if (!WholeParagraphBackgroundColors.Contains(paragraph.CharacterFormatForParagraphMark.BackgroundColor))
+            if (!WholeParagraphBackgroundColor.Contains(paragraph.CharacterFormatForParagraphMark.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Цвет заливки' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Цвет заливки' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -446,96 +401,87 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"У параграфа присутствуют рамки",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"У параграфа присутствуют рамки"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.DoubleStrikethrough != WholeParagraphDoubleStrikethrough)
+            if (!WholeParagraphDoubleStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.DoubleStrikethrough))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Двойное зачеркивание' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Двойное зачеркивание' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.FontColor != WholeParagraphFontColor)
+            if (!WholeParagraphFontColor.Contains(paragraph.CharacterFormatForParagraphMark.FontColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Цвет шрифта' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Цвет шрифта' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.FontName != WholeParagraphFontName)
+            if (!WholeParagraphFontName.Contains(paragraph.CharacterFormatForParagraphMark.FontName))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Шрифт' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Шрифт' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.Hidden != WholeParagraphHidden)
+            if (!WholeParagraphHidden.Contains(paragraph.CharacterFormatForParagraphMark.Hidden))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Скрытый' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Скрытый' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphHighlightColors.Contains(paragraph.CharacterFormatForParagraphMark.HighlightColor))
+            if (!WholeParagraphHighlightColor.Contains(paragraph.CharacterFormatForParagraphMark.HighlightColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Цвет выделения' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Цвет выделения' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.Kerning != WholeParagraphKerning)
+            if (!WholeParagraphKerning.Contains(paragraph.CharacterFormatForParagraphMark.Kerning))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Кернинг' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Кернинг' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.RightToLeft != WholeParagraphRightToLeft)
+            if (!WholeParagraphRightToLeft.Contains(paragraph.CharacterFormatForParagraphMark.RightToLeft))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Справа-налево' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Справа-налево' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.Scaling != WholeParagraphScaling)
+            if (!WholeParagraphScaling.Contains(paragraph.CharacterFormatForParagraphMark.Scaling))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Масштаб' для всего абзаца",
-                    advice: "ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Масштаб' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -546,8 +492,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Размер шрифта' для всего абзаца (должно быть единообразие)",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Размер шрифта' для всего абзаца (должно быть единообразие)"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -557,8 +502,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Размер шрифта' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Размер шрифта' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -568,46 +512,42 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 WholeParagraphChosenSize = paragraph.CharacterFormatForParagraphMark.Size;
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.Strikethrough != WholeParagraphStrikethrough)
+            if (!WholeParagraphStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.Strikethrough))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Зачеркнутый' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Зачеркнутый' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.Subscript != WholeParagraphSubscript)
+            if (!WholeParagraphSubscript.Contains(paragraph.CharacterFormatForParagraphMark.Subscript))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Подстрочный' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Подстрочный' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.Superscript != WholeParagraphSuperscript)
+            if (!WholeParagraphSuperscript.Contains(paragraph.CharacterFormatForParagraphMark.Superscript))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Надстрочный' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Надстрочный' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (paragraph.CharacterFormatForParagraphMark.UnderlineStyle != WholeParagraphUnderlineStyle)
+            if (!WholeParagraphUnderlineStyle.Contains(paragraph.CharacterFormatForParagraphMark.UnderlineStyle))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Подчеркнутый' для всего абзаца",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Подчеркнутый' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -619,13 +559,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (!RunnerBackgroundColors.Contains(runner.CharacterFormat.BackgroundColor))
+            if (!RunnerBackgroundColor.Contains(runner.CharacterFormat.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Цвет заливки' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Цвет заливки' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -635,96 +574,87 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Границы' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Границы' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (runner.CharacterFormat.DoubleStrikethrough != RunnerDoubleStrikethrough)
+            if (!RunnerStrikethrough.Contains(runner.CharacterFormat.Strikethrough))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Двойное зачеркивание' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Двойное зачеркивание' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (runner.CharacterFormat.FontColor != RunnerFontColor)
+            if (!RunnerFontColor.Contains(runner.CharacterFormat.FontColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Цвет шрифта' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Цвет шрифта' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (runner.CharacterFormat.FontName != RunnerFontName)
+            if (!RunnerFontName.Contains(runner.CharacterFormat.FontName))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Шрифт' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Шрифт' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (runner.CharacterFormat.Hidden != RunnerHidden)
+            if (!RunnerHidden.Contains(runner.CharacterFormat.Hidden))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Скрытый' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Скрытый' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (!RunnerHighlightColors.Contains(runner.CharacterFormat.HighlightColor))
+            if (!RunnerHighlightColor.Contains(runner.CharacterFormat.HighlightColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Цвет выделения' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Цвет выделения' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (runner.CharacterFormat.Kerning != RunnerKerning)
+            if (!RunnerKerning.Contains(runner.CharacterFormat.Kerning))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Кернинг' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Кернинг' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (runner.CharacterFormat.RightToLeft != RunnerRightToLeft)
+            if (!RunnerRightToLeft.Contains(runner.CharacterFormat.RightToLeft))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Справа-налево' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Справа-налево' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (runner.CharacterFormat.Scaling != RunnerScaling)
+            if (!RunnerScaling.Contains(runner.CharacterFormat.Scaling))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Масштаб' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Масштаб' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -735,8 +665,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Размер шрифта' для раннера (должно быть единообразие)",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Размер шрифта' для раннера (должно быть единообразие)"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -746,8 +675,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Размер шрифта' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Размер шрифта' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -757,24 +685,22 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
                 WholeParagraphChosenSize = runner.CharacterFormat.Size;
             }
 
-            if (runner.CharacterFormat.Strikethrough != RunnerStrikethrough)
+            if (!RunnerStrikethrough.Contains(runner.CharacterFormat.Strikethrough))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Зачеркнутый' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Зачеркнутый' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
 
-            if (runner.CharacterFormat.UnderlineStyle != RunnerUnderlineStyle)
+            if (!RunnerUnderlineStyle.Contains(runner.CharacterFormat.UnderlineStyle))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
                     column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Подчеркнутый' для раннера",
-                    advice: $"ТУТ БУДЕТ СОВЕТ"
+                    message: $"Неверное значение свойства 'Подчеркнутый' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }

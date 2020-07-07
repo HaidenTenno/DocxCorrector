@@ -15,8 +15,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public override ParagraphClass ParagraphClass => ParagraphClass.h0;
 
         // Свойства ParagraphFormat
-        public override Word.HorizontalAlignment Alignment => Word.HorizontalAlignment.Center;
-        public override bool KeepLinesTogether => true;
+        public override List<Word.HorizontalAlignment> Alignment => new List<Word.HorizontalAlignment> { Word.HorizontalAlignment.Center };
+        public override List<bool> KeepLinesTogether => new List<bool> { true };
         public override double SpecialIndentationLeftBorder => 0;
         public override double SpecialIndentationRightBorder => 0;
 
@@ -45,8 +45,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             }
 
             return new ParagraphMistake(
-                message: "Запись подписи к рисунку не соответствует ни одному из шаблонов",
-                advice: "ТУТ БУДЕТ СОВЕТ"
+                message: "Запись подписи к рисунку не соответствует ни одному из шаблонов"
             );
         }
 

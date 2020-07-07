@@ -5,7 +5,7 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 {
-    public class Heading1stLevel : Heading
+    public class HeadingFirstLevel : Heading
     {
         //b1
 
@@ -13,21 +13,21 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public override ParagraphClass ParagraphClass => ParagraphClass.b1;
 
         // Свойства ParagraphFormat
-        public override Word.HorizontalAlignment Alignment => Word.HorizontalAlignment.Center;
-        public override bool KeepWithNext => false;
-        public override Word.OutlineLevel OutlineLevel => Word.OutlineLevel.Level1;
-        public override bool PageBreakBefore => true;
+        public override List<Word.HorizontalAlignment> Alignment => new List<Word.HorizontalAlignment> { Word.HorizontalAlignment.Center };
+        public override List<bool> KeepWithNext => new List<bool> { false };
+        public override List<Word.OutlineLevel> OutlineLevel => new List<Word.OutlineLevel> { Word.OutlineLevel.Level1 };
+        public override List<bool> PageBreakBefore => new List<bool> { true };
         public override double SpecialIndentationLeftBorder => 0;
         public override double SpecialIndentationRightBorder => 0;
 
         // Свойства CharacterFormat для всего абзаца
-        public override bool? WholeParagraphAllCaps => true;
-        public override bool WholeParagraphBold => true;
+        public override List<bool> WholeParagraphAllCaps => new List<bool> { true };
+        public override List<bool> WholeParagraphBold => new List<bool> { true };
 
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
-        public override int EmptyLinesAfter => 1;
+        public override List<int> EmptyLinesAfter => new List<int> { 1 };
 
         // Проверка первого симола
         // TODO: Переписать для Enum
@@ -39,8 +39,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if ((firstSymbol != '"') & (!char.IsUpper(firstSymbol)))
             {
                 return new ParagraphMistake(
-                    message: "Параграф должен начинаться с большой буквы",
-                    advice: "ТУТ БУДЕТ СОВЕТ"
+                    message: "Параграф должен начинаться с большой буквы"
                 );
             }
 

@@ -13,8 +13,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 
         // Класс элемента
         public override ParagraphClass ParagraphClass => ParagraphClass.f0;
-        public override bool KeepLinesTogether => true;
-        public override bool KeepWithNext => true;
+        public override List<bool> KeepLinesTogether => new List<bool> { true };
+        public override List<bool> KeepWithNext => new List<bool> { true };
 
         // Свойства ParagraphFormat
 
@@ -42,8 +42,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             }
 
             return new ParagraphMistake(
-                message: "Запись подписи к таблице не соответствует ни одному из шаблонов",
-                advice: "ТУТ БУДЕТ СОВЕТ"
+                message: "Запись подписи к таблице не соответствует ни одному из шаблонов"
             );
         }
 

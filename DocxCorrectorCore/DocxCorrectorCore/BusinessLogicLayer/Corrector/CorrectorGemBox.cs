@@ -87,7 +87,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                         standardParagraph = new ParagraphBeforeEquation();
                         break;
                     case ParagraphClass.b1:
-                        standardParagraph = new Heading1stLevel();
+                        standardParagraph = new HeadingFirstLevel();
                         break;
                     case ParagraphClass.b2:
                     case ParagraphClass.b3:

@@ -14,7 +14,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public override ParagraphClass ParagraphClass => ParagraphClass.c2;
 
         // Свойства ParagraphFormat
-        public override bool KeepLinesTogether => true;
+        public override List<bool> KeepLinesTogether => new List<bool> { true };
 
         // Свойства CharacterFormat для всего абзаца
 
@@ -33,8 +33,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if ((lastSymbol != ':'))
             {
                 return new ParagraphMistake(
-                    message: "Параграф перед списком должен заканчиваться на двоеточие",
-                    advice: "ТУТ БУДЕТ СОВЕТ"
+                    message: "Параграф перед списком должен заканчиваться на двоеточие"
                 );
             }
 

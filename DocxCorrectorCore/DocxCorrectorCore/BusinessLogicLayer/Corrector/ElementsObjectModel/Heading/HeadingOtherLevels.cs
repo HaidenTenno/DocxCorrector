@@ -17,24 +17,24 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         private readonly ParagraphClass paragraphClass;
 
         // Свойства ParagraphFormat
-        public override Word.HorizontalAlignment Alignment => Word.HorizontalAlignment.Left;
-        public override bool KeepWithNext => false;
-        public override bool? NoSpaceBetweenParagraphsOfSameStyle => null;
-        public override Word.OutlineLevel OutlineLevel => ParagraphClass switch
+        public override List<Word.HorizontalAlignment> Alignment => new List<Word.HorizontalAlignment> { Word.HorizontalAlignment.Left };
+        public override List<bool> KeepWithNext => new List<bool> { false };
+        public override List<bool> NoSpaceBetweenParagraphsOfSameStyle => new List<bool> { true, false };
+        public override List<Word.OutlineLevel> OutlineLevel => ParagraphClass switch
         {
-            ParagraphClass.b2 => Word.OutlineLevel.Level2,
-            ParagraphClass.b3 => Word.OutlineLevel.Level3,
-            ParagraphClass.b4 => Word.OutlineLevel.Level4,
+            ParagraphClass.b2 => new List<Word.OutlineLevel> { Word.OutlineLevel.Level2 },
+            ParagraphClass.b3 => new List<Word.OutlineLevel> { Word.OutlineLevel.Level3 },
+            ParagraphClass.b4 => new List<Word.OutlineLevel> { Word.OutlineLevel.Level4 },
             _ => throw new ArgumentException(message: "invalid paragraph class", paramName: nameof(ParagraphClass))
         };
 
         // Свойства CharacterFormat для всего абзаца
-        public override bool WholeParagraphBold => true;
+        public override List<bool> WholeParagraphBold => new List<bool> { true };
 
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
-        public override int EmptyLinesAfter => 1;
+        public override List<int> EmptyLinesAfter => new List<int> { 1 };
 
         public HeadingOtherLevels(ParagraphClass paragraphClass)
         {
@@ -51,8 +51,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if ((firstSymbol != '"') & (!char.IsUpper(firstSymbol)))
             {
                 return new ParagraphMistake(
-                    message: "Параграф должен начинаться с большой буквы",
-                    advice: "ТУТ БУДЕТ СОВЕТ"
+                    message: "Параграф должен начинаться с большой буквы"
                 );
             }
 
