@@ -8,11 +8,10 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
 {
     public class ImageSign : DocumentElement, IRegexSupportable
     {
-        // TODO: Обратить внимание (пока класс h0)
-        //h0
+        //h1
 
         // Класс элемента
-        public override ParagraphClass ParagraphClass => ParagraphClass.h0;
+        public override ParagraphClass ParagraphClass => ParagraphClass.h1;
 
         // Свойства ParagraphFormat
         public override List<Word.HorizontalAlignment> Alignment => new List<Word.HorizontalAlignment> { Word.HorizontalAlignment.Center };

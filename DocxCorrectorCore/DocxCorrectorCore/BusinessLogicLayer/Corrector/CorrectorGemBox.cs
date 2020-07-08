@@ -112,11 +112,13 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                     case ParagraphClass.d6:
                         standardParagraph = new ComplexListLastElement();
                         break;
-                    case ParagraphClass.h0:
+                    case ParagraphClass.h1:
                         standardParagraph = new ImageSign();
                         break;
-                    case ParagraphClass.f0:
-                        standardParagraph = new TableSign();
+                    case ParagraphClass.f1:
+                    case ParagraphClass.f3:
+                    case ParagraphClass.f5:
+                        standardParagraph = new TableSign((ParagraphClass)paragraphClass);
                         break;
                     case ParagraphClass.r0:
                         standardParagraph = new SourcesListElement();

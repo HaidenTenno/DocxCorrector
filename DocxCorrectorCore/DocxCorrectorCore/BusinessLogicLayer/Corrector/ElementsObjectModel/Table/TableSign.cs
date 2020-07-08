@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
@@ -12,7 +13,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         //f0
 
         // Класс элемента
-        public override ParagraphClass ParagraphClass => ParagraphClass.f0;
+        public override ParagraphClass ParagraphClass => paragraphClass;
+        private readonly ParagraphClass paragraphClass;
         public override List<bool> KeepLinesTogether => new List<bool> { true };
         public override List<bool> KeepWithNext => new List<bool> { true };
 
@@ -25,10 +27,18 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         // Особые свойства
 
         // IRegexSupportable
-        public List<Regex> Regexes => new List<Regex>
+        public List<Regex> Regexes => ParagraphClass switch
         {
-            new Regex (@"^Таблица (?>[А-ЕЖИК-НП-ЦШЩЭЮЯ]\.[\d]+|[\d]+(?>\.[\d]+)?)(?> - .*)?")
+            ParagraphClass.f1 => new List<Regex> { new Regex(@"^Таблица (?>[А-ЕЖИК-НП-ЦШЩЭЮЯ]\.[\d]+|[\d]+(?>\.[\d]+)?)(?> - .*)?") },
+            ParagraphClass.f3 => new List<Regex> { new Regex(@"^Таблица (?>[А-ЕЖИК-НП-ЦШЩЭЮЯ]\.[\d]+|[\d]+(?>\.[\d]+)?)(?> - .*)?") },
+            ParagraphClass.f5 => new List<Regex> { new Regex(@"^Таблица (?>[А-ЕЖИК-НП-ЦШЩЭЮЯ]\.[\d]+|[\d]+(?>\.[\d]+)?)(?> - .*)?") },
+            _ => throw new ArgumentException(message: "invalid paragraph class", paramName: nameof(ParagraphClass))
         };
+
+        public TableSign(ParagraphClass paragraphClass)
+        {
+            this.paragraphClass = paragraphClass;
+        }
 
         private ParagraphMistake? CheckRegexMatch(Word.Paragraph paragraph)
         {
