@@ -17,6 +17,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         private readonly ParagraphClass paragraphClass;
         public override List<bool> KeepLinesTogether => new List<bool> { true };
         public override List<bool> KeepWithNext => new List<bool> { true };
+        public override double SpecialIndentationLeftBorder => 0;
+        public override double SpecialIndentationRightBorder => 0;
 
         // Свойства ParagraphFormat
 
