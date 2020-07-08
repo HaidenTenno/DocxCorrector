@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
-using ServiceStack;
+using DocxCorrectorCore.Models.Corrections;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 {
@@ -18,8 +18,27 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         public string? ListFormatNumberFormat { get; }
         public string? ListFormatNumberStyle { get; }
 
-        public override string Content { get; }
+        private string? GetClassIfNeeded(Word.Paragraph paragraph)
+        {
+            string content = GemBoxHelper.GetParagraphContentWithSkippables(paragraph);
+            if (paragraph.ListFormat.IsList) { return ParagraphClass.d2.ToString(); }
 
+            return GetClassIfNeeded(content);
+        }
+
+        private string GetClassIfNeeded(string content)
+        {
+            Dictionary<string, string> keyValues = new Dictionary<string, string>
+            {
+                { GemBoxHelper.SkippableElements[Word.ElementType.Picture], ParagraphClass.g0.ToString() },
+                { GemBoxHelper.SkippableElements[Word.ElementType.Chart], ParagraphClass.g0.ToString() },
+                { GemBoxHelper.SkippableElements[Word.ElementType.Shape], ParagraphClass.g0.ToString() },
+                { GemBoxHelper.SkippableElements[Word.ElementType.Table], ParagraphClass.e0.ToString() },
+                { "!SPACE!", ParagraphClass.n0.ToString() }
+            };
+
+            return keyValues.TryGetValue(content, out var result) ? result : ""; 
+        }
         public ParagraphPropertiesTableZero(int id, Word.Paragraph paragraph) : base(id, paragraph)
         {
             Content = GemBoxHelper.GetParagraphContentWithSkippables(paragraph);
@@ -32,11 +51,14 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
                 ListFormatNumberFormat = paragraph.ListFormat.ListLevelFormat.NumberFormat.ToString();
                 ListFormatNumberStyle = paragraph.ListFormat.ListLevelFormat.NumberStyle.ToString();
             }
+
+            CurElementMark = GetClassIfNeeded(paragraph);
         }
 
         public ParagraphPropertiesTableZero(int id, string content) : base(id, content) 
         {
             Content = content;
+            CurElementMark = GetClassIfNeeded(content);
         }
     }
 }

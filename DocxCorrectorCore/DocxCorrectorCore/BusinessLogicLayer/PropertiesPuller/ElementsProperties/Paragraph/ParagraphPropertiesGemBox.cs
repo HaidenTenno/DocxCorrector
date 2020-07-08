@@ -10,7 +10,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
     public class ParagraphPropertiesGemBox
     {
         public int ID { get; }
-        public virtual string Content { get; }
+        public virtual string Content { get; protected set; }
         public int SpecialSymbolsCount { get; }
         public int WordsCount { get; }
         public int SymbolCount { get; }
@@ -19,7 +19,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         public string? LastSymbolPd { get; }
         public string? FirstKeyWord { get; }
         public string? PrevElementMark { get; }
-        public string? CurElementMark { get; }
+        public string? CurElementMark { get; protected set; }
         public string? NextElementMark { get; }
         public string FullBold { get; }
         public string FullItalic { get; }

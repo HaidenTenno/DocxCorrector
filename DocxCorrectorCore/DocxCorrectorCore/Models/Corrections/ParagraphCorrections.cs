@@ -50,7 +50,7 @@ namespace DocxCorrectorCore.Models.Corrections
         // НЕТ K (приложения)
         // НЕТ M (сноски)
         r0, // Элемент списка литературы
-        // НЕТ N (SPACE)
+        n0, // SPACE
         // НЕТ P (элемент листинга)
     }
 
