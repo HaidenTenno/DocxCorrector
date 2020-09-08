@@ -31,7 +31,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public virtual List<double> SpaceAfter => new List<double> { 0 };
         public virtual List<double> SpaceBefore => new List<double> { 0 };
         public virtual double SpecialIndentationLeftBorder => -36.85;
-        public virtual double SpecialIndentationRightBorder => -35.85;
+        public virtual double SpecialIndentationRightBorder => -34.00;
         public virtual List<bool> WidowControl => new List<bool> { true };
 
         // Свойства CharacterFormat для всего абзаца
