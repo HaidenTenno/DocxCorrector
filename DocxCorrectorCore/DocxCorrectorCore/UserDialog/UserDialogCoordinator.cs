@@ -20,7 +20,8 @@ namespace DocxCorrectorCore.UserDialog
         //ReadPdfGemboxDocument,
         //ReadPdfGemboxPdf,
         TwoCSVs,
-        CheckDocument
+        CheckDocument,
+        FixDocument
     }
 
     public sealed class UserDialogCoordinator
@@ -48,7 +49,8 @@ namespace DocxCorrectorCore.UserDialog
                     //("Чтение pdf документа библиотекой Gembox.Document", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ReadPdfGemboxDocument))),
                     //("Чтение pdf документа библиотекой Gembox.Pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ReadPdfGemboxPdf))),
                     ("Генерация CSV для свойств параграфов (один файл) + CSV для таблицы 0", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.TwoCSVs))),
-                    ("Проверить оформление docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CheckDocument)))
+                    ("Проверить оформление docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CheckDocument))),
+                    ("Получить исправленный вариант docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.FixDocument)))
                 }
             );
             return mainMenu;
@@ -73,6 +75,7 @@ namespace DocxCorrectorCore.UserDialog
                 //QuestionControllerType.ReadPdfGemboxPdf => new ReadPdfGemBoxPdfQuestionController(),
                 QuestionControllerType.TwoCSVs => new TwoCSVsQuestionController(),
                 QuestionControllerType.CheckDocument => new CheckDocumentQuestionController(),
+                QuestionControllerType.FixDocument => new FixDocumentQuestionController(),
                 _ => throw new NotImplementedException()
             };
         }

@@ -5,6 +5,7 @@ using System.IO;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.BusinessLogicLayer.Corrector;
 using DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller;
+using DocxCorrectorCore.BusinessLogicLayer.FixDocument;
 using DocxCorrectorCore.Services.Utilities;
 
 namespace DocxCorrectorCore.App
@@ -251,8 +252,8 @@ namespace DocxCorrectorCore.App
             Console.WriteLine($"Done {Path.GetFileName(filePath)}");
         }
 
-        // Получить список ошибок форматирования для ВСЕГО документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
-        // сохранение результата в по пути resultDirPath
+        // Получить список ошибок форматирования для ВСЕГО документа filePath по требованиям (ГОСТу) rules с учетом классификации paragraphClasses
+        // сохранение результата по пути resultDirPath
         public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClassesFile, string resultPath)
         {
             List<ClassificationResult>? paragraphsClassesList = JSONWorker.DeserializeObjectFromFile<List<ClassificationResult>>(paragraphsClassesFile);
@@ -266,6 +267,25 @@ namespace DocxCorrectorCore.App
             string documentCorrectionsJSON = JSONWorker.MakeJSON(documentCorrections);
             string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.MistakesFileName) : resultPath;
             FileWorker.WriteToFile(resultFilePath, documentCorrectionsJSON);
+        }
+
+        // MARK: НИРМА 2020
+        // Получить варинт документа fileToFix, исправленный согласно требованиям (ГОСТу) rules с учетом классификации paragraphClasses
+        // Сохранение результата по пути resultDirPath
+        public void GenerateFixedDocument(string fileToFix, RulesModel rules, string paragraphsClassesFile, string resultPath)
+        {
+            List<ClassificationResult>? paragraphsClassesList = JSONWorker.DeserializeObjectFromFile<List<ClassificationResult>>(paragraphsClassesFile);
+            if (paragraphsClassesList == null) { return; }
+
+            Console.WriteLine($"Started {Path.GetFileName(fileToFix)}");
+            FixedDocument fixedDocument = new FixedDocument(null, "NOT FIXED YET");
+            string time = TimeCounter.GetExecutionTime(() => { fixedDocument = Corrector.GetFixedDocument(fileToFix, rules, paragraphsClassesList); }, TimeCounter.ResultType.TotalMilliseconds);
+            Console.WriteLine($"{fixedDocument.Info}");
+            Console.WriteLine($"Done {Path.GetFileName(fileToFix)} in {time}");
+
+            string resultFileName = Path.GetFileNameWithoutExtension(fileToFix) + "FIXED.docx";
+            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, resultFileName) : resultPath;
+            FileWorker.SaveFixedDocument(fixedDocument, resultFilePath);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel;
+using DocxCorrectorCore.BusinessLogicLayer.FixDocument;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
@@ -232,6 +233,18 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                 }
                 Console.WriteLine();
             }
+        }
+
+        // MARK: НИРМА 2020
+        public override FixedDocument GetFixedDocument(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return new FixedDocument(null, "FAIL TO OPEN"); }
+
+            // TODO: Model switch
+
+            FixedDocument fixedDocument = new FixedDocument(document, "SUCCESS");
+            return fixedDocument;
         }
     }
 }

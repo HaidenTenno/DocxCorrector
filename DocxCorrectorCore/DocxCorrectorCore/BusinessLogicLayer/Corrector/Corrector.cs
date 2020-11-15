@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using DocxCorrectorCore.Models.Corrections;
+using DocxCorrectorCore.BusinessLogicLayer.FixDocument;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 {
@@ -90,5 +91,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
         // Печать всех абзацев документа filePath
         public abstract void PrintAllParagraphs(string filePath);
+
+        // MARK: НИРМА 2020
+        public abstract FixedDocument GetFixedDocument(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses);
     }
 }
