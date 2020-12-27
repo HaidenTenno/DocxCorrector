@@ -1,6 +1,7 @@
 ﻿using System;
 using Word = GemBox.Document;
 
+// TODO: Remove
 namespace DocxCorrectorCore.BusinessLogicLayer.FixDocument
 {
     public sealed class FixedDocument

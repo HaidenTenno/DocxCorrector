@@ -269,6 +269,7 @@ namespace DocxCorrectorCore.App
             FileWorker.WriteToFile(resultFilePath, documentCorrectionsJSON);
         }
 
+        // TODO: - Remove
         // MARK: НИРМА 2020
         // Получить варинт документа fileToFix, исправленный согласно требованиям (ГОСТу) rules с учетом классификации paragraphClasses
         // Сохранение результата по пути resultDirPath

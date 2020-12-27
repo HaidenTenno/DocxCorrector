@@ -14,68 +14,68 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
         public abstract ParagraphClass ParagraphClass { get; }
 
         // Свойства ParagraphFormat
-        public virtual List<Word.HorizontalAlignment> Alignment => new List<Word.HorizontalAlignment> { Word.HorizontalAlignment.Justify };
-        public virtual List<Word.Color> BackgroundColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
-        public virtual List<Word.BorderStyle> BorderStyle => new List<Word.BorderStyle> { Word.BorderStyle.None };
-        public virtual List<bool> KeepLinesTogether => new List<bool> { false };
-        public virtual List<bool> KeepWithNext => new List<bool> { false };
-        public virtual List<double> LeftIndentation => new List<double> { 0 };
-        public virtual List<double> LineSpacing => new List<double> { 1.5 };
-        public virtual List<Word.LineSpacingRule> LineSpacingRule => new List<Word.LineSpacingRule> { Word.LineSpacingRule.Multiple };
-        public virtual List<bool> MirrorIndents => new List<bool> { false };
-        public virtual List<bool> NoSpaceBetweenParagraphsOfSameStyle => new List<bool> { false };
-        public virtual List<Word.OutlineLevel> OutlineLevel => new List<Word.OutlineLevel> { Word.OutlineLevel.BodyText };
-        public virtual List<bool> PageBreakBefore => new List<bool> { false };
-        public virtual List<double> RightIndentation => new List<double> { 0 };
-        public virtual List<bool> RightToLeft => new List<bool> { false };
-        public virtual List<double> SpaceAfter => new List<double> { 0 };
-        public virtual List<double> SpaceBefore => new List<double> { 0 };
-        public virtual double SpecialIndentationLeftBorder => -36.85;
-        public virtual double SpecialIndentationRightBorder => -34.00;
-        public virtual List<bool> WidowControl => new List<bool> { true };
+        public virtual List<Word.HorizontalAlignment> Alignment => new List<Word.HorizontalAlignment> { Word.HorizontalAlignment.Justify }; // 1
+        public virtual List<Word.Color> BackgroundColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White }; // 2
+        public virtual List<Word.BorderStyle> BorderStyle => new List<Word.BorderStyle> { Word.BorderStyle.None }; // 3
+        public virtual List<bool> KeepLinesTogether => new List<bool> { false }; // 4
+        public virtual List<bool> KeepWithNext => new List<bool> { false }; // 5
+        public virtual List<double> LeftIndentation => new List<double> { 0 }; // 6
+        public virtual List<double> LineSpacing => new List<double> { 1.5 }; // 7
+        public virtual List<Word.LineSpacingRule> LineSpacingRule => new List<Word.LineSpacingRule> { Word.LineSpacingRule.Multiple }; // 8
+        public virtual List<bool> MirrorIndents => new List<bool> { false }; // 9
+        public virtual List<bool> NoSpaceBetweenParagraphsOfSameStyle => new List<bool> { false }; // 10
+        public virtual List<Word.OutlineLevel> OutlineLevel => new List<Word.OutlineLevel> { Word.OutlineLevel.BodyText }; // 11
+        public virtual List<bool> PageBreakBefore => new List<bool> { false }; // 12
+        public virtual List<double> RightIndentation => new List<double> { 0 }; // 13
+        public virtual List<bool> RightToLeft => new List<bool> { false }; // 14
+        public virtual List<double> SpaceAfter => new List<double> { 0 }; // 15
+        public virtual List<double> SpaceBefore => new List<double> { 0 }; // 16
+        public virtual double SpecialIndentationLeftBorder => -36.85; // 17
+        public virtual double SpecialIndentationRightBorder => -34.00; // 17
+        public virtual List<bool> WidowControl => new List<bool> { true }; // 18
 
         // Свойства CharacterFormat для всего абзаца
-        public virtual List<bool> WholeParagraphAllCaps => new List<bool> { false };
-        public virtual List<Word.Color> WholeParagraphBackgroundColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
-        public virtual List<bool> WholeParagraphBold => new List<bool> { false };
-        public virtual List<Word.SingleBorder> WholeParagraphBorder => new List<Word.SingleBorder> { Word.SingleBorder.None };
-        public virtual List<bool> WholeParagraphDoubleStrikethrough => new List<bool> { false };
-        public virtual List<Word.Color> WholeParagraphFontColor => new List<Word.Color> { Word.Color.Black };
-        public virtual List<string> WholeParagraphFontName => new List<string> { "Times New Roman" };
-        public virtual List<bool> WholeParagraphHidden => new List<bool> { false };
-        public virtual List<Word.Color> WholeParagraphHighlightColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
-        public virtual List<bool> WholeParagraphItalic => new List<bool> { false };
-        public virtual List<double> WholeParagraphKerning => new List<double> { 0 };
-        public virtual List<double> WholeParagraphPosition => new List<double> { 0 };
-        public virtual List<bool> WholeParagraphRightToLeft => new List<bool> { false };
-        public virtual List<int> WholeParagraphScaling => new List<int> { 100 };
-        public virtual double WholeParagraphSizeLeftBorder => 13.5;
-        public virtual double WholeParagraphSizeRightBorder => 14.5;
-        public static double? WholeParagraphChosenSize { get; protected set; } = null;
-        public virtual List<bool> WholeParagraphSmallCaps => new List<bool> { false };
-        public virtual List<double> WholeParagraphSpacing => new List<double> { 0 };
-        public virtual List<bool> WholeParagraphStrikethrough => new List<bool> { false };
-        public virtual List<bool> WholeParagraphSubscript => new List<bool> { false };
-        public virtual List<bool> WholeParagraphSuperscript => new List<bool> { false };
-        public virtual List<Word.UnderlineType> WholeParagraphUnderlineStyle => new List<Word.UnderlineType> { Word.UnderlineType.None };
+        public virtual List<bool> WholeParagraphAllCaps => new List<bool> { false }; // 19
+        public virtual List<Word.Color> WholeParagraphBackgroundColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White }; // 20
+        public virtual List<bool> WholeParagraphBold => new List<bool> { false }; // 21
+        public virtual List<Word.SingleBorder> WholeParagraphBorder => new List<Word.SingleBorder> { Word.SingleBorder.None }; // 22
+        public virtual List<bool> WholeParagraphDoubleStrikethrough => new List<bool> { false }; // 23
+        public virtual List<Word.Color> WholeParagraphFontColor => new List<Word.Color> { Word.Color.Black }; // 24
+        public virtual List<string> WholeParagraphFontName => new List<string> { "Times New Roman" }; // 25
+        public virtual List<bool> WholeParagraphHidden => new List<bool> { false }; // 26
+        public virtual List<Word.Color> WholeParagraphHighlightColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White }; // 27
+        public virtual List<bool> WholeParagraphItalic => new List<bool> { false }; // 28
+        public virtual List<double> WholeParagraphKerning => new List<double> { 0 }; // 29
+        public virtual List<double> WholeParagraphPosition => new List<double> { 0 }; // 30
+        public virtual List<bool> WholeParagraphRightToLeft => new List<bool> { false }; // 31
+        public virtual List<int> WholeParagraphScaling => new List<int> { 100 }; // 32
+        public virtual double WholeParagraphSizeLeftBorder => 13.5; // 33 
+        public virtual double WholeParagraphSizeRightBorder => 14.5; // 33
+        public static double? WholeParagraphChosenSize { get; protected set; } = null; // 33
+        public virtual List<bool> WholeParagraphSmallCaps => new List<bool> { false }; // 34
+        public virtual List<double> WholeParagraphSpacing => new List<double> { 0 }; // 35
+        public virtual List<bool> WholeParagraphStrikethrough => new List<bool> { false }; // 36
+        public virtual List<bool> WholeParagraphSubscript => new List<bool> { false }; // 37
+        public virtual List<bool> WholeParagraphSuperscript => new List<bool> { false }; // 38
+        public virtual List<Word.UnderlineType> WholeParagraphUnderlineStyle => new List<Word.UnderlineType> { Word.UnderlineType.None }; // 39
 
         // Свойства CharacterFormat для раннеров
-        public virtual List<Word.Color> RunnerBackgroundColor => WholeParagraphBackgroundColor;
-        public virtual List<Word.SingleBorder> RunnerBorder => WholeParagraphBorder;
-        public virtual List<bool> RunnerDoubleStrikethrough => WholeParagraphDoubleStrikethrough;
-        public virtual List<Word.Color> RunnerFontColor => WholeParagraphFontColor;
-        public virtual List<string> RunnerFontName => WholeParagraphFontName;
-        public virtual List<bool> RunnerHidden => WholeParagraphHidden;
-        public virtual List<Word.Color> RunnerHighlightColor => WholeParagraphHighlightColor;
-        public virtual List<double> RunnerKerning => WholeParagraphKerning;
-        public virtual List<double> RunnerPosition => WholeParagraphPosition;
-        public virtual List<bool> RunnerRightToLeft => WholeParagraphRightToLeft;
-        public virtual List<int> RunnerScaling => WholeParagraphScaling;
-        public virtual double RunnerSizeLeftBorder => WholeParagraphSizeLeftBorder;
-        public virtual double RunnerSizeRightBorder => WholeParagraphSizeRightBorder;
-        public virtual List<double> RunnerSpacing => WholeParagraphSpacing;
-        public virtual List<bool> RunnerStrikethrough => WholeParagraphStrikethrough;
-        public virtual List<Word.UnderlineType> RunnerUnderlineStyle => WholeParagraphUnderlineStyle;
+        public virtual List<Word.Color> RunnerBackgroundColor => WholeParagraphBackgroundColor; // 40
+        public virtual List<Word.SingleBorder> RunnerBorder => WholeParagraphBorder; // 41
+        public virtual List<bool> RunnerDoubleStrikethrough => WholeParagraphDoubleStrikethrough; // 42
+        public virtual List<Word.Color> RunnerFontColor => WholeParagraphFontColor; // 43
+        public virtual List<string> RunnerFontName => WholeParagraphFontName; // 44
+        public virtual List<bool> RunnerHidden => WholeParagraphHidden; // 45
+        public virtual List<Word.Color> RunnerHighlightColor => WholeParagraphHighlightColor; // 46
+        public virtual List<double> RunnerKerning => WholeParagraphKerning; // 47
+        public virtual List<double> RunnerPosition => WholeParagraphPosition; // 48
+        public virtual List<bool> RunnerRightToLeft => WholeParagraphRightToLeft; // 49
+        public virtual List<int> RunnerScaling => WholeParagraphScaling; // 50
+        public virtual double RunnerSizeLeftBorder => WholeParagraphSizeLeftBorder; // 51
+        public virtual double RunnerSizeRightBorder => WholeParagraphSizeRightBorder; // 51
+        public virtual List<double> RunnerSpacing => WholeParagraphSpacing; // 52
+        public virtual List<bool> RunnerStrikethrough => WholeParagraphStrikethrough; // 53
+        public virtual List<Word.UnderlineType> RunnerUnderlineStyle => WholeParagraphUnderlineStyle; // 54
 
         // Количество пустых строк (отбивок, SPACE, n0) после параграфа
         public virtual List<int> EmptyLinesAfter => new List<int> { 0 };
@@ -118,7 +118,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if (!Alignment.Contains(paragraph.ParagraphFormat.Alignment))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное выравнивание"
+                    message: $"Неверное выравнивание",
+                    advice: AdviceCreator.ParagraphAligment(Alignment)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -126,7 +127,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if (!BackgroundColor.Contains(paragraph.ParagraphFormat.BackgroundColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверный цвет заливки параграфа"
+                    message: $"Неверный цвет заливки параграфа",
+                    advice: AdviceCreator.BackgroundColor(BackgroundColor)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -134,7 +136,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if (!CheckParagraphFormatBorder(paragraph))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"У параграфа присутствуют рамки"
+                    message: $"У параграфа присутствуют рамки",
+                    advice: AdviceCreator.BorderStyle(BorderStyle)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -142,7 +145,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if (!KeepLinesTogether.Contains(paragraph.ParagraphFormat.KeepLinesTogether))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Не разрывать абзац'"
+                    message: $"Неверное значение свойства 'Не разрывать абзац'",
+                    advice: AdviceCreator.KeepLineTogether(KeepLinesTogether)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -150,7 +154,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if (!KeepWithNext.Contains(paragraph.ParagraphFormat.KeepWithNext))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Не отрывать от следующего'"
+                    message: $"Неверное значение свойства 'Не отрывать от следующего'",
+                    advice: AdviceCreator.KeepWithNext(KeepWithNext)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -158,7 +163,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if (!LeftIndentation.Contains(paragraph.ParagraphFormat.LeftIndentation))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение отступа слева"
+                    message: $"Неверное значение отступа слева",
+                    advice: AdviceCreator.LeftIdentation(LeftIndentation)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -166,19 +172,13 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             if (!LineSpacing.Contains(paragraph.ParagraphFormat.LineSpacing))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение междустрочного интервала"
+                    message: $"Неверное значение междустрочного интервала",
+                    advice: AdviceCreator.LineSpacing(LineSpacing)
                 );
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!LineSpacingRule.Contains(paragraph.ParagraphFormat.LineSpacingRule))
-            {
-                ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение типа междустрочного интервала"
-                );
-                paragraphMistakes.Add(mistake);
-            }
-
+            // TODO: Продолжить советы
             if (!MirrorIndents.Contains(paragraph.ParagraphFormat.MirrorIndents))
             {
                 ParagraphMistake mistake = new ParagraphMistake(

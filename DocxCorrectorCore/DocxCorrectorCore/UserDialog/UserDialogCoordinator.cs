@@ -35,22 +35,22 @@ namespace DocxCorrectorCore.UserDialog
             IntAnswerQuestionController mainMenu = new IntAnswerQuestionController(
                 actions: new List<(string info, Action action)>()
                 {
-                    ("Печать всех параграфов в консоль", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.Print))),
+                    //("Печать всех параграфов в консоль", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.Print))),
                     ("Информация о структуре документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.StructureInfo))),
-                    ("Информация о содержании документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.TableOfContentsInfo))),
+                    //("Информация о содержании документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.TableOfContentsInfo))),
                     //("Печать свойства странц в файл", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.PageProperties))),
-                    ("Печать свойства секций в файл", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.SectionProperties))),
-                    ("Печать свойств верхних / нижних колонтитулов", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.HeadersFooters))),
+                    //("Печать свойства секций в файл", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.SectionProperties))),
+                    //("Печать свойств верхних / нижних колонтитулов", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.HeadersFooters))),
                     ("Генерация CSV для свойств параграфов (один файл)", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ParagraphPropertiesForFile))),
                     ("Генерация CSV для свойств параграфов (для директории)", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ParagraphProperties))),
-                    ("Тестирование скорости синхронных/асинхронных методов при вытягивании свойств параграфов", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.TestPropertiesPullingSpeed))),
+                    //("Тестирование скорости синхронных/асинхронных методов при вытягивании свойств параграфов", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.TestPropertiesPullingSpeed))),
                     //("Сохранение документа как pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.SaveDocumentAsPdf))),
                     //("Сохранение каждой страницы документа отдельным pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.SavePagesAsPdf))),
                     //("Чтение pdf документа библиотекой Gembox.Document", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ReadPdfGemboxDocument))),
                     //("Чтение pdf документа библиотекой Gembox.Pdf", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ReadPdfGemboxPdf))),
                     ("Генерация CSV для свойств параграфов (один файл) + CSV для таблицы 0", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.TwoCSVs))),
                     ("Проверить оформление docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CheckDocument))),
-                    ("Получить исправленный вариант docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.FixDocument)))
+                    //("Получить исправленный вариант docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.FixDocument)))
                 }
             );
             return mainMenu;
