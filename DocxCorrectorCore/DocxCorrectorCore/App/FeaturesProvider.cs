@@ -5,7 +5,6 @@ using System.IO;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.BusinessLogicLayer.Corrector;
 using DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller;
-using DocxCorrectorCore.BusinessLogicLayer.FixDocument;
 using DocxCorrectorCore.Services.Utilities;
 
 namespace DocxCorrectorCore.App
@@ -253,7 +252,7 @@ namespace DocxCorrectorCore.App
         }
 
         // Получить список ошибок форматирования для ВСЕГО документа filePath по требованиям (ГОСТу) rules с учетом классификации paragraphClasses
-        // сохранение результата по пути resultDirPath
+        // Сохранение результата по пути resultDirPath
         public void GenerateMistakesJSON(string fileToCorrect, RulesModel rules, string paragraphsClassesFile, string resultPath)
         {
             List<ClassificationResult>? paragraphsClassesList = JSONWorker.DeserializeObjectFromFile<List<ClassificationResult>>(paragraphsClassesFile);
@@ -269,24 +268,32 @@ namespace DocxCorrectorCore.App
             FileWorker.WriteToFile(resultFilePath, documentCorrectionsJSON);
         }
 
-        // TODO: - Remove
-        // MARK: НИРМА 2020
-        // Получить варинт документа fileToFix, исправленный согласно требованиям (ГОСТу) rules с учетом классификации paragraphClasses
-        // Сохранение результата по пути resultDirPath
-        public void GenerateFixedDocument(string fileToFix, RulesModel rules, string paragraphsClassesFile, string resultPath)
+        // MARK: НИРМА 2020-2021
+        // Получить файл, содержащий свойства параграфов документа filePath + проставить там возможные классы из файла с пресетами presetsPath
+        // Сохранение результата по пути resultPath
+        public void GenerateCSVWithPresetsInfo(string filePath, string presetsPath, string resultPath, bool silent = false)
         {
-            List<ClassificationResult>? paragraphsClassesList = JSONWorker.DeserializeObjectFromFile<List<ClassificationResult>>(paragraphsClassesFile);
-            if (paragraphsClassesList == null) { return; }
+            Console.WriteLine("GenerateCSVWithPresetsInfo");
+            //if (!silent) { Console.WriteLine($"Started {Path.GetFileName(filePath)}"); }
+            //List<ParagraphPropertiesTableZero> propertiesForFile = new List<ParagraphPropertiesTableZero>();
+            //string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsPropertiesForTableZero(filePath: filePath); }, TimeCounter.ResultType.TotalMilliseconds);
+            //if (!silent) { Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}"); }
+            //string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesForTableZeroFileName) : resultPath;
+            //FileWorker.FillCSV(resultFilePath, propertiesForFile);
+        }
 
-            Console.WriteLine($"Started {Path.GetFileName(fileToFix)}");
-            FixedDocument fixedDocument = new FixedDocument(null, "NOT FIXED YET");
-            string time = TimeCounter.GetExecutionTime(() => { fixedDocument = Corrector.GetFixedDocument(fileToFix, rules, paragraphsClassesList); }, TimeCounter.ResultType.TotalMilliseconds);
-            Console.WriteLine($"{fixedDocument.Info}");
-            Console.WriteLine($"Done {Path.GetFileName(fileToFix)} in {time}");
+        // Получить список ошибок форматирования одного абзаца документа fileToCorrect по требованиям (ГОСТу) rules (номер абзаца paragraphID, класс абзаца chosenClass)
+        // Сохранение результата по пути resultDirPath
+        public void GenerateFormattingMistakesJSON(string fileToCorrect, RulesModel rules, int paragraphID, ParagraphClass paragraphClass, string resultPath)
+        {
+            Console.WriteLine("GenerateFormattingMistakesJSON");
+        }
 
-            string resultFileName = Path.GetFileNameWithoutExtension(fileToFix) + "FIXED.docx";
-            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, resultFileName) : resultPath;
-            FileWorker.SaveFixedDocument(fixedDocument, resultFilePath);
+        // Получить файл, содержащий правила оформления класса paragraphClass для требований (ГОСТа) rules)
+        // Сохранение результата по пути resultPath
+        public void GenerateModelJSON(RulesModel rules, ParagraphClass paragraphClass, string resultPath)
+        {
+            Console.WriteLine("GenerateModelJSON");
         }
     }
 }

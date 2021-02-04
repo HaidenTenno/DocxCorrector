@@ -7,7 +7,7 @@ namespace DocxCorrectorCore.UserDialog
     public sealed class HeadersFootersPropertiesJSONQuestionController : StringAnswerQuestionController
     {
         // Public
-        public HeadersFootersPropertiesJSONQuestionController() : base("Введите: \nТип колонтитулов (0: верхний, 1: нижний) \nПуть к документу \nПуть к директории для сохранения JSON файла со свойствами колонтитулов") { }
+        public HeadersFootersPropertiesJSONQuestionController() : base("Введите: \nТип колонтитулов (0: верхний, 1: нижний), \nПуть к документу, \nПуть к директории для сохранения JSON файла со свойствами колонтитулов") { }
 
         public override void Load()
         {

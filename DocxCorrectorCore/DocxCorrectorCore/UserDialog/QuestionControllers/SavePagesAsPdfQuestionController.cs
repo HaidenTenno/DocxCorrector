@@ -5,7 +5,7 @@ namespace DocxCorrectorCore.UserDialog
     public sealed class SavePagesAsPdfQuestionController : StringAnswerQuestionController
     {
         // Public
-        public SavePagesAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf \nПуть к директории для сохранения результата") { }
+        public SavePagesAsPdfQuestionController() : base("Введите: \nПуть к docx файлу, который необходимо сохранить как pdf, \nПуть к директории для сохранения результата") { }
 
         public override void Load()
         {

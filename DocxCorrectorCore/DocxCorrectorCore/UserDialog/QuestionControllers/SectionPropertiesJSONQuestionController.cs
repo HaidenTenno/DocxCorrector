@@ -5,7 +5,7 @@ namespace DocxCorrectorCore.UserDialog
     public sealed class SectionPropertiesJSONQuestionController : StringAnswerQuestionController
     {
         // Public
-        public SectionPropertiesJSONQuestionController() : base("Введите: \nПуть к документу \nПуть к директории для сохранения JSON файла со свойствами секций") { }
+        public SectionPropertiesJSONQuestionController() : base("Введите: \nПуть к документу, \nПуть к директории для сохранения JSON файла со свойствами секций") { }
 
         public override void Load()
         {

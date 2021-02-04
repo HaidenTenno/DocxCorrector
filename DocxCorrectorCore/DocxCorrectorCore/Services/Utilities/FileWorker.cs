@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using DocxCorrectorCore.BusinessLogicLayer.FixDocument;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
 using ServiceStack.Text;
@@ -60,15 +58,5 @@ namespace DocxCorrectorCore.Services.Utilities
                 pageNumber++;
             }
         }
-
-        // Сохранить документ fixedDocument по пути filePath
-        public static void SaveFixedDocument(FixedDocument fixedDocument, string filePath)
-        {
-            Word.DocumentModel? document = fixedDocument.Document;
-            if (document == null) { return; }
-
-            document.Save(filePath);
-        }
-
     }
 }

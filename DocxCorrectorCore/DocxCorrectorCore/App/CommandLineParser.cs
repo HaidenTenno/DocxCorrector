@@ -28,6 +28,24 @@ namespace DocxCorrectorCore.App
             featuresProvider.GenerateParagraphsPropertiesForAllTables(fileToAnalyse, resultPath1, resultPath2);
         }
 
+        private static void PullWithPresets(string fileToAnalyse, string presetsFile, string resultPath)
+        {
+            FeaturesProvider featuresProvider = new FeaturesProvider();
+            featuresProvider.GenerateCSVWithPresetsInfo(fileToAnalyse, presetsFile, resultPath);
+        }
+
+        private static void CorrectParagraph(string fileToCorrect, RulesModel rules, int paragraphID, ParagraphClass paragraphClass, string resultPath)
+        {
+            FeaturesProvider featuresProvider = new FeaturesProvider();
+            featuresProvider.GenerateFormattingMistakesJSON(fileToCorrect, rules, paragraphID, paragraphClass, resultPath);
+        }
+
+        private static void CreateModelFile(RulesModel rules, ParagraphClass paragraphClass, string resultPath)
+        {
+            FeaturesProvider featuresProvider = new FeaturesProvider();
+            featuresProvider.GenerateModelJSON(rules, paragraphClass, resultPath);
+        }
+
         private static Command SetupCorrectCommand()
         {
             var correctCommand = new Command(name: "correct", description: "Analyze the document for formatting errors using the selected rules and class list and save the result");
@@ -61,7 +79,7 @@ namespace DocxCorrectorCore.App
 
             //fileToAnalyse
             var fileToAnalyseArg = new Argument<string>("file-to-analyse");
-            fileToAnalyseArg.Description = "Path to ther file for analysis";
+            fileToAnalyseArg.Description = "Path to the file for analysis";
             pullPropertiesCommand.AddArgument(fileToAnalyseArg);
             //resultPath1
             var resultPath1Arg = new Argument<string>("result-path1", getDefaultValue: () => Directory.GetCurrentDirectory());
@@ -88,6 +106,85 @@ namespace DocxCorrectorCore.App
             return goInteractiveCommand;
         }
 
+        private static Command SetupPullWithPresetsCommand()
+        {
+            var pullWithPresetsCommand = new Command(name: "pullWithPresets", description: "Pull out the properties of document paragraphs, try to classify the paragarps using presets, save result in csv");
+
+            //fileToAnalyse
+            var fileToAnalyseArg = new Argument<string>("file-to-analyse");
+            fileToAnalyseArg.Description = "Path to the file for analysis";
+            pullWithPresetsCommand.AddArgument(fileToAnalyseArg);
+            //presetsFile
+            var presetsFileArg = new Argument<string>("presets-file");
+            presetsFileArg.Description = "Path to the file with presets info";
+            pullWithPresetsCommand.AddArgument(presetsFileArg);
+            //retultPath
+            var resultPathArg = new Argument<string>("result-path", getDefaultValue: () => Directory.GetCurrentDirectory());
+            resultPathArg.Description = "File or directory path to save the result";
+            pullWithPresetsCommand.AddArgument(resultPathArg);
+
+            //handler
+            pullWithPresetsCommand.Handler = CommandHandler.Create<string, string, string>(PullWithPresets);
+
+            return pullWithPresetsCommand;
+        }
+
+        //CorrectParagraph(string fileToCorrect, RulesModel rules, int paragraphID, ParagraphClass paragraphClass, string resultPath)
+        private static Command SetupCorrectParagraphCommand()
+        {
+            var correctParagraphCommand = new Command(name: "correctParagraph", description: "Analyze the paragraph of the document for formatting errors using the selected rules and save the result");
+
+            //fileToCorrect
+            var fileToCorrectArg = new Argument<string>("file-to-correct");
+            fileToCorrectArg.Description = "Path to the file for analysis";
+            correctParagraphCommand.AddArgument(fileToCorrectArg);
+            //rules
+            var rulesArg = new Argument<RulesModel>("rules");
+            rulesArg.Description = "Rules for verification (GOST or ITMO requirements)";
+            correctParagraphCommand.AddArgument(rulesArg);
+            //paragraphID
+            var paragraphIDArg = new Argument<int>("paragraph-id");
+            paragraphIDArg.Description = "Paragraph number in the document";
+            correctParagraphCommand.AddArgument(paragraphIDArg);
+            //paragraphClass
+            var paragraphClassArg = new Argument<ParagraphClass>("paragraph-class");
+            paragraphClassArg.Description = "Class of the selected paragraph";
+            correctParagraphCommand.AddArgument(paragraphClassArg);
+            //resultPath
+            var resultPathArg = new Argument<string>("result-path", getDefaultValue: () => Directory.GetCurrentDirectory());
+            resultPathArg.Description = "File or directory path to save the result";
+            correctParagraphCommand.AddArgument(resultPathArg);
+
+            //handler
+            correctParagraphCommand.Handler = CommandHandler.Create<string, RulesModel, int, ParagraphClass, string>(CorrectParagraph);
+
+            return correctParagraphCommand;
+        }
+
+        //CreateModelFile(RulesModel rules, ParagraphClass paragraphClass, string resultPath)
+        private static Command SetupCreateModelFileCommand()
+        {
+            var createModelFileCommand = new Command(name: "createModelFile", description: "Get the file that contains the rules for paragraphs of a certain class for the selected requirements");
+
+            //rules
+            var rulesArg = new Argument<RulesModel>("rules");
+            rulesArg.Description = "Rules for verification (GOST or ITMO requirements)";
+            createModelFileCommand.AddArgument(rulesArg);
+            //paragraphClass
+            var paragraphClassArg = new Argument<ParagraphClass>("paragraph-class");
+            paragraphClassArg.Description = "Class of the selected paragraph";
+            createModelFileCommand.AddArgument(paragraphClassArg);
+            //resultPath
+            var resultPathArg = new Argument<string>("result-path", getDefaultValue: () => Directory.GetCurrentDirectory());
+            resultPathArg.Description = "File or directory path to save the result";
+            createModelFileCommand.AddArgument(resultPathArg);
+
+            //handler
+            createModelFileCommand.Handler = CommandHandler.Create<RulesModel, ParagraphClass, string>(CreateModelFile);
+
+            return createModelFileCommand;
+        }
+
         private static RootCommand SetupRootCommand()
         {
             var rootCommand = new RootCommand();
@@ -103,6 +200,18 @@ namespace DocxCorrectorCore.App
             // Interactive
             var goInteractiveCommand = SetupInteractiveCommand();
             rootCommand.AddCommand(goInteractiveCommand);
+
+            // Pull with presets
+            var pullWithPresetsCommand = SetupPullWithPresetsCommand();
+            rootCommand.AddCommand(pullWithPresetsCommand);
+
+            // Correct paragraph
+            var correctParagraphCommand = SetupCorrectParagraphCommand();
+            rootCommand.AddCommand(correctParagraphCommand);
+
+            // Create model file
+            var createModelFileCommand = SetupCreateModelFileCommand();
+            rootCommand.AddCommand(createModelFileCommand);
 
             return rootCommand;
         }

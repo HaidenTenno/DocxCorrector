@@ -5,7 +5,7 @@ namespace DocxCorrectorCore.UserDialog
     public sealed class PagePropertiesJSONQuestionController : StringAnswerQuestionController
     {
         // Public
-        public PagePropertiesJSONQuestionController() : base("Введите: \nПуть к документу \nПуть к директории для сохранения JSON файла со свойствами страниц") { }
+        public PagePropertiesJSONQuestionController() : base("Введите: \nПуть к документу, \nПуть к директории для сохранения JSON файла со свойствами страниц") { }
 
         public override void Load()
         {

@@ -5,7 +5,7 @@ namespace DocxCorrectorCore.UserDialog
     public sealed class TwoCSVsQuestionController : StringAnswerQuestionController
     {
         // Public
-        public TwoCSVsQuestionController() : base("Введите: \nПуть к документу \nПуть к файлу или директории для сохранения CSV файла со свойствами параграфов \nПуть к файлу или директории для сохранения CSV файла со свойствами параграфов (для таблицы 0)") { }
+        public TwoCSVsQuestionController() : base("Введите: \nПуть к документу, \nПуть к файлу с информацией из пресетов, \nПуть к файлу или директории для сохранения результата") { }
 
         public override void Load()
         {
@@ -20,4 +20,3 @@ namespace DocxCorrectorCore.UserDialog
         }
     }
 }
-
