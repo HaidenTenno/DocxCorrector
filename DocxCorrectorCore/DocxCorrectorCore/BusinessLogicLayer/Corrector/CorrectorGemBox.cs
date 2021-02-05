@@ -235,15 +235,62 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // MARK: НИРМА 2020-2021
-        //public override FixedDocument GetFixedDocument(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses)
-        //{
-        //    Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
-        //    if (document == null) { return new FixedDocument(null, "FAIL TO OPEN"); }
+        // Получить список ошибок форматирования одного абзаца под номером paragraphID документа filePath по требованиям (ГОСТу) rulesModel с учетом класса paragraphClass
+        public override ParagraphCorrections? GetSingleParagraphCorrections(string filePath, RulesModel rulesModel, int paragraphID, ParagraphClass paragraphClass)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return null; }
 
-        //    // TODO: Model switch
+            if (paragraphID < 0) { Console.WriteLine("Paragraph ID must be a non-negative number"); return null; }
 
-        //    FixedDocument fixedDocument = new FixedDocument(document, "SUCCESS");
-        //    return fixedDocument;
-        //}
+            // Модель
+            GlobalDocumentModel model = ModelSwitcher.GetSelectedModel(rulesModel);
+
+            // Берем все параграфы (это абзацы и таблицы)
+            List<Word.Element> elements = new List<Word.Element>();
+            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
+            {
+                foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
+                {
+                    elements.Add(element);
+                }
+            }
+
+            if (paragraphID >= elements.Count) { Console.WriteLine("The paragraph with the given id is not found"); return null; }
+
+            // ПРОВЕРКА НАЧИНАЕТСЯ
+            ParagraphCorrections? singleParagraphCorrections = null;
+            DocumentElement? standardParagraph = model.ParagraphFormattingModel.GetDocumentElementFromClass(paragraphClass);
+            Word.Element selectedElement = elements[paragraphID];
+
+            // Проверка, что класс параграфа поддерживается
+            if (standardParagraph == null)
+            {
+                Console.WriteLine($"Class {paragraphClass} is not supported right now");
+                return ParagraphCorrections.NotSupportedParagraphCorrection(paragraphID, paragraphClass, GemBoxHelper.GetParagraphPrefix(selectedElement, 20));
+            }
+
+            // Получить нужный GemBox класс текущего параграфа
+            if (selectedElement is Word.Tables.Table) 
+            {
+                 // TODO: СПРОСИТЬ
+            }
+            else
+            {
+                if (selectedElement is Word.Paragraph paragraph) 
+                {
+                    singleParagraphCorrections = standardParagraph.CheckSingleParagraphFormatting(paragraphID, paragraph);
+                }
+            }
+
+            return singleParagraphCorrections;
+        }
+
+        // Получить модуль правил оформления класса paragraphClass для требований (ГОСТа) rules
+        // TODO: Продумать модель
+        public override string GetClassModel(RulesModel rules, ParagraphClass paragraphClass)
+        {
+            return "MODEL";
+        }
     }
 }

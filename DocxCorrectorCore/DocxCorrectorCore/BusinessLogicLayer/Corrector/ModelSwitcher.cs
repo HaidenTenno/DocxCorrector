@@ -1,11 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel;
+using DocxCorrectorCore.Models.Corrections;
+using DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel.GOST_7_32;
+using DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel.ITMO;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 {
-    public class ModelSwitcher
+    internal static class ModelSwitcher
     {
+        internal static GlobalDocumentModel GetSelectedModel(RulesModel rules)
+        {
+            return rules switch
+            {
+                RulesModel.GOST => new DocumentModelGOST_7_32(),
+                RulesModel.ITMO => new DocumentModelITMO(),
+                _ => throw new NotImplementedException()
+            };
+        }
     }
 }

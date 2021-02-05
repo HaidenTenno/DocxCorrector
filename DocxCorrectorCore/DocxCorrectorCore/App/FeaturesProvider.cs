@@ -273,23 +273,30 @@ namespace DocxCorrectorCore.App
         // Сохранение результата по пути resultPath
         public void GenerateCSVWithPresetsInfo(string filePath, string presetsPath, string resultPath, bool silent = false)
         {
-            Console.WriteLine("GenerateCSVWithPresetsInfo");
-            //if (!silent) { Console.WriteLine($"Started {Path.GetFileName(filePath)}"); }
-            //List<ParagraphPropertiesTableZero> propertiesForFile = new List<ParagraphPropertiesTableZero>();
-            //string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsPropertiesForTableZero(filePath: filePath); }, TimeCounter.ResultType.TotalMilliseconds);
-            //if (!silent) { Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}"); }
-            //string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesForTableZeroFileName) : resultPath;
-            //FileWorker.FillCSV(resultFilePath, propertiesForFile);
+            if (!silent) { Console.WriteLine($"Started {Path.GetFileName(filePath)}"); }
+            List<ParagraphPropertiesWithPresets> propertiesForFile = new List<ParagraphPropertiesWithPresets>();
+            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphPropertiesWithPresets(filePath, presetsPath); }, TimeCounter.ResultType.TotalMilliseconds);
+            if (!silent) { Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}"); }
+
+            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesForTableZeroFileName) : resultPath;
+            FileWorker.FillCSV(resultFilePath, propertiesForFile);
         }
 
         // Получить список ошибок форматирования одного абзаца документа fileToCorrect по требованиям (ГОСТу) rules (номер абзаца paragraphID, класс абзаца chosenClass)
         // Сохранение результата по пути resultDirPath
         public void GenerateFormattingMistakesJSON(string fileToCorrect, RulesModel rules, int paragraphID, ParagraphClass paragraphClass, string resultPath)
         {
-            Console.WriteLine("GenerateFormattingMistakesJSON");
+            Console.WriteLine($"Started {Path.GetFileName(fileToCorrect)}");
+            ParagraphCorrections? paragraphCorrections = null;
+            string time = TimeCounter.GetExecutionTime(() => { paragraphCorrections = Corrector.GetSingleParagraphCorrections(fileToCorrect, rules, paragraphID, paragraphClass); }, TimeCounter.ResultType.TotalMilliseconds);
+            Console.WriteLine($"Done {Path.GetFileName(fileToCorrect)} in {time}");
+
+            string paragraphCorrectionsJSON = JSONWorker.MakeJSON(paragraphCorrections);
+            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.MistakesFileName) : resultPath;
+            FileWorker.WriteToFile(resultFilePath, paragraphCorrectionsJSON);
         }
 
-        // Получить файл, содержащий правила оформления класса paragraphClass для требований (ГОСТа) rules)
+        // Получить файл, содержащий правила оформления класса paragraphClass для требований (ГОСТа) rules
         // Сохранение результата по пути resultPath
         public void GenerateModelJSON(RulesModel rules, ParagraphClass paragraphClass, string resultPath)
         {

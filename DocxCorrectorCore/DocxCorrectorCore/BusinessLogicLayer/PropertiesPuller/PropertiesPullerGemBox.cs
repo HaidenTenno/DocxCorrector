@@ -231,6 +231,38 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             return headersFootersInfo;
         }
 
+        // MARK: НИРМА 2020-2021
+        // Получить свойства всех параграфов документа filePath + проставить там возможные классы из файла с пресетами presetsPath
+        public override List<ParagraphPropertiesWithPresets> GetAllParagraphPropertiesWithPresets(string filePath, string presetsPath)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return new List<ParagraphPropertiesWithPresets>(); }
+
+            List<ParagraphPropertiesWithPresets> allParagraphProperties = new List<ParagraphPropertiesWithPresets>();
+
+            int paragraphID = 0;
+
+            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
+            {
+                foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
+                {
+                    //ParagraphPropertiesTableZero paragraphProperties;
+
+                    //if (element is Word.Tables.Table) { paragraphProperties = new ParagraphPropertiesTableZero(paragraphID, GemBoxHelper.SkippableElements[Word.ElementType.Table]); }
+                    //else
+                    //{
+                    //    if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
+                    //    paragraphProperties = new ParagraphPropertiesTableZero(paragraphID, paragraph);
+                    //}
+                    //allParagraphProperties.Add(paragraphProperties);
+
+                    //paragraphID++;
+                }
+            }
+
+            return allParagraphProperties;
+        }
+
         // IPropertiesPullerAsync
         // Private
         private Task<ParagraphPropertiesGemBox> GetParagraphPropertiesAsync(int id, Word.Paragraph paragraph)

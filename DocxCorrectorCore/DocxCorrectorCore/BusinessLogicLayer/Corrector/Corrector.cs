@@ -53,7 +53,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // Protected
-        // Получить список ошибок форматирования ОТДЕЛЬНЫХ АБЗАЦЕВ для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
+        // Получить список ошибок форматирования всех абзацев для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
         protected abstract List<ParagraphCorrections> GetParagraphsCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses);
 
         // Получить список ошибок оформления списка литературы для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
@@ -64,7 +64,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
         // Получить список ошибок оформления заголовков для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
         protected abstract List<HeadlingCorrections> GetHeadlingCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses);
-        // TODO: More
 
         // Public
         // Получить список ошибок форматирования для ВСЕГО документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
@@ -92,6 +91,11 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         public abstract void PrintAllParagraphs(string filePath);
 
         // MARK: НИРМА 2020-2021
-        //public abstract FixedDocument GetFixedDocument(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphsClasses);
+        // Получить список ошибок форматирования одного абзаца под номером paragraphID документа filePath по требованиям (ГОСТу) rulesModel с учетом класса paragraphClass
+        public abstract ParagraphCorrections? GetSingleParagraphCorrections(string filePath, RulesModel rulesModel, int paragraphID, ParagraphClass paragraphClass);
+
+        // Получить модуль правил оформления класса paragraphClass для требований (ГОСТа) rules
+        // TODO: Продумать модель
+        public abstract string? GetClassModel(RulesModel rules, ParagraphClass paragraphClass);
     }
 }

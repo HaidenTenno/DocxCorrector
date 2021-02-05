@@ -27,5 +27,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 
         // Получить свойства верхних/нижних (type) колонтитулов документа filePath
         public abstract List<HeaderFooterInfoGemBox> GetHeadersFootersInfo(HeaderFooterType type, string filePath);
+
+        // MARK: НИРМА 2020-2021
+        // Получить свойства всех параграфов документа filePath + проставить там возможные классы из файла с пресетами presetsPath
+        public abstract List<ParagraphPropertiesWithPresets> GetAllParagraphPropertiesWithPresets(string filePath, string presetsPath);
     }
 }

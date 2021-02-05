@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
@@ -645,6 +643,38 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel
             // Проверка количества пустых строк
             ParagraphMistake? emptyLinesMistake = CheckEmptyLines(id, classifiedParagraphs);
             if (emptyLinesMistake != null) { paragraphMistakes.Add(emptyLinesMistake); }
+
+            if (paragraphMistakes.Count != 0)
+            {
+                return new ParagraphCorrections(
+                    paragraphID: id,
+                    paragraphClass: ParagraphClass,
+                    prefix: GemBoxHelper.GetParagraphPrefix(paragraph, 20),
+                    mistakes: paragraphMistakes
+                );
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        // Выполнить сравнение по свойствам (не включая особые) с параграфом paragraph
+        public virtual ParagraphCorrections? CheckSingleParagraphFormatting(int id, Word.Paragraph paragraph)
+        {
+            List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
+
+            // Свойства ParagraphFormat
+            paragraphMistakes.AddRange(CheckParagraphFormat(paragraph));
+
+            // Свойства CharacterFormat для всего абзаца
+            paragraphMistakes.AddRange(CheckWholeParagraphCharacterFormat(paragraph));
+
+            foreach (Word.Run runner in paragraph.GetChildElements(false, Word.ElementType.Run))
+            {
+                // Свойства CharacterFormat для раннеров
+                paragraphMistakes.AddRange(CheckRunnerCharacterFormat(runner));
+            }
 
             if (paragraphMistakes.Count != 0)
             {

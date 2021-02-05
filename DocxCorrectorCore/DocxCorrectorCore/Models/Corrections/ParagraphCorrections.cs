@@ -100,6 +100,23 @@ namespace DocxCorrectorCore.Models.Corrections
                 return testCorrection;
             }
         }
+
+        public static ParagraphCorrections NotSupportedParagraphCorrection(int paragraphID, ParagraphClass paragraphClass, string prefix)
+        {
+            return new ParagraphCorrections(
+                paragraphID: paragraphID,
+                paragraphClass: paragraphClass,
+                prefix: prefix,
+                mistakes: new List<ParagraphMistake>
+                {
+                    new ParagraphMistake(
+                    message: "Данный класс пока не поддерживается системой проверки",
+                    advice: "Пожалуйста, сообщите разработчикам",
+                    importance: MistakeImportance.Critical
+                    )
+                }
+            );
+        }
     }
     public sealed class ParagraphMistake
     {

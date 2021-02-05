@@ -52,6 +52,24 @@ namespace DocxCorrectorCore.Services.Helpers
             return result.Trim();
         }
 
+        // GetParagraphPrefix для разных элементов Word
+        internal static string GetParagraphPrefix(Word.Element element, int prefixLength)
+        {
+            if (element is Word.Tables.Table)
+            {
+                return "Table";
+            }
+            else
+            {
+                if (element is Word.Paragraph paragraph)
+                {
+                    return GetParagraphPrefix(paragraph: paragraph, prefixLength);
+                }
+            }
+
+            return "Unknown element";
+        }
+
         // Получить текстовое содержимое параграфа (без символа следующей строки)
         internal static string GetParagraphContentWithoutNewLine(Word.Paragraph paragraph)
         {
