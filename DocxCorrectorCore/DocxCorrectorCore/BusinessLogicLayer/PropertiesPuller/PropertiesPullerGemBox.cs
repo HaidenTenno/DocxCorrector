@@ -233,7 +233,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 
         // MARK: НИРМА 2020-2021
         // Получить свойства всех параграфов документа filePath + проставить там возможные классы из файла с пресетами presetsPath
-        public override List<ParagraphPropertiesWithPresets> GetAllParagraphPropertiesWithPresets(string filePath, string presetsPath)
+        public override List<ParagraphPropertiesWithPresets> GetAllParagraphPropertiesWithPresets(string filePath, CombinedPresetValues combinedPresetValues)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
             if (document == null) { return new List<ParagraphPropertiesWithPresets>(); }
@@ -246,17 +246,17 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             {
                 foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
                 {
-                    //ParagraphPropertiesTableZero paragraphProperties;
+                    ParagraphPropertiesWithPresets paragraphProperties;
 
-                    //if (element is Word.Tables.Table) { paragraphProperties = new ParagraphPropertiesTableZero(paragraphID, GemBoxHelper.SkippableElements[Word.ElementType.Table]); }
-                    //else
-                    //{
-                    //    if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
-                    //    paragraphProperties = new ParagraphPropertiesTableZero(paragraphID, paragraph);
-                    //}
-                    //allParagraphProperties.Add(paragraphProperties);
+                    if (element is Word.Tables.Table) { paragraphProperties = new ParagraphPropertiesWithPresets(paragraphID, GemBoxHelper.SkippableElements[Word.ElementType.Table]); }
+                    else
+                    {
+                        if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
+                        paragraphProperties = new ParagraphPropertiesWithPresets(paragraphID, paragraph, combinedPresetValues);
+                    }
+                    allParagraphProperties.Add(paragraphProperties);
 
-                    //paragraphID++;
+                    paragraphID++;
                 }
             }
 

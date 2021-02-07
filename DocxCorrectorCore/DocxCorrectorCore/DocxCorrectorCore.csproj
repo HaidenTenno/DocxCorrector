@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="BusinessLogicLayer\Corrector\ElementsObjectModel\TableCaption\**" />
-    <EmbeddedResource Remove="BusinessLogicLayer\Corrector\ElementsObjectModel\TableCaption\**" />
-    <None Remove="BusinessLogicLayer\Corrector\ElementsObjectModel\TableCaption\**" />
+    <Compile Remove="BusinessLogicLayer\Corrector\DocumentModel\ParagraphFormattingModels\TableCaption\**" />
+    <EmbeddedResource Remove="BusinessLogicLayer\Corrector\DocumentModel\ParagraphFormattingModels\TableCaption\**" />
+    <None Remove="BusinessLogicLayer\Corrector\DocumentModel\ParagraphFormattingModels\TableCaption\**" />
   </ItemGroup>
 
   <ItemGroup>

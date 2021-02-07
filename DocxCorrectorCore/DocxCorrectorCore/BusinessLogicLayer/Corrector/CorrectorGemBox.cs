@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocxCorrectorCore.BusinessLogicLayer.Corrector.ElementsObjectModel;
+using DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
@@ -78,50 +78,50 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                 switch (paragraphClass)
                 {
                     case ParagraphClass.c1:
-                        standardParagraph = new ParagraphRegular();
+                        standardParagraph = new ParagraphRegularGOST_7_32();
                         break;
                     case ParagraphClass.c2:
-                        standardParagraph = new ParagraphBeforeList();
+                        standardParagraph = new ParagraphBeforeListGOST_7_32();
                         break;
                     case ParagraphClass.c3:
-                        standardParagraph = new ParagraphBeforeEquation();
+                        standardParagraph = new ParagraphBeforeEquationGOST_7_32();
                         break;
                     case ParagraphClass.b1:
-                        standardParagraph = new HeadingFirstLevel();
+                        standardParagraph = new HeadingFirstLevelGOST_7_32();
                         break;
                     case ParagraphClass.b2:
                     case ParagraphClass.b3:
                     case ParagraphClass.b4:
-                        standardParagraph = new HeadingOtherLevels((ParagraphClass)paragraphClass);
+                        standardParagraph = new HeadingOtherLevelsGOST_7_32((ParagraphClass)paragraphClass);
                         break;
                     case ParagraphClass.d1:
-                        standardParagraph = new SimpleListFirstElement();
+                        standardParagraph = new SimpleListFirstElementGOST_7_32();
                         break;
                     case ParagraphClass.d2:
-                        standardParagraph = new SimpleListMiddleElement();
+                        standardParagraph = new SimpleListMiddleElementGOST_7_32();
                         break;
                     case ParagraphClass.d3:
-                        standardParagraph = new SimpleListLastElement();
+                        standardParagraph = new SimpleListLastElementGOST_7_32();
                         break;
                     case ParagraphClass.d4:
-                        standardParagraph = new ComplexListFirstElement();
+                        standardParagraph = new ComplexListFirstElementGOST_7_32();
                         break;
                     case ParagraphClass.d5:
-                        standardParagraph = new ComplexListMiddleElement();
+                        standardParagraph = new ComplexListMiddleElementGOST_7_32();
                         break;
                     case ParagraphClass.d6:
-                        standardParagraph = new ComplexListLastElement();
+                        standardParagraph = new ComplexListLastElementGOST_7_32();
                         break;
                     case ParagraphClass.h1:
-                        standardParagraph = new ImageSign();
+                        standardParagraph = new ImageSignGOST_7_32();
                         break;
                     case ParagraphClass.f1:
                     case ParagraphClass.f3:
                     case ParagraphClass.f5:
-                        standardParagraph = new TableSign((ParagraphClass)paragraphClass);
+                        standardParagraph = new TableSignGOST_7_32((ParagraphClass)paragraphClass);
                         break;
                     case ParagraphClass.r0:
-                        standardParagraph = new SourcesListElement();
+                        standardParagraph = new SourcesListElementGOST_7_32();
                         break;
                     default:
                         break;
@@ -179,7 +179,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
             // TODO: Model switch
-            var standartTable = new Table();
+            var standartTable = new TableGOST_7_32();
 
             for (int classifiedParagraphIndex = 0; classifiedParagraphIndex < classifiedParagraphs.Count(); classifiedParagraphIndex++)
             {
@@ -271,16 +271,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             }
 
             // Получить нужный GemBox класс текущего параграфа
-            if (selectedElement is Word.Tables.Table) 
+            if (selectedElement is Word.Paragraph paragraph)
             {
-                 // TODO: СПРОСИТЬ
-            }
-            else
-            {
-                if (selectedElement is Word.Paragraph paragraph) 
-                {
-                    singleParagraphCorrections = standardParagraph.CheckSingleParagraphFormatting(paragraphID, paragraph);
-                }
+                singleParagraphCorrections = standardParagraph.CheckSingleParagraphFormatting(paragraphID, paragraph);
             }
 
             return singleParagraphCorrections;

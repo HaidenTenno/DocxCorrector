@@ -1,9 +1,7 @@
 ﻿using System;
 using DocxCorrectorCore.Models.Corrections;
-using DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel.GOST_7_32;
-using DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel.ITMO;
 
-namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
+namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 {
     internal static class ModelSwitcher
     {

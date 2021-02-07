@@ -273,12 +273,15 @@ namespace DocxCorrectorCore.App
         // Сохранение результата по пути resultPath
         public void GenerateCSVWithPresetsInfo(string filePath, string presetsPath, string resultPath, bool silent = false)
         {
+            CombinedPresetValues? combinedPresetValues = JSONWorker.DeserializeObjectFromFile<CombinedPresetValues>(presetsPath);
+            if (combinedPresetValues == null) { return; }
+
             if (!silent) { Console.WriteLine($"Started {Path.GetFileName(filePath)}"); }
             List<ParagraphPropertiesWithPresets> propertiesForFile = new List<ParagraphPropertiesWithPresets>();
-            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphPropertiesWithPresets(filePath, presetsPath); }, TimeCounter.ResultType.TotalMilliseconds);
+            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphPropertiesWithPresets(filePath, combinedPresetValues); }, TimeCounter.ResultType.TotalMilliseconds);
             if (!silent) { Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}"); }
 
-            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesForTableZeroFileName) : resultPath;
+            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesWithPresets) : resultPath;
             FileWorker.FillCSV(resultFilePath, propertiesForFile);
         }
 

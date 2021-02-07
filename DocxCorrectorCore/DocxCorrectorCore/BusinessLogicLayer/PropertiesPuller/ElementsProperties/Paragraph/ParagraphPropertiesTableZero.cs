@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Linq;
 using DocxCorrectorCore.Services.Helpers;
-using Word = GemBox.Document;
 using DocxCorrectorCore.Models.Corrections;
+using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 {
-    public sealed class ParagraphPropertiesTableZero: ParagraphPropertiesGemBox
+    public class ParagraphPropertiesTableZero: ParagraphPropertiesGemBox
     {
         // Public
         public bool ListFormatIsList { get; }

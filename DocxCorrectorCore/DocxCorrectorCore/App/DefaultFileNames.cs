@@ -19,5 +19,7 @@
         public const string SyncParagraphsAsyncIterationFileName = "syncParagraphAsyncIteration.csv";
         public const string AsyncParagraphsSyncIterationFileName = "asyncParagraphsSyncIteration.csv";
         public const string AsyncParagraphsAsyncIterationFileName = "asyncParagraphsAsyncIteration.csv";
+        // Файл со свойствами параграфов (+ ИНФОРМАЦИЯ ИЗ ПРЕСЕТОВ)
+        public const string ParagraphsPropertiesWithPresets = "propertiesWithPresets.csv";
     }
 }
