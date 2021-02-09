@@ -303,7 +303,25 @@ namespace DocxCorrectorCore.App
         // Сохранение результата по пути resultPath
         public void GenerateModelJSON(RulesModel rules, ParagraphClass paragraphClass, string resultPath)
         {
-            Console.WriteLine("GenerateModelJSON");
+            Console.WriteLine($"Started");
+            PresetValue? classModel = PropertiesPuller.GetClassModel(rules, paragraphClass);
+            Console.WriteLine($"Done");
+            string classModelJSON = JSONWorker.MakeJSON(classModel);
+            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ClassModel) : resultPath;
+            FileWorker.WriteToFile(resultFilePath, classModelJSON);
+        }
+
+        // Получить файл, содержащий структуру, которую можно использовать для примера значений пресета
+        // Значения будут браться из параграфа под номером paragraphID документа filePath
+        // Сохранение результата по пути resultPath
+        public void GeneratePresetInfoFromParagraph(string filePath, int paragraphID, string resultPath)
+        {
+            Console.WriteLine($"Started {Path.GetFileName(filePath)}");
+            PresetValue? paragraphPresetInfo = PropertiesPuller.GetParagraphPresetInfo(filePath, paragraphID);
+            Console.WriteLine($"Done {Path.GetFileName(filePath)}");
+            string paragraphPresetInfoJSON = JSONWorker.MakeJSON(paragraphPresetInfo);
+            string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphPresetInfo) : resultPath;
+            FileWorker.WriteToFile(resultFilePath, paragraphPresetInfoJSON);
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using DocxCorrectorCore.Models.Corrections;
+using DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel;
 using Word = GemBox.Document;
+using Newtonsoft.Json;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 {
@@ -54,6 +56,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         public readonly List<bool> WholeParagraphSuperscript;
         public readonly List<Word.UnderlineType> WholeParagraphUnderlineStyle;
 
+        [JsonConstructor]
         public PresetValue(
             ParagraphClass paragraphClass,
             List<Word.HorizontalAlignment> alignment,
@@ -141,6 +144,109 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             WholeParagraphSubscript = wholeParagraphSubscript;
             WholeParagraphSuperscript = wholeParagraphSuperscript;
             WholeParagraphUnderlineStyle = wholeParagraphUnderlineStyle;
+        }
+
+        public PresetValue(DocumentElement documentElement)
+        {
+            ParagraphClass = documentElement.ParagraphClass;
+            Alignment = documentElement.Alignment;
+            BackgroundColor = documentElement.BackgroundColor;
+            BorderStyle = documentElement.BorderStyle;
+            KeepLinesTogether = documentElement.KeepLinesTogether;
+            KeepWithNext = documentElement.KeepWithNext;
+            LeftIndentation = documentElement.LeftIndentation;
+            LineSpacing = documentElement.LineSpacing;
+            LineSpacingRule = documentElement.LineSpacingRule;
+            MirrorIndents = documentElement.MirrorIndents;
+            NoSpaceBetweenParagraphsOfSameStyle = documentElement.NoSpaceBetweenParagraphsOfSameStyle;
+            OutlineLevel = documentElement.OutlineLevel;
+            PageBreakBefore = documentElement.PageBreakBefore;
+            RightIndentation = documentElement.RightIndentation;
+            RightToLeft = documentElement.RightToLeft;
+            SpaceAfter = documentElement.SpaceAfter;
+            SpaceBefore = documentElement.SpaceBefore;
+            SpecialIndentationLeftBorder = documentElement.SpecialIndentationLeftBorder;
+            SpecialIndentationRightBorder = documentElement.SpecialIndentationRightBorder;
+            WidowControl = documentElement.WidowControl;
+            WholeParagraphAllCaps = documentElement.WholeParagraphAllCaps;
+            WholeParagraphBackgroundColor = documentElement.WholeParagraphBackgroundColor;
+            WholeParagraphBold = documentElement.WholeParagraphBold;
+            WholeParagraphBorder = documentElement.WholeParagraphBorder;
+            WholeParagraphDoubleStrikethrough = documentElement.WholeParagraphDoubleStrikethrough;
+            WholeParagraphFontColor = documentElement.WholeParagraphFontColor;
+            WholeParagraphFontName = documentElement.WholeParagraphFontName;
+            WholeParagraphHidden = documentElement.WholeParagraphHidden;
+            WholeParagraphHighlightColor = documentElement.WholeParagraphHighlightColor;
+            WholeParagraphItalic = documentElement.WholeParagraphItalic;
+            WholeParagraphKerning = documentElement.WholeParagraphKerning;
+            WholeParagraphPosition = documentElement.WholeParagraphPosition;
+            WholeParagraphRightToLeft = documentElement.WholeParagraphRightToLeft;
+            WholeParagraphScaling = documentElement.WholeParagraphScaling;
+            WholeParagraphSizeLeftBorder = documentElement.WholeParagraphSizeLeftBorder;
+            WholeParagraphSizeRightBorder = documentElement.WholeParagraphSizeRightBorder;
+            WholeParagraphSmallCaps = documentElement.WholeParagraphSmallCaps;
+            WholeParagraphSpacing = documentElement.WholeParagraphSpacing;
+            WholeParagraphStrikethrough = documentElement.WholeParagraphStrikethrough;
+            WholeParagraphSubscript = documentElement.WholeParagraphSubscript;
+            WholeParagraphSuperscript = documentElement.WholeParagraphSuperscript;
+            WholeParagraphUnderlineStyle = documentElement.WholeParagraphUnderlineStyle;
+        }
+
+        public PresetValue(Word.Paragraph paragraph)
+        {
+            ParagraphClass = ParagraphClass.NoClass;
+            Alignment = new List<Word.HorizontalAlignment>() { paragraph.ParagraphFormat.Alignment };
+            BackgroundColor = new List<Word.Color>() { paragraph.ParagraphFormat.BackgroundColor };
+            BorderStyle = GetParagraphBorders(paragraph);
+            KeepLinesTogether = new List<bool>() { paragraph.ParagraphFormat.KeepLinesTogether };
+            KeepWithNext = new List<bool>() { paragraph.ParagraphFormat.KeepWithNext };
+            LeftIndentation = new List<double>() { paragraph.ParagraphFormat.LeftIndentation };
+            LineSpacing = new List<double>() { paragraph.ParagraphFormat.LineSpacing };
+            LineSpacingRule = new List<Word.LineSpacingRule>() { paragraph.ParagraphFormat.LineSpacingRule };
+            MirrorIndents = new List<bool>() { paragraph.ParagraphFormat.MirrorIndents };
+            NoSpaceBetweenParagraphsOfSameStyle = new List<bool>() { paragraph.ParagraphFormat.NoSpaceBetweenParagraphsOfSameStyle };
+            OutlineLevel = new List<Word.OutlineLevel>() { paragraph.ParagraphFormat.OutlineLevel };
+            PageBreakBefore = new List<bool>() { paragraph.ParagraphFormat.PageBreakBefore };
+            RightIndentation = new List<double>() { paragraph.ParagraphFormat.RightIndentation };
+            RightToLeft = new List<bool>() { paragraph.ParagraphFormat.RightToLeft };
+            SpaceAfter = new List<double>() { paragraph.ParagraphFormat.SpaceAfter };
+            SpaceBefore = new List<double>() { paragraph.ParagraphFormat.SpaceBefore };
+            SpecialIndentationLeftBorder = paragraph.ParagraphFormat.SpecialIndentation;
+            SpecialIndentationRightBorder = paragraph.ParagraphFormat.SpecialIndentation;
+            WidowControl = new List<bool>() { paragraph.ParagraphFormat.WidowControl };
+            WholeParagraphAllCaps = new List<bool>() { paragraph.CharacterFormatForParagraphMark.AllCaps };
+            WholeParagraphBackgroundColor = new List<Word.Color>() { paragraph.CharacterFormatForParagraphMark.BackgroundColor };
+            WholeParagraphBold = new List<bool>() { paragraph.CharacterFormatForParagraphMark.Bold };
+            WholeParagraphBorder = new List<Word.SingleBorder>() { paragraph.CharacterFormatForParagraphMark.Border };
+            WholeParagraphDoubleStrikethrough = new List<bool>() { paragraph.CharacterFormatForParagraphMark.DoubleStrikethrough };
+            WholeParagraphFontColor = new List<Word.Color>() { paragraph.CharacterFormatForParagraphMark.FontColor };
+            WholeParagraphFontName = new List<string>() { paragraph.CharacterFormatForParagraphMark.FontName };
+            WholeParagraphHidden = new List<bool>() { paragraph.CharacterFormatForParagraphMark.Hidden };
+            WholeParagraphHighlightColor = new List<Word.Color>() { paragraph.CharacterFormatForParagraphMark.HighlightColor };
+            WholeParagraphItalic = new List<bool>() { paragraph.CharacterFormatForParagraphMark.Italic };
+            WholeParagraphKerning = new List<double>() { paragraph.CharacterFormatForParagraphMark.Kerning };
+            WholeParagraphPosition = new List<double>() { paragraph.CharacterFormatForParagraphMark.Position };
+            WholeParagraphRightToLeft = new List<bool>() { paragraph.CharacterFormatForParagraphMark.RightToLeft };
+            WholeParagraphScaling = new List<int>() { paragraph.CharacterFormatForParagraphMark.Scaling };
+            WholeParagraphSizeLeftBorder = paragraph.CharacterFormatForParagraphMark.Size;
+            WholeParagraphSizeRightBorder = paragraph.CharacterFormatForParagraphMark.Size;
+            WholeParagraphSmallCaps = new List<bool>() { paragraph.CharacterFormatForParagraphMark.SmallCaps };
+            WholeParagraphSpacing = new List<double>() { paragraph.CharacterFormatForParagraphMark.Spacing };
+            WholeParagraphStrikethrough = new List<bool>() { paragraph.CharacterFormatForParagraphMark.Strikethrough };
+            WholeParagraphSubscript = new List<bool>() { paragraph.CharacterFormatForParagraphMark.Subscript };
+            WholeParagraphSuperscript = new List<bool>() { paragraph.CharacterFormatForParagraphMark.Superscript };
+            WholeParagraphUnderlineStyle = new List<Word.UnderlineType>() { paragraph.CharacterFormatForParagraphMark.UnderlineStyle };
+        }
+
+        private List<Word.BorderStyle> GetParagraphBorders(Word.Paragraph paragraph)
+        {
+            List<Word.BorderStyle> borders = new List<Word.BorderStyle>();
+
+            foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
+            {
+                borders.Add(paragraph.ParagraphFormat.Borders[borderType].Style);
+            }
+            return borders;
         }
 
         private bool CheckParagraphFormatBorder(Word.Paragraph paragraph)

@@ -93,9 +93,5 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         // MARK: НИРМА 2020-2021
         // Получить список ошибок форматирования одного абзаца под номером paragraphID документа filePath по требованиям (ГОСТу) rulesModel с учетом класса paragraphClass
         public abstract ParagraphCorrections? GetSingleParagraphCorrections(string filePath, RulesModel rulesModel, int paragraphID, ParagraphClass paragraphClass);
-
-        // Получить модуль правил оформления класса paragraphClass для требований (ГОСТа) rules
-        // TODO: Продумать модель
-        public abstract string? GetClassModel(RulesModel rules, ParagraphClass paragraphClass);
     }
 }

@@ -8,6 +8,7 @@ namespace DocxCorrectorCore.Models.Corrections
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ParagraphClass
     {
+        NoClass,
         // НЕТ A (содержание)
         b0, // ЗАГОЛОВОК
         b1, // Заголовок 1го уровня

@@ -278,12 +278,5 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
             return singleParagraphCorrections;
         }
-
-        // Получить модуль правил оформления класса paragraphClass для требований (ГОСТа) rules
-        // TODO: Продумать модель
-        public override string GetClassModel(RulesModel rules, ParagraphClass paragraphClass)
-        {
-            return "MODEL";
-        }
     }
 }

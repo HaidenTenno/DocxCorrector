@@ -22,7 +22,8 @@ namespace DocxCorrectorCore.UserDialog
         CheckDocument,
         ParagraphPropertiesWithPresets,
         CheckFormatting,
-        CreateClassModelFile
+        CreateClassModelFile,
+        CreatePresetInfoExample
     }
 
     public sealed class UserDialogCoordinator
@@ -53,7 +54,8 @@ namespace DocxCorrectorCore.UserDialog
                     ("Проверить оформление docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CheckDocument))),
                     ("Генерация CSV для свойств параграфов + проставить возможные классы из пресетов", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ParagraphPropertiesWithPresets))),
                     ("Проверить форматирование абзаца docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CheckFormatting))),
-                    ("Создать файл с моделью форматирования для определенного класса", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CreateClassModelFile)))
+                    ("Создать файл с моделью форматирования для определенного класса", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CreateClassModelFile))),
+                    ("Создать файл, содержащий структуру, которую можно использовать для примера значений пресета", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CreatePresetInfoExample)))
                 }
             );
             return mainMenu;
@@ -81,6 +83,7 @@ namespace DocxCorrectorCore.UserDialog
                 QuestionControllerType.ParagraphPropertiesWithPresets => new ParagraphPropertiesWithPresetsQuestionController(),
                 QuestionControllerType.CheckFormatting => new CheckFormattingQuestionController(),
                 QuestionControllerType.CreateClassModelFile => new CreateClassModelFileQuestionController(),
+                QuestionControllerType.CreatePresetInfoExample => new CreatePresetInfoExampleQuestionController(),
                 _ => throw new NotImplementedException()
             };
         }

@@ -21,5 +21,9 @@
         public const string AsyncParagraphsAsyncIterationFileName = "asyncParagraphsAsyncIteration.csv";
         // Файл со свойствами параграфов (+ ИНФОРМАЦИЯ ИЗ ПРЕСЕТОВ)
         public const string ParagraphsPropertiesWithPresets = "propertiesWithPresets.csv";
+        // Файл с моделью параграфа
+        public const string ClassModel = "model.json";
+        // Файл с данными параграфа, которые можно использовать для пресетов
+        public const string ParagraphPresetInfo = "paragraphPresetInfo.json";
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel;
+using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
 
@@ -261,6 +263,58 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             }
 
             return allParagraphProperties;
+        }
+
+        public override PresetValue? GetParagraphPresetInfo(string filePath, int paragraphID)
+        {
+            Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
+            if (document == null) { return null; }
+
+            if (paragraphID < 0) { Console.WriteLine("Paragraph ID must be a non-negative number"); return null; }
+
+            // Берем все параграфы (это абзацы и таблицы)
+            List<Word.Element> elements = new List<Word.Element>();
+            foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
+            {
+                foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
+                {
+                    elements.Add(element);
+                }
+            }
+
+            if (paragraphID >= elements.Count) { Console.WriteLine("The paragraph with the given id is not found"); return null; }
+
+            Word.Element selectedElement = elements[paragraphID];
+
+            // Получить нужный GemBox класс текущего параграфа
+            if (selectedElement is Word.Paragraph paragraph)
+            {
+                PresetValue paragraphPresetInfo = new PresetValue(paragraph);
+                return paragraphPresetInfo;
+            }
+
+            Console.WriteLine("Can't get paragraph properties");
+            return null;
+        }
+
+        // Получить модуль правил оформления класса paragraphClass для требований (ГОСТа) rules
+        public override PresetValue? GetClassModel(RulesModel rules, ParagraphClass paragraphClass)
+        {
+            // Модель
+            GlobalDocumentModel model = ModelSwitcher.GetSelectedModel(rules);
+
+            DocumentElement? standardParagraph = model.ParagraphFormattingModel.GetDocumentElementFromClass(paragraphClass);
+
+            // Проверка, что класс параграфа поддерживается
+            if (standardParagraph == null)
+            {
+                Console.WriteLine($"Class {paragraphClass} is not supported right now");
+                return null;
+            }
+
+            PresetValue classModel = new PresetValue(standardParagraph);
+
+            return classModel;
         }
 
         // IPropertiesPullerAsync
