@@ -80,12 +80,12 @@ namespace DocxCorrectorCore.App
             FileWorker.WriteToFile(resultFilePath, headersFootersInfoJSON);
         }
 
-        // Проанализировать документ filePath и создать csv файл resultPath со свойствами его параграфов
-        public void GenerateParagraphsPropertiesCSV(string filePath, string resultPath, bool silent = false)
+        // Проанализировать документ filePath и создать csv файл resultPath со свойствами его параграфов (ID первого параграфа paragraphID)
+        public void GenerateParagraphsPropertiesCSV(string filePath, int paragraphID, string resultPath, bool silent = false)
         {
             if (!silent) { Console.WriteLine($"Started {Path.GetFileName(filePath)}"); }
             List<ParagraphPropertiesGemBox> propertiesForFile = new List<ParagraphPropertiesGemBox>();
-            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath); }, TimeCounter.ResultType.TotalMilliseconds);
+            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath, paragraphID: paragraphID); }, TimeCounter.ResultType.TotalMilliseconds);
             if (!silent) { Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}"); }
             string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesFileName) : resultPath;
             FileWorker.FillCSV(resultFilePath, propertiesForFile);
@@ -101,7 +101,7 @@ namespace DocxCorrectorCore.App
                 DirectoryIterator.IterateDocxFiles(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphPropertiesGemBox> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
+                    List<ParagraphPropertiesGemBox> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath, paragraphID: 0);
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 });
@@ -111,23 +111,23 @@ namespace DocxCorrectorCore.App
             });
         }
 
-        // Проанализировать документ filePath и создать csv файл resultPath со свойствами его параграфов (ДЛЯ ТАБЛИЦЫ 0)
-        public void GenerateParagraphsPropertiesCSVForTableZero(string filePath, string resultPath, bool silent = false)
+        // Проанализировать документ filePath и создать csv файл resultPath со свойствами его параграфов (ДЛЯ ТАБЛИЦЫ 0) (ID первого параграфа paragraphID)
+        public void GenerateParagraphsPropertiesCSVForTableZero(string filePath, int paragraphID, string resultPath, bool silent = false)
         {
             if (!silent) { Console.WriteLine($"Started {Path.GetFileName(filePath)}"); }
             List<ParagraphPropertiesTableZero> propertiesForFile = new List<ParagraphPropertiesTableZero>();
-            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsPropertiesForTableZero(filePath: filePath); }, TimeCounter.ResultType.TotalMilliseconds);
+            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphsPropertiesForTableZero(filePath: filePath, paragraphID: paragraphID); }, TimeCounter.ResultType.TotalMilliseconds);
             if (!silent) { Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}"); }
             string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesForTableZeroFileName) : resultPath;
             FileWorker.FillCSV(resultFilePath, propertiesForFile);
         }
 
         // Запустить обычный GenerateParagraphProperties и GenerateParagraphsPropertiesCSVForTableZero
-        public void GenerateParagraphsPropertiesForAllTables(string filePath, string resultPath1, string resultPath2)
+        public void GenerateParagraphsPropertiesForAllTables(string filePath, int paragraphID, string resultPath1, string resultPath2)
         {
             Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-            Task firstTableTask = Task.Run(() => GenerateParagraphsPropertiesCSV(filePath, resultPath1, silent: true));
-            Task secondTableTask = Task.Run(() => GenerateParagraphsPropertiesCSVForTableZero(filePath, resultPath2, silent: true));
+            Task firstTableTask = Task.Run(() => GenerateParagraphsPropertiesCSV(filePath, paragraphID, resultPath1, silent: true));
+            Task secondTableTask = Task.Run(() => GenerateParagraphsPropertiesCSVForTableZero(filePath, paragraphID, resultPath2, silent: true));
             string time = TimeCounter.GetExecutionTime(() => { Task.WaitAll(firstTableTask, secondTableTask); }, TimeCounter.ResultType.TotalMilliseconds);
             Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}");
         }
@@ -156,7 +156,7 @@ namespace DocxCorrectorCore.App
             });
         }
 
-        // GenerateCSVFiles с асинхронным анализом файлов
+        // GenerateCSVFiles с асинхронным анализом файлов (ID первого параграфа paragraphID)
         public void GenerateCSVFilesWithAsyncFilesIteration(string rootDir)
         {
             DirectoryIterator.IterateDir(rootDir, (subDir) =>
@@ -166,7 +166,7 @@ namespace DocxCorrectorCore.App
                 Task.WaitAll(DirectoryIterator.IterateDocxFilesAsync(subDir, (filePath) =>
                 {
                     Console.WriteLine($"Started {Path.GetFileName(filePath)}");
-                    List<ParagraphPropertiesGemBox> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath);
+                    List<ParagraphPropertiesGemBox> propertiesForFile = PropertiesPuller.GetAllParagraphsProperties(filePath: filePath, paragraphID: 0);
                     Console.WriteLine($"Done {Path.GetFileName(filePath)}");
                     propertiesForDir.AddRange(propertiesForFile);
                 }));
@@ -269,16 +269,16 @@ namespace DocxCorrectorCore.App
         }
 
         // MARK: НИРМА 2020-2021
-        // Получить файл, содержащий свойства параграфов документа filePath + проставить там возможные классы из файла с пресетами presetsPath
+        // Получить файл, содержащий свойства параграфов документа filePath + проставить там возможные классы из файла с пресетами presetsPath (ID первого параграфа paragraphID)
         // Сохранение результата по пути resultPath
-        public void GenerateCSVWithPresetsInfo(string filePath, string presetsPath, string resultPath, bool silent = false)
+        public void GenerateCSVWithPresetsInfo(string filePath, string presetsPath, int paragraphID, string resultPath, bool silent = false)
         {
             CombinedPresetValues? combinedPresetValues = JSONWorker.DeserializeObjectFromFile<CombinedPresetValues>(presetsPath);
             if (combinedPresetValues == null) { return; }
 
             if (!silent) { Console.WriteLine($"Started {Path.GetFileName(filePath)}"); }
             List<ParagraphPropertiesWithPresets> propertiesForFile = new List<ParagraphPropertiesWithPresets>();
-            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphPropertiesWithPresets(filePath, combinedPresetValues); }, TimeCounter.ResultType.TotalMilliseconds);
+            string time = TimeCounter.GetExecutionTime(() => { propertiesForFile = PropertiesPuller.GetAllParagraphPropertiesWithPresets(filePath, paragraphID, combinedPresetValues); }, TimeCounter.ResultType.TotalMilliseconds);
             if (!silent) { Console.WriteLine($"Done {Path.GetFileName(filePath)} in {time}"); }
 
             string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphsPropertiesWithPresets) : resultPath;

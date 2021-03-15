@@ -75,74 +75,78 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             }
         }
 
-        // Получить свойства всех параграфов документа filePath
-        public override List<ParagraphPropertiesGemBox> GetAllParagraphsProperties(string filePath)
+        // Получить свойства всех параграфов документа filePath (ID первого параграфа paragraphID)
+        public override List<ParagraphPropertiesGemBox> GetAllParagraphsProperties(string filePath, int paragraphID)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
             if (document == null) { return new List<ParagraphPropertiesGemBox>(); }
 
             List<ParagraphPropertiesGemBox> allParagraphProperties = new List<ParagraphPropertiesGemBox>();
 
-            int paragraphID = 0;
+            int currentParagraphID = 0;
 
             foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
                 foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
                 {
+                    if (currentParagraphID < paragraphID) { currentParagraphID++; continue; }
+
                     ParagraphPropertiesGemBox paragraphProperties;
 
                     // Пропуск НЕ параграфов
-                    if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
+                    if (!(element is Word.Paragraph paragraph)) { currentParagraphID++; continue; }
                     // Пропуск списков
-                    if (paragraph.ListFormat.IsList) { paragraphID++; continue; }
+                    if (paragraph.ListFormat.IsList) { currentParagraphID++; continue; }
 
                     string paragraphContentWithSkippables = GemBoxHelper.GetParagraphContentWithSkippables(paragraph);
                     // Пропуск картинок
-                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Picture]) { paragraphID++; continue; }
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Picture]) { currentParagraphID++; continue; }
                     // Пропуск графиков
-                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Chart]) { paragraphID++; continue; }
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Chart]) { currentParagraphID++; continue; }
                     // Пропуск фигур
-                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Shape]) { paragraphID++; continue; }
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.Shape]) { currentParagraphID++; continue; }
                     // Пропуск старых элементов doc (preserved inline)
-                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.PreservedInline]) { paragraphID++; continue; }
+                    if (paragraphContentWithSkippables == GemBoxHelper.SkippableElements[Word.ElementType.PreservedInline]) { currentParagraphID++; continue; }
                     // Пропуск SPACEов
-                    if (paragraphContentWithSkippables == "!SPACE!") { paragraphID++; continue; }
+                    if (paragraphContentWithSkippables == "!SPACE!") { currentParagraphID++; continue; }
 
-                    paragraphProperties = new ParagraphPropertiesGemBox(paragraphID, paragraph);
+                    paragraphProperties = new ParagraphPropertiesGemBox(currentParagraphID, paragraph);
                     allParagraphProperties.Add(paragraphProperties);
 
-                    paragraphID++;
+                    currentParagraphID++;
                 }
             }
 
             return allParagraphProperties;
         }
 
-        // Получить свойства всех параграфов документа filePath (для таблицы 0)
-        public override List<ParagraphPropertiesTableZero> GetAllParagraphsPropertiesForTableZero(string filePath)
+        // Получить свойства всех параграфов документа filePath (для таблицы 0) (ID первого параграфа paragraphID)
+        public override List<ParagraphPropertiesTableZero> GetAllParagraphsPropertiesForTableZero(string filePath, int paragraphID)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
             if (document == null) { return new List<ParagraphPropertiesTableZero>(); }
 
             List<ParagraphPropertiesTableZero> allParagraphProperties = new List<ParagraphPropertiesTableZero>();
 
-            int paragraphID = 0;
+            int currentParagraphID = 0;
 
             foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
                 foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
                 {
+                    if (currentParagraphID < paragraphID) { currentParagraphID++; continue; }
+
                     ParagraphPropertiesTableZero paragraphProperties;
 
-                    if (element is Word.Tables.Table) { paragraphProperties = new ParagraphPropertiesTableZero(paragraphID, GemBoxHelper.SkippableElements[Word.ElementType.Table]); }
+                    if (element is Word.Tables.Table) { paragraphProperties = new ParagraphPropertiesTableZero(currentParagraphID, GemBoxHelper.SkippableElements[Word.ElementType.Table]); }
                     else
                     {
-                        if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
-                        paragraphProperties = new ParagraphPropertiesTableZero(paragraphID, paragraph);
+                        if (!(element is Word.Paragraph paragraph)) { currentParagraphID++; continue; }
+                        paragraphProperties = new ParagraphPropertiesTableZero(currentParagraphID, paragraph);
                     }
                     allParagraphProperties.Add(paragraphProperties);
 
-                    paragraphID++;
+                    currentParagraphID++;
                 }
             }
 
@@ -235,30 +239,32 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
 
         // MARK: НИРМА 2020-2021
         // Получить свойства всех параграфов документа filePath + проставить там возможные классы из файла с пресетами presetsPath
-        public override List<ParagraphPropertiesWithPresets> GetAllParagraphPropertiesWithPresets(string filePath, CombinedPresetValues combinedPresetValues)
+        public override List<ParagraphPropertiesWithPresets> GetAllParagraphPropertiesWithPresets(string filePath, int paragraphID, CombinedPresetValues combinedPresetValues)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
             if (document == null) { return new List<ParagraphPropertiesWithPresets>(); }
 
             List<ParagraphPropertiesWithPresets> allParagraphProperties = new List<ParagraphPropertiesWithPresets>();
 
-            int paragraphID = 0;
+            int currentParagraphID = 0;
 
             foreach (Word.Section section in document.GetChildElements(recursively: false, filterElements: Word.ElementType.Section))
             {
                 foreach (var element in section.GetChildElements(recursively: false, filterElements: new Word.ElementType[] { Word.ElementType.Paragraph, Word.ElementType.Table }))
                 {
+                    if (currentParagraphID < paragraphID) { currentParagraphID++; continue; }
+
                     ParagraphPropertiesWithPresets paragraphProperties;
 
-                    if (element is Word.Tables.Table) { paragraphProperties = new ParagraphPropertiesWithPresets(paragraphID, GemBoxHelper.SkippableElements[Word.ElementType.Table]); }
+                    if (element is Word.Tables.Table) { paragraphProperties = new ParagraphPropertiesWithPresets(currentParagraphID, GemBoxHelper.SkippableElements[Word.ElementType.Table]); }
                     else
                     {
-                        if (!(element is Word.Paragraph paragraph)) { paragraphID++; continue; }
-                        paragraphProperties = new ParagraphPropertiesWithPresets(paragraphID, paragraph, combinedPresetValues);
+                        if (!(element is Word.Paragraph paragraph)) { currentParagraphID++; continue; }
+                        paragraphProperties = new ParagraphPropertiesWithPresets(currentParagraphID, paragraph, combinedPresetValues);
                     }
                     allParagraphProperties.Add(paragraphProperties);
 
-                    paragraphID++;
+                    currentParagraphID++;
                 }
             }
 

@@ -14,11 +14,11 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         // Получить свойства содержания документа filePath
         public abstract void PrintTableOfContenstsInfo(string filePath);
 
-        // Получить свойства всех параграфов документа filePath
-        public abstract List<ParagraphPropertiesGemBox> GetAllParagraphsProperties(string filePath);
+        // Получить свойства всех параграфов документа filePath (ID первого параграфа paragraphID)
+        public abstract List<ParagraphPropertiesGemBox> GetAllParagraphsProperties(string filePath, int paragraphID);
 
-        // Получить свойства всех параграфов документа filePath (для таблицы 0)
-        public abstract List<ParagraphPropertiesTableZero> GetAllParagraphsPropertiesForTableZero(string filePath);
+        // Получить свойства всех параграфов документа filePath (для таблицы 0) (ID первого параграфа paragraphID)
+        public abstract List<ParagraphPropertiesTableZero> GetAllParagraphsPropertiesForTableZero(string filePath, int paragraphID);
 
         // Получить свойства страниц документа filePath
         public abstract List<PagePropertiesGemBox> GetAllPagesProperties(string filePath);
@@ -30,8 +30,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
         public abstract List<HeaderFooterInfoGemBox> GetHeadersFootersInfo(HeaderFooterType type, string filePath);
 
         // MARK: НИРМА 2020-2021
-        // Получить свойства всех параграфов документа filePath + проставить там возможные классы из файла с пресетами presetsPath
-        public abstract List<ParagraphPropertiesWithPresets> GetAllParagraphPropertiesWithPresets(string filePath, CombinedPresetValues combinedPresetValues);
+        // Получить свойства всех параграфов документа filePath + проставить там возможные классы из файла с пресетами presetsPath (ID первого параграфа paragraphID)
+        public abstract List<ParagraphPropertiesWithPresets> GetAllParagraphPropertiesWithPresets(string filePath, int paragraphID, CombinedPresetValues combinedPresetValues);
 
         // Получить модуль правил оформления класса paragraphClass для требований (ГОСТа) rules
         public abstract PresetValue? GetClassModel(RulesModel rules, ParagraphClass paragraphClass);

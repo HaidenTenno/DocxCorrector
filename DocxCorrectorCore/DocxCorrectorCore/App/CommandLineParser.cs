@@ -22,16 +22,16 @@ namespace DocxCorrectorCore.App
             userDialogCoordinator.Start();
         }
 
-        private static void PullProperties(string fileToAnalyse, string resultPath1, string resultPath2)
+        private static void PullProperties(string fileToAnalyse, int initialParagraphID, string resultPath1, string resultPath2)
         {
             FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateParagraphsPropertiesForAllTables(fileToAnalyse, resultPath1, resultPath2);
+            featuresProvider.GenerateParagraphsPropertiesForAllTables(fileToAnalyse, initialParagraphID, resultPath1, resultPath2);
         }
 
-        private static void PullWithPresets(string fileToAnalyse, string presetsFile, string resultPath)
+        private static void PullWithPresets(string fileToAnalyse, string presetsFile, int initialParagraphID, string resultPath)
         {
             FeaturesProvider featuresProvider = new FeaturesProvider();
-            featuresProvider.GenerateCSVWithPresetsInfo(fileToAnalyse, presetsFile, resultPath);
+            featuresProvider.GenerateCSVWithPresetsInfo(fileToAnalyse, presetsFile, initialParagraphID, resultPath);
         }
 
         private static void CorrectParagraph(string fileToCorrect, RulesModel rules, int paragraphID, ParagraphClass paragraphClass, string resultPath)
@@ -81,6 +81,10 @@ namespace DocxCorrectorCore.App
             var fileToAnalyseArg = new Argument<string>("file-to-analyse");
             fileToAnalyseArg.Description = "Path to the file for analysis";
             pullPropertiesCommand.AddArgument(fileToAnalyseArg);
+            //initialParagraphID
+            var initialParagraphIDArg = new Argument<int>("initial-paragraph-id");
+            initialParagraphIDArg.Description = "ID of the paragraph to start csv from";
+            pullPropertiesCommand.AddArgument(initialParagraphIDArg);
             //resultPath1
             var resultPath1Arg = new Argument<string>("result-path1", getDefaultValue: () => Directory.GetCurrentDirectory());
             resultPath1Arg.Description = "File or directory path to save the result";
@@ -91,7 +95,7 @@ namespace DocxCorrectorCore.App
             pullPropertiesCommand.AddArgument(resultPath2Arg);
 
             //handler
-            pullPropertiesCommand.Handler = CommandHandler.Create<string, string, string>(PullProperties);
+            pullPropertiesCommand.Handler = CommandHandler.Create<string, int, string, string>(PullProperties);
 
             return pullPropertiesCommand;
         }
@@ -118,13 +122,17 @@ namespace DocxCorrectorCore.App
             var presetsFileArg = new Argument<string>("presets-file");
             presetsFileArg.Description = "Path to the file with presets info";
             pullWithPresetsCommand.AddArgument(presetsFileArg);
+            //initialParagraphID
+            var initialParagraphIDArg = new Argument<int>("initial-paragraph-id");
+            initialParagraphIDArg.Description = "ID of the paragraph to start csv from";
+            pullWithPresetsCommand.AddArgument(initialParagraphIDArg);
             //retultPath
             var resultPathArg = new Argument<string>("result-path", getDefaultValue: () => Directory.GetCurrentDirectory());
             resultPathArg.Description = "File or directory path to save the result";
             pullWithPresetsCommand.AddArgument(resultPathArg);
 
             //handler
-            pullWithPresetsCommand.Handler = CommandHandler.Create<string, string, string>(PullWithPresets);
+            pullWithPresetsCommand.Handler = CommandHandler.Create<string, string, int, string>(PullWithPresets);
 
             return pullWithPresetsCommand;
         }
