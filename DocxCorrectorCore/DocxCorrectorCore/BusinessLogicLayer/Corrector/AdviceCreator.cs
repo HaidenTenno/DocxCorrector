@@ -164,7 +164,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                         possibleStrings.Add("точно");
                         break;
                     default:
-                        possibleStrings.Add("неизвестно");
+                        possibleStrings.Add("требуется уточнение интервала");
                         break;
                 }
             }
@@ -172,5 +172,42 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             string advice = prefix + string.Join(", ", possibleStrings);
             return advice;
         }
+
+        //ДОБАВИТЬ
+
+
+        // 11
+        public static string OutlineLevel(List<Word.OutlineLevel> levels)
+        {
+            if (CheckListEmpty(levels)) return "Значение не определено";
+            string prefix = levels.Count > 1 ? "Уровень заголовка должнен быть одним из следующих: " : "Уровень заголовка должнен быть: ";
+
+            List<string> possibleStrings = new List<string>();
+            foreach (Word.OutlineLevel level in levels)
+            {
+                switch (level)
+                {
+                    case Word.OutlineLevel.BodyText:
+                        possibleStrings.Add("основной текст");
+                        break;
+                    case Word.OutlineLevel.Level1:
+                        possibleStrings.Add("уровень 1");
+                        break;
+                    case Word.OutlineLevel.Level2:
+                        possibleStrings.Add("уровень 2");
+                        break;
+                    case Word.OutlineLevel.Level3:
+                        possibleStrings.Add("уровень 3");
+                        break;
+                    default:
+                        possibleStrings.Add("требуется уточнение уровня");
+                        break;
+                }
+            }
+
+            string advice = prefix + string.Join(", ", possibleStrings);
+            return advice;
+        }
+
     }
 }

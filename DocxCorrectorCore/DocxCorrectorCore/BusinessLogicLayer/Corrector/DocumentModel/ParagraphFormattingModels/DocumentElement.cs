@@ -196,7 +196,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!OutlineLevel.Contains(paragraph.ParagraphFormat.OutlineLevel))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение уровня заголовка"
+                    message: $"Неверное значение уровня заголовка",
+                    advice: AdviceCreator.OutlineLevel(OutlineLevel)
                 );
                 paragraphMistakes.Add(mistake);
             }

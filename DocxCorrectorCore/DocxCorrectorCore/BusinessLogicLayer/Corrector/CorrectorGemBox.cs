@@ -50,7 +50,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
         // Corrector
         // Protected
-        // Получить список ошибок форматирования ОТДЕЛЬНЫХ АБЗАЦЕВ для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
+        // Получить список ошибок форматирования абзацев для документа filePath по требованиям (ГОСТу) rulesModel с учетом классификации paragraphClasses
         protected override List<ParagraphCorrections> GetParagraphsCorrections(string filePath, RulesModel rulesModel, List<ClassificationResult> paragraphClasses)
         {
             Word.DocumentModel? document = GemBoxHelper.OpenDocument(filePath: filePath);
@@ -62,7 +62,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
             List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
-            // TODO: Model switch
+            // Модель
+            GlobalDocumentModel model = ModelSwitcher.GetSelectedModel(rulesModel);
 
             // Идти по списку классифицированных элементов
             for (int classifiedParagraphIndex = 0; classifiedParagraphIndex < classifiedParagraphs.Count(); classifiedParagraphIndex++)
@@ -72,60 +73,63 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
                 // ПРОВЕРКА НАЧИНАЕТСЯ
                 ParagraphCorrections? currentParagraphCorrections = null;
-                DocumentElement? standardParagraph = null;
+                DocumentElement? standardParagraph = model.ParagraphFormattingModel.GetDocumentElementFromClass((ParagraphClass)classifiedParagraphs[classifiedParagraphIndex].ParagraphClass!);
 
-                ParagraphClass? paragraphClass = classifiedParagraphs[classifiedParagraphIndex].ParagraphClass;
-                switch (paragraphClass)
-                {
-                    case ParagraphClass.c1:
-                        standardParagraph = new ParagraphRegularGOST_7_32();
-                        break;
-                    case ParagraphClass.c2:
-                        standardParagraph = new ParagraphBeforeListGOST_7_32();
-                        break;
-                    case ParagraphClass.c3:
-                        standardParagraph = new ParagraphBeforeEquationGOST_7_32();
-                        break;
-                    case ParagraphClass.b1:
-                        standardParagraph = new HeadingFirstLevelGOST_7_32();
-                        break;
-                    case ParagraphClass.b2:
-                    case ParagraphClass.b3:
-                    case ParagraphClass.b4:
-                        standardParagraph = new HeadingOtherLevelsGOST_7_32((ParagraphClass)paragraphClass);
-                        break;
-                    case ParagraphClass.d1:
-                        standardParagraph = new SimpleListFirstElementGOST_7_32();
-                        break;
-                    case ParagraphClass.d2:
-                        standardParagraph = new SimpleListMiddleElementGOST_7_32();
-                        break;
-                    case ParagraphClass.d3:
-                        standardParagraph = new SimpleListLastElementGOST_7_32();
-                        break;
-                    case ParagraphClass.d4:
-                        standardParagraph = new ComplexListFirstElementGOST_7_32();
-                        break;
-                    case ParagraphClass.d5:
-                        standardParagraph = new ComplexListMiddleElementGOST_7_32();
-                        break;
-                    case ParagraphClass.d6:
-                        standardParagraph = new ComplexListLastElementGOST_7_32();
-                        break;
-                    case ParagraphClass.h1:
-                        standardParagraph = new ImageSignGOST_7_32();
-                        break;
-                    case ParagraphClass.f1:
-                    case ParagraphClass.f3:
-                    case ParagraphClass.f5:
-                        standardParagraph = new TableSignGOST_7_32((ParagraphClass)paragraphClass);
-                        break;
-                    case ParagraphClass.r0:
-                        standardParagraph = new SourcesListElementGOST_7_32();
-                        break;
-                    default:
-                        break;
-                }
+                // TODO: Проверить, что в файле ParagraphFormattingModelGOST_7_32 отражены все классы ниже
+
+                //ParagraphClass? paragraphClass = classifiedParagraphs[classifiedParagraphIndex].ParagraphClass;
+                //switch (paragraphClass)
+                //{
+                //    case ParagraphClass.c1:
+                //        standardParagraph = new ParagraphRegularGOST_7_32();
+                //        break;
+                //    case ParagraphClass.c2:
+                //        standardParagraph = new ParagraphBeforeListGOST_7_32();
+                //        break;
+                //    case ParagraphClass.c3:
+                //        standardParagraph = new ParagraphBeforeEquationGOST_7_32();
+                //        break;
+                //    case ParagraphClass.b1:
+                //        standardParagraph = new HeadingFirstLevelGOST_7_32();
+                //        break;
+                //    case ParagraphClass.b2:
+                //    case ParagraphClass.b3:
+                //    case ParagraphClass.b4:
+                //        standardParagraph = new HeadingOtherLevelsGOST_7_32((ParagraphClass)paragraphClass);
+                //        break;
+                //    case ParagraphClass.d1:
+                //        standardParagraph = new SimpleListFirstElementGOST_7_32();
+                //        break;
+                //    case ParagraphClass.d2:
+                //        standardParagraph = new SimpleListMiddleElementGOST_7_32();
+                //        break;
+                //    case ParagraphClass.d3:
+                //        standardParagraph = new SimpleListLastElementGOST_7_32();
+                //        break;
+                //    case ParagraphClass.d4:
+                //        standardParagraph = new ComplexListFirstElementGOST_7_32();
+                //        break;
+                //    case ParagraphClass.d5:
+                //        standardParagraph = new ComplexListMiddleElementGOST_7_32();
+                //        break;
+                //    case ParagraphClass.d6:
+                //        standardParagraph = new ComplexListLastElementGOST_7_32();
+                //        break;
+                //    case ParagraphClass.h1:
+                //        standardParagraph = new ImageSignGOST_7_32();
+                //        break;
+                //    case ParagraphClass.f1:
+                //    case ParagraphClass.f3:
+                //    case ParagraphClass.f5:
+                //        standardParagraph = new TableSignGOST_7_32((ParagraphClass)paragraphClass);
+                //        break;
+                //    case ParagraphClass.r0:
+                //        standardParagraph = new SourcesListElementGOST_7_32();
+                //        break;
+                //    default:
+                //        break;
+                //}
+
                 if (standardParagraph != null) { currentParagraphCorrections = standardParagraph.CheckFormatting(classifiedParagraphIndex, classifiedParagraphs); }
                 if (currentParagraphCorrections != null) { paragraphsCorrections.Add(currentParagraphCorrections); }
             }
@@ -145,7 +149,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
             List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
-            // TODO: Model switch
+            // TODO: Model switch + продолжить, когда будут разрабатываться новые режимы
             var standartSourcesList = new SourcesList();
 
             // Идти по списку классифицированных элементов
@@ -178,7 +182,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
             List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
-            // TODO: Model switch
+            // TODO: Model switch + продолжить, когда будут разрабатываться новые режимы
             var standartTable = new TableGOST_7_32();
 
             for (int classifiedParagraphIndex = 0; classifiedParagraphIndex < classifiedParagraphs.Count(); classifiedParagraphIndex++)
@@ -207,9 +211,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
             List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
-            // TODO: Model switch
-
-            // TODO: ПРОДОЛЖИТЬ ТУТ
+            // TODO: Model switch + продолжить, когда будут разрабатываться новые режимы
 
             return new List<HeadlingCorrections> { HeadlingCorrections.TestHeadlingCorrection };
         }
