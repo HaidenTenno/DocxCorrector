@@ -27,6 +27,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 ParagraphClass.f1 => new TableSignGOST_7_32(ParagraphClass.f1),
                 ParagraphClass.f3 => new TableSignGOST_7_32(ParagraphClass.f3),
                 ParagraphClass.h1 => new ImageSignGOST_7_32(),
+                ParagraphClass.r0 => new SourcesListElementGOST_7_32(),
                 _ => null
             };
         }

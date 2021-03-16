@@ -20,6 +20,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
+        // Последний символ
+        public override char LastSymbol => '.';
 
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)

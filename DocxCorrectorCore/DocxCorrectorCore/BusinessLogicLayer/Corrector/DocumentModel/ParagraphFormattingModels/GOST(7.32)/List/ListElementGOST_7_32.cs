@@ -54,6 +54,70 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
         // Особые свойства
 
+        // Свойства списка
+        // Маркер
+        // TODO: !!!
+        public virtual List<string> MarkerFormats => new List<string> { "—", "–", "−", "-", "%1)", "%1" };
+
+        // Последний символ
+        public virtual char LastSymbol => ',';
+
+        // IRegexSupportable
+        public virtual List<Regex> Regexes => throw new NotImplementedException();
+
+        // Проверка последнего символа
+        private ParagraphMistake? CheckLastSymbol(Word.Paragraph paragraph)
+        {
+            char lastSymbol;
+            string paragraphContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraph);
+            try { lastSymbol = paragraphContent.Last(); } catch { return null; }
+
+            if (lastSymbol != LastSymbol)
+            {
+                return new ParagraphMistake(
+                    message: "Неверный последний символ"
+                );
+            }
+
+            return null;
+        }
+
+        // Проверить свойства списка
+        protected List<ParagraphMistake> CheckListFormat(Word.Paragraph paragraph)
+        {
+            List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
+
+            // Если элемент создан средствами Word
+            if (paragraph.ListFormat.IsList)
+            {
+                if (!MarkerFormats.Contains(paragraph.ListFormat.ListLevelFormat.NumberFormat))
+                {
+                    ParagraphMistake mistake = new ParagraphMistake(
+                        message: $"Неверный формат маркера"
+                    );
+                    paragraphMistakes.Add(mistake);
+                }
+            }
+            // Если параграф не элемент списка
+            else
+            {
+                ParsedListElement parsedListElement = new ParsedListElement(paragraph);
+
+                // TODO: !!!
+                ParagraphMistake markerParagraphMistake = new ParagraphMistake(
+                    message: "Невозможно определить правильность формата маркера",
+                    advice: "Попробуйте создать список средствами Word"
+                );
+                paragraphMistakes.Add(markerParagraphMistake);
+            }
+
+            // Проверка последнего символа
+            ParagraphMistake? lastSymbolMistake = CheckLastSymbol(paragraph);
+            if (lastSymbolMistake != null) { paragraphMistakes.Add(lastSymbolMistake); }
+
+            return paragraphMistakes;
+        }
+
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
@@ -64,6 +128,10 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
+            // Свойства списка
+            List<ParagraphMistake> listMistakes = CheckListFormat(paragraph);
+            paragraphMistakes.AddRange(listMistakes);
+
 
             if (paragraphMistakes.Count != 0)
             {
@@ -85,7 +153,35 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             return result;
         }
 
+        // Выполнить сравнение по свойствам (не включая особые) с параграфом paragraph
+        public override ParagraphCorrections? CheckSingleParagraphFormatting(int id, Word.Paragraph paragraph)
+        {
+            ParagraphCorrections? result = base.CheckSingleParagraphFormatting(id, paragraph);
 
-        public virtual List<Regex> Regexes => throw new NotImplementedException();
+            List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
+
+            // Свойства списка
+            List<ParagraphMistake> listMistakes = CheckListFormat(paragraph);
+            paragraphMistakes.AddRange(listMistakes);
+
+            if (paragraphMistakes.Count != 0)
+            {
+                if (result != null)
+                {
+                    result.Mistakes.AddRange(paragraphMistakes);
+                }
+                else
+                {
+                    result = new ParagraphCorrections(
+                        paragraphID: id,
+                        paragraphClass: ParagraphClass,
+                        prefix: GemBoxHelper.GetParagraphPrefix(paragraph, 20),
+                        mistakes: paragraphMistakes
+                    );
+                }
+            }
+
+            return result;
+        }
     }
 }

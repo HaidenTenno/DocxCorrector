@@ -22,7 +22,10 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
         // Особые свойства
 
-        // Проверка первого симола
+        // Последний символ
+        public virtual char LastSymbol => ':';
+
+        // Проверка последнего симола
         // TODO: Переписать для Enum
         private ParagraphMistake? CheckLastSymbol(Word.Paragraph paragraph)
         {
@@ -30,10 +33,10 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             string paragraphContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraph);
             try { lastSymbol = paragraphContent.Last(); } catch { return null; }
 
-            if ((lastSymbol != ':'))
+            if (lastSymbol != LastSymbol)
             {
                 return new ParagraphMistake(
-                    message: "Параграф перед списком должен заканчиваться на двоеточие"
+                    message: "Неверный последний символ"
                 );
             }
 
