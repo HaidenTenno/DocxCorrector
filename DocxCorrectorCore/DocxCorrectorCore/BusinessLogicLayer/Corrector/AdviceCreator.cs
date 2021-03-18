@@ -314,7 +314,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         // 17 !!!
 
         // 18
-        // public virtual List<bool> WidowControl => new List<bool> { true }; ## TRUE??? ##
+        // public virtual List<bool> WidowControl => new List<bool> { true };
         // Запрет висячих строк
 
         public static string WidowControl(List<bool> values)
