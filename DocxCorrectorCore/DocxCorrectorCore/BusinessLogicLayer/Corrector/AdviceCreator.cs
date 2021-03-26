@@ -174,9 +174,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 9
-        // public virtual List<bool> MirrorIndents => new List<bool> { false };
-        // Зеркальные отступы
-
         public static string MirrorIndents(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -186,9 +183,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 10
-        // public virtual List<bool> NoSpaceBetweenParagraphsOfSameStyle => new List<bool> { false };
-        // Не добавлять интервал между параграфами одного стиля
-
         public static string NoSpaceBetweenParagraphsOfSameStyle(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -231,9 +225,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 12
-        // public virtual List<bool> PageBreakBefore => new List<bool> { false };
-        // С новой страницы
-
         public static string PageBreakBefore(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -243,9 +234,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 13
-        // public virtual List<double> RightIndentation => new List<double> { 0 };
-        // Отступ справа
-
         public static string RightIndentation(List<double> indentations)
         {
             if (CheckListEmpty(indentations)) return "Значение не определено";
@@ -262,9 +250,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 14
-        // public virtual List<bool> RightToLeft => new List<bool> { false };
-        // Слева-направо
-
         public static string RightToLeft(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -274,9 +259,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 15
-        // public virtual List<double> SpaceAfter => new List<double> { 0 };
-        // Интервал после
-
         public static string SpaceAfter(List<double> spaces)
         {
             if (CheckListEmpty(spaces)) return "Значение не определено";
@@ -293,9 +275,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 16
-        // public virtual List<double> SpaceBefore => new List<double> { 0 };
-        // Интервал до
-
         public static string SpaceBefore(List<double> spaces)
         {
             if (CheckListEmpty(spaces)) return "Значение не определено";
@@ -314,9 +293,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         // 17 !!!
 
         // 18
-        // public virtual List<bool> WidowControl => new List<bool> { true };
-        // Запрет висячих строк
-
         public static string WidowControl(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -326,9 +302,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 19
-        // public virtual List<bool> WholeParagraphAllCaps => new List<bool> { false };
-        // Все прописные
-
         public static string WholeParagraphAllCaps(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -338,9 +311,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 20
-        // public virtual List<Word.Color> WholeParagraphBackgroundColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
-        // Заливка
-
         public static string WholeParagraphBackgroundColor(List<Word.Color> colors)
         {
             if (CheckListEmpty(colors)) return "Значение не определено";
@@ -368,9 +338,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 21
-        // public virtual List<bool> WholeParagraphBold => new List<bool> { false };
-        // Жирный
-
         public static string WholeParagraphBold(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -380,9 +347,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 22
-        // public virtual List<Word.SingleBorder> WholeParagraphBorder => new List<Word.SingleBorder> { Word.SingleBorder.None };
-        // Граница
-
         public static string WholeParagraphBorder(List<Word.SingleBorder> styles)
         {
             if (CheckListEmpty(styles)) return "Значение не определено";
@@ -408,9 +372,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 23
-        // public virtual List<bool> WholeParagraphDoubleStrikethrough => new List<bool> { false };
-        // Двойное зачеркивание
-
         public static string WholeParagraphDoubleStrikethrough(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -420,9 +381,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 24
-        // public virtual List<Word.Color> WholeParagraphFontColor => new List<Word.Color> { Word.Color.Black };
-        // Цвет шрифта
-
         public static string WholeParagraphFontColor(List<Word.Color> colors)
         {
             if (CheckListEmpty(colors)) return "Значение не определено";
@@ -447,9 +405,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 25
-        // public virtual List<string> WholeParagraphFontName => new List<string> { "Times New Roman" };
-        // Имя шрифта
-
         public static string WholeParagraphFontName(List<string> fonts)
         {
             if (CheckListEmpty(fonts)) return "Значение не определено";
@@ -484,9 +439,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         
 
         // 26
-        // public virtual List<bool> WholeParagraphHidden => new List<bool> { false };
-        // Скрытый
-
         public static string WholeParagraphHidden(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -496,9 +448,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 27
-        // public virtual List<Word.Color> WholeParagraphHighlightColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White };
-        // Цвет выделения
-
         public static string WholeParagraphHighlightColor(List<Word.Color> colors)
         {
             if (CheckListEmpty(colors)) return "Значение не определено";
@@ -523,9 +472,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 28
-        // public virtual List<bool> WholeParagraphItalic => new List<bool> { false };
-        // Курсив
-
         public static string WholeParagraphItalic(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -535,9 +481,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 29
-        // public virtual List<double> WholeParagraphKerning => new List<double> { 0 };
-        // Кернинг
-
         public static string WholeParagraphKerning(List<double> kernings)
         {
             if (CheckListEmpty(kernings)) return "Значение не определено";
@@ -554,9 +497,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 30
-        // public virtual List<double> WholeParagraphPosition => new List<double> { 0 };
-        // Смещение
-
         public static string WholeParagraphPosition(List<double> positions)
         {
             if (CheckListEmpty(positions)) return "Значение не определено";
@@ -573,9 +513,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 31
-        // public virtual List<bool> WholeParagraphRightToLeft => new List<bool> { false };
-        // Слева-направо
-
         public static string WholeParagraphRightToLeft(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -585,9 +522,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 32
-        // public virtual List<int> WholeParagraphScaling => new List<int> { 100 };
-        // Масштаб
-
         public static string WholeParagraphScaling(List<int> scalings)
         {
             string advice;
@@ -598,9 +532,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         // 33 ## TODO ##
 
         // 34
-        // public virtual List<bool> WholeParagraphSmallCaps => new List<bool> { false };
-        // Малые прописные
-
         public static string WholeParagraphSmallCaps(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -610,9 +541,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 35
-        // public virtual List<double> WholeParagraphSpacing => new List<double> { 0 };
-        // Интервал между буквами
-
         public static string WholeParagraphSpacing(List<double> spacings)
         {
             if (CheckListEmpty(spacings)) return "Значение не определено";
@@ -629,9 +557,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 36
-        // public virtual List<bool> WholeParagraphStrikethrough => new List<bool> { false };
-        // Зачеркивание
-
         public static string WholeParagraphStrikethrough(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -641,9 +566,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 37
-        // public virtual List<bool> WholeParagraphSubscript => new List<bool> { false };
-        // Подстрочный
-
         public static string WholeParagraphSubscript(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -653,9 +575,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 38
-        // public virtual List<bool> WholeParagraphSuperscript => new List<bool> { false };
-        // Надстрочный
-
         public static string WholeParagraphSuperscript(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -665,9 +584,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 39
-        // public virtual List<Word.UnderlineType> WholeParagraphUnderlineStyle => new List<Word.UnderlineType> { Word.UnderlineType.None };
-        // Стиль подчеркивания
-
         public static string WholeParagraphUnderlineStyle(List<Word.UnderlineType> UnderlineTypes)
         {
             if (CheckListEmpty(UnderlineTypes)) return "Значение не определено";
