@@ -6,6 +6,7 @@ using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.BusinessLogicLayer.Corrector;
 using DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller;
 using DocxCorrectorCore.Services.Utilities;
+using System.Linq;
 
 namespace DocxCorrectorCore.App
 {
@@ -322,6 +323,58 @@ namespace DocxCorrectorCore.App
             string paragraphPresetInfoJSON = JSONWorker.MakeJSON(paragraphPresetInfo);
             string resultFilePath = Directory.Exists(resultPath) ? Path.Combine(resultPath, DefaultFileNames.ParagraphPresetInfo) : resultPath;
             FileWorker.WriteToFile(resultFilePath, paragraphPresetInfoJSON);
+        }
+
+        // Пройтись по всем поддиректориям rootDir и получить ошибки для каждого абзаца находящегося там файла по требованиям (ГОСТу) rules
+        // В каждой из поддиректорий должен находится один docx файл
+        // В каждой из поддиректорий должен находится json файл с классами параграфов docx файла
+        // В результате в каждой из поддиректорий будет создан файл с результатами проверки соответствующих параграфов
+        public void GenerateParagraphMistakesFiles(string rootDir, RulesModel rules)
+        {
+            DirectoryIterator.IterateDir(rootDir, (subDir) =>
+            {
+                List<ParagraphCorrections> paragraphCorrectionsForDir = new List<ParagraphCorrections>();
+
+                // Поиск нужных файлов в директории
+                string docxFilePath;
+                string resultFilePrefix;
+                string classesJsonFilePath;
+                string resultFilePath;
+                try
+                {
+                    docxFilePath = Directory.EnumerateFiles(subDir, "*.docx", SearchOption.AllDirectories).FirstOrDefault();
+                    resultFilePrefix = Path.GetFileNameWithoutExtension(docxFilePath);
+                    classesJsonFilePath = Directory.EnumerateFiles(subDir, $"{resultFilePrefix}.json").FirstOrDefault();
+                    string resultFileName = resultFilePrefix + "_mistakes.json";
+                    resultFilePath = Path.Combine(subDir, resultFileName);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return;
+                }
+
+                List<ClassificationResult>? paragraphsClassesList = JSONWorker.DeserializeObjectFromFile<List<ClassificationResult>>(classesJsonFilePath);
+                if (paragraphsClassesList == null) {
+                    Console.WriteLine($"No classes json found in {Path.GetDirectoryName(docxFilePath)}");
+                    return; 
+                }
+
+                List<ParagraphCorrections> directoryParagraphCorrections = new List<ParagraphCorrections>();
+
+                Console.WriteLine($"Started {Path.GetFileName(docxFilePath)}");
+
+                foreach (ClassificationResult classificationResult in paragraphsClassesList)
+                {
+                    ParagraphCorrections? paragraphCorrections = Corrector.GetSingleParagraphCorrections(docxFilePath, rules, classificationResult.Id, classificationResult.ParagraphClass);
+                    if (paragraphCorrections != null) { directoryParagraphCorrections.Add(paragraphCorrections); }
+                }
+
+                Console.WriteLine($"Done {Path.GetFileName(docxFilePath)}");
+
+                string paragraphCorrectionsJSON = JSONWorker.MakeJSON(directoryParagraphCorrections);
+                FileWorker.WriteToFile(resultFilePath, paragraphCorrectionsJSON);
+            });
         }
     }
 }

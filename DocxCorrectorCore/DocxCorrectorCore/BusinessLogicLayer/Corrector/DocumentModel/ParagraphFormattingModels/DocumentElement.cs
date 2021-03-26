@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
@@ -624,7 +625,10 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
-            foreach (Word.Run runner in paragraph.GetChildElements(false, Word.ElementType.Run))
+            var runners = paragraph.GetChildElements(false, Word.ElementType.Run).ToList();
+            if (runners.Count == 1) { return paragraphMistakes; }
+
+            foreach (Word.Run runner in runners)
             {
                 // Свойства CharacterFormat для раннеров
                 paragraphMistakes.AddRange(CheckRunnerCharacterFormat(runner));
@@ -684,6 +688,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Выполнить сравнение по свойствам (не включая особые) с параграфом paragraph
         public virtual ParagraphCorrections? CheckSingleParagraphFormatting(int id, Word.Paragraph paragraph)
         {
+            ResetChosenSize();
+
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Свойства ParagraphFormat
@@ -709,5 +715,10 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 return null;
             }
         }
+
+        public void ResetChosenSize()
+        {
+            WholeParagraphChosenSize = null;
+        } 
     }
 }

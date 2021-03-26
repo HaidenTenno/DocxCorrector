@@ -23,7 +23,8 @@ namespace DocxCorrectorCore.UserDialog
         ParagraphPropertiesWithPresets,
         CheckFormatting,
         CreateClassModelFile,
-        CreatePresetInfoExample
+        CreatePresetInfoExample,
+        CheckFormattingForDirectory
     }
 
     public sealed class UserDialogCoordinator
@@ -37,7 +38,7 @@ namespace DocxCorrectorCore.UserDialog
             IntAnswerQuestionController mainMenu = new IntAnswerQuestionController(
                 actions: new List<(string info, Action action)>()
                 {
-                    //("Печать всех параграфов в консоль", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.Print))),
+                    ("Печать всех параграфов в консоль", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.Print))),
                     ("Информация о структуре документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.StructureInfo))),
                     //("Информация о содержании документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.TableOfContentsInfo))),
                     //("Печать свойства страниц в файл", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.PageProperties))),
@@ -55,7 +56,8 @@ namespace DocxCorrectorCore.UserDialog
                     ("Генерация CSV для свойств параграфов + проставить возможные классы из пресетов", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.ParagraphPropertiesWithPresets))),
                     ("Проверить форматирование абзаца docx документа", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CheckFormatting))),
                     ("Создать файл с моделью форматирования для определенного класса", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CreateClassModelFile))),
-                    ("Создать файл, содержащий структуру, которую можно использовать для примера значений пресета", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CreatePresetInfoExample)))
+                    ("Создать файл, содержащий структуру, которую можно использовать для примера значений пресета", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CreatePresetInfoExample))),
+                    ("Пройтись по всем поддиректориям и получить ошибки для каждого абзаца находящегося там файла", () => NavigationController.PushQuestionController(CreateStringAnswerQC(QuestionControllerType.CheckFormattingForDirectory)))
                 }
             );
             return mainMenu;
@@ -84,6 +86,7 @@ namespace DocxCorrectorCore.UserDialog
                 QuestionControllerType.CheckFormatting => new CheckFormattingQuestionController(),
                 QuestionControllerType.CreateClassModelFile => new CreateClassModelFileQuestionController(),
                 QuestionControllerType.CreatePresetInfoExample => new CreatePresetInfoExampleQuestionController(),
+                QuestionControllerType.CheckFormattingForDirectory => new CheckFormattingForDirectoryQuestionController(),
                 _ => throw new NotImplementedException()
             };
         }
