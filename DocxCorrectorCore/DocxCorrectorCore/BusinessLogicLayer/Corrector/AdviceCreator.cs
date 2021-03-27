@@ -290,7 +290,15 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 17 !!!
+        // 17
+        public static string SpecialIndentation(double leftBorder, double rightBorder)
+        {
+            double wordValue1 = Math.Round((Math.Abs(rightBorder) * 1.25 / 35.85), 2, MidpointRounding.AwayFromZero);
+            double wordValue2 = Math.Round((Math.Abs(leftBorder) * 1.25 / 35.85), 2, MidpointRounding.AwayFromZero);
+
+            string advice = $"Значение отступа первой строки должно быть в пределах: {wordValue1} см - {wordValue2} см";
+            return advice;
+        }
 
         // 18
         public static string WidowControl(List<bool> values)
@@ -529,7 +537,18 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 33 ## TODO ##
+        // 33
+        public static string WholeParagraphSizeBorder(double leftBorder, double rightBorder)
+        {
+            string advice = $"Значение размера шрифта должно быть в пределах: {leftBorder} - {rightBorder}";
+            return advice;
+        }
+
+        public static string WholeParagraphChosenSize(double chosenSize)
+        {
+            string advice = $"Значение размера шрифта должно быть {chosenSize}";
+            return advice;
+        }
 
         // 34
         public static string WholeParagraphSmallCaps(List<bool> values)

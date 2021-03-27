@@ -29,8 +29,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public virtual List<bool> RightToLeft => new List<bool> { false }; // 14)
         public virtual List<double> SpaceAfter => new List<double> { 0 }; // 15)
         public virtual List<double> SpaceBefore => new List<double> { 0 }; // 16)
-        public virtual double SpecialIndentationLeftBorder => -36.85; // 17
-        public virtual double SpecialIndentationRightBorder => -34.00; // 17
+        public virtual double SpecialIndentationLeftBorder => -36.85; // 17)
+        public virtual double SpecialIndentationRightBorder => -34.00; // 17)
         public virtual List<bool> WidowControl => new List<bool> { true }; // 18)
 
         // Свойства CharacterFormat для всего абзаца
@@ -48,8 +48,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public virtual List<double> WholeParagraphPosition => new List<double> { 0 }; // 30)
         public virtual List<bool> WholeParagraphRightToLeft => new List<bool> { false }; // 31)
         public virtual List<int> WholeParagraphScaling => new List<int> { 100 }; // 32)
-        public virtual double WholeParagraphSizeLeftBorder => 13.5; // 33
-        public virtual double WholeParagraphSizeRightBorder => 14.5; // 33
+        public virtual double WholeParagraphSizeLeftBorder => 13.5; // 33)
+        public virtual double WholeParagraphSizeRightBorder => 14.5; // 33)
         public static double? WholeParagraphChosenSize { get; protected set; } = null; // 33
         public virtual List<bool> WholeParagraphSmallCaps => new List<bool> { false }; // 34)
         public virtual List<double> WholeParagraphSpacing => new List<double> { 0 }; // 35)
@@ -249,12 +249,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            // TODO: !!!
             // Отступ первой строки
             if ((paragraph.ParagraphFormat.SpecialIndentation < SpecialIndentationLeftBorder) | ((paragraph.ParagraphFormat.SpecialIndentation > SpecialIndentationRightBorder)))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение отступа первой строки"
+                    message: $"Неверное значение отступа первой строки",
+                    advice: AdviceCreator.SpecialIndentation(SpecialIndentationLeftBorder, SpecialIndentationRightBorder)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -401,12 +401,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            // TODO: !!!
             // Проверка размера шрифта
             if ((WholeParagraphChosenSize != null) & (paragraph.CharacterFormatForParagraphMark.Size != WholeParagraphChosenSize))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Размер шрифта' для всего абзаца (должно быть единообразие)"
+                    message: $"Неверное значение свойства 'Размер шрифта' для всего абзаца (должно быть единообразие)",
+                    advice: AdviceCreator.WholeParagraphChosenSize((double)WholeParagraphChosenSize!)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -414,7 +414,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if ((paragraph.CharacterFormatForParagraphMark.Size < WholeParagraphSizeLeftBorder) | (paragraph.CharacterFormatForParagraphMark.Size > WholeParagraphSizeRightBorder))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Размер шрифта' для всего абзаца"
+                    message: $"Неверное значение свойства 'Размер шрифта' для всего абзаца",
+                    advice: AdviceCreator.WholeParagraphSizeBorder(WholeParagraphSizeLeftBorder, WholeParagraphSizeRightBorder)
                 );
                 paragraphMistakes.Add(mistake);
             }
