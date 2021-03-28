@@ -75,7 +75,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         public static string BorderStyle(List<Word.BorderStyle> styles)
         {
             if (CheckListEmpty(styles)) return "Значение не определено";
-            string prefix = styles.Count > 1 ? "Стиль рамок параграфа должнен быть одним из следующих: " : "Стиль рамок параграфа должнен быть: ";
+            string prefix = styles.Count > 1 ? "Стиль рамок параграфа должнен быть одним из следующих: " : "Стиль рамок параграфа должнен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (Word.BorderStyle style in styles)
@@ -118,7 +118,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         public static string LeftIdentation(List<double> indentations)
         {
             if (CheckListEmpty(indentations)) return "Значение не определено";
-            string prefix = indentations.Count > 1 ? "Отступ слева должнен быть одним из следующих: " : "Отступ слева должнен быть: ";
+            string prefix = indentations.Count > 1 ? "Отступ слева должнен быть одним из следующих: " : "Отступ слева должнен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (double indentation in indentations)
@@ -134,7 +134,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         public static string LineSpacing(List<double> spaces)
         {
             if (CheckListEmpty(spaces)) return "Значение не определено";
-            string prefix = spaces.Count > 1 ? "Междустрочный интервал должнен быть одним из следующих: " : "Междустрочный интервал должнен быть: ";
+            string prefix = spaces.Count > 1 ? "Междустрочный интервал должнен быть одним из следующих: " : "Междустрочный интервал должнен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (double space in spaces)
@@ -150,7 +150,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         public static string LineSpacingRule(List<Word.LineSpacingRule> rules)
         {
             if (CheckListEmpty(rules)) return "Значение не определено";
-            string prefix = rules.Count > 1 ? "Тип междустрочного интервала должнен быть одним из следующих: " : "Тип междустрочного интервала должнен быть: ";
+            string prefix = rules.Count > 1 ? "Тип междустрочного интервала должнен быть одним из следующих: " : "Тип междустрочного интервала должнен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (Word.LineSpacingRule rule in rules)
@@ -195,7 +195,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         public static string OutlineLevel(List<Word.OutlineLevel> levels)
         {
             if (CheckListEmpty(levels)) return "Значение не определено";
-            string prefix = levels.Count > 1 ? "Уровень заголовка должнен быть одним из следующих: " : "Уровень заголовка должнен быть: ";
+            string prefix = levels.Count > 1 ? "Уровень заголовка должнен быть одним из следующих: " : "Уровень заголовка должнен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (Word.OutlineLevel level in levels)
@@ -237,7 +237,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         public static string RightIndentation(List<double> indentations)
         {
             if (CheckListEmpty(indentations)) return "Значение не определено";
-            string prefix = indentations.Count > 1 ? "Отступ справа должнен быть одним из следующих: " : "Отступ справа должнен быть: ";
+            string prefix = indentations.Count > 1 ? "Отступ справа должнен быть одним из следующих: " : "Отступ справа должнен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (double indentation in indentations)
@@ -250,19 +250,26 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 14
-        public static string RightToLeft(List<bool> values)
+        public static string SpaceAfter(List<double> spaces)
         {
-            if (CheckListEmpty(values)) return "Значение не определено";
-            string advice;
-            advice = values[0] == true ? "Свойство 'Слева-направо' должно быть включено" : "Свойство 'Слева-направо' должно быть выключено";
+            if (CheckListEmpty(spaces)) return "Значение не определено";
+            string prefix = spaces.Count > 1 ? "Интервал после должнен быть одним из следующих: " : "Интервал после должнен быть ";
+
+            List<string> possibleStrings = new List<string>();
+            foreach (double space in spaces)
+            {
+                possibleStrings.Add($"{space}");
+            }
+
+            string advice = prefix + string.Join(", ", possibleStrings);
             return advice;
         }
 
         // 15
-        public static string SpaceAfter(List<double> spaces)
+        public static string SpaceBefore(List<double> spaces)
         {
             if (CheckListEmpty(spaces)) return "Значение не определено";
-            string prefix = spaces.Count > 1 ? "Интервал после должнен быть одним из следующих: " : "Интервал после должнен быть: ";
+            string prefix = spaces.Count > 1 ? "Интервал до должнен быть одним из следующих: " : "Интервал до должнен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (double space in spaces)
@@ -275,32 +282,16 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 16
-        public static string SpaceBefore(List<double> spaces)
-        {
-            if (CheckListEmpty(spaces)) return "Значение не определено";
-            string prefix = spaces.Count > 1 ? "Интервал до должнен быть одним из следующих: " : "Интервал до должнен быть: ";
-
-            List<string> possibleStrings = new List<string>();
-            foreach (double space in spaces)
-            {
-                possibleStrings.Add($"{space}");
-            }
-
-            string advice = prefix + string.Join(", ", possibleStrings);
-            return advice;
-        }
-
-        // 17
         public static string SpecialIndentation(double leftBorder, double rightBorder)
         {
-            double wordValue1 = Math.Round((Math.Abs(rightBorder) * 1.25 / 35.85), 2, MidpointRounding.AwayFromZero);
-            double wordValue2 = Math.Round((Math.Abs(leftBorder) * 1.25 / 35.85), 2, MidpointRounding.AwayFromZero);
+            double wordValue1 = Math.Round((Math.Abs(rightBorder) * 1.25 / 35.45), 2, MidpointRounding.AwayFromZero);
+            double wordValue2 = Math.Round((Math.Abs(leftBorder) * 1.25 / 35.45), 2, MidpointRounding.AwayFromZero);
 
             string advice = $"Значение отступа первой строки должно быть в пределах: {wordValue1} см - {wordValue2} см";
             return advice;
         }
 
-        // 18
+        // 17
         public static string WidowControl(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -309,7 +300,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 19
+        // 18
         public static string WholeParagraphAllCaps(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -318,7 +309,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 20
+        // 19
         public static string WholeParagraphBackgroundColor(List<Word.Color> colors)
         {
             if (CheckListEmpty(colors)) return "Значение не определено";
@@ -345,7 +336,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 21
+        // 20
         public static string WholeParagraphBold(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -354,11 +345,11 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 22
+        // 21
         public static string WholeParagraphBorder(List<Word.SingleBorder> styles)
         {
             if (CheckListEmpty(styles)) return "Значение не определено";
-            string prefix = styles.Count > 1 ? "Стиль рамок должнен быть одним из следующих: " : "Стиль рамок документа должнен быть: ";
+            string prefix = styles.Count > 1 ? "Стиль рамок должнен быть одним из следующих: " : "Стиль рамок документа должнен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (Word.SingleBorder style in styles)
@@ -379,7 +370,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 23
+        // 22
         public static string WholeParagraphDoubleStrikethrough(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -388,7 +379,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 24
+        // 23
         public static string WholeParagraphFontColor(List<Word.Color> colors)
         {
             if (CheckListEmpty(colors)) return "Значение не определено";
@@ -412,11 +403,11 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 25
+        // 24
         public static string WholeParagraphFontName(List<string> fonts)
         {
             if (CheckListEmpty(fonts)) return "Значение не определено";
-            string prefix = fonts.Count > 1 ? "Имя шрифта должнено быть одним из следующих: " : "Имя шрифта документа должнено быть: ";
+            string prefix = fonts.Count > 1 ? "Имя шрифта должнено быть одним из следующих: " : "Имя шрифта документа должнено быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (string font in fonts)
@@ -446,7 +437,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
         
 
-        // 26
+        // 25
         public static string WholeParagraphHidden(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -455,7 +446,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 27
+        // 26
         public static string WholeParagraphHighlightColor(List<Word.Color> colors)
         {
             if (CheckListEmpty(colors)) return "Значение не определено";
@@ -479,7 +470,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 28
+        // 27
         public static string WholeParagraphItalic(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -488,11 +479,11 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 29
+        // 28
         public static string WholeParagraphKerning(List<double> kernings)
         {
             if (CheckListEmpty(kernings)) return "Значение не определено";
-            string prefix = kernings.Count > 1 ? "Кернинг должнен быть одним из следующих: " : "Кернинг должнен быть: ";
+            string prefix = kernings.Count > 1 ? "Кернинг должнен быть одним из следующих: " : "Кернинг должнен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (double kerning in kernings)
@@ -504,11 +495,11 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 30
+        // 29
         public static string WholeParagraphPosition(List<double> positions)
         {
             if (CheckListEmpty(positions)) return "Значение не определено";
-            string prefix = positions.Count > 1 ? "Смещение должно быть одним из следующих: " : "Смещение должно быть: ";
+            string prefix = positions.Count > 1 ? "Смещение должно быть одним из следующих: " : "Смещение должно быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (double position in positions)
@@ -520,16 +511,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 31
-        public static string WholeParagraphRightToLeft(List<bool> values)
-        {
-            if (CheckListEmpty(values)) return "Значение не определено";
-            string advice;
-            advice = values[0] == true ? "Свойство 'Слева-направо' должно быть включено" : "Свойство 'Слева-направо' должно быть выключено";
-            return advice;
-        }
-
-        // 32
+        // 30
         public static string WholeParagraphScaling(List<int> scalings)
         {
             string advice;
@@ -537,7 +519,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 33
+        // 31
         public static string WholeParagraphSizeBorder(double leftBorder, double rightBorder)
         {
             string advice = $"Значение размера шрифта должно быть в пределах: {leftBorder} - {rightBorder}";
@@ -550,7 +532,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 34
+        // 32
         public static string WholeParagraphSmallCaps(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -559,11 +541,11 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 35
+        // 33
         public static string WholeParagraphSpacing(List<double> spacings)
         {
             if (CheckListEmpty(spacings)) return "Значение не определено";
-            string prefix = spacings.Count > 1 ? "Интервал между буквами должен быть одним из следующих: " : "Интервал между буквами должен быть: ";
+            string prefix = spacings.Count > 1 ? "Интервал между буквами должен быть одним из следующих: " : "Интервал между буквами должен быть ";
 
             List<string> possibleStrings = new List<string>();
             foreach (double spacing in spacings)
@@ -575,7 +557,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 36
+        // 34
         public static string WholeParagraphStrikethrough(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -584,7 +566,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 37
+        // 35
         public static string WholeParagraphSubscript(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -593,7 +575,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 38
+        // 36
         public static string WholeParagraphSuperscript(List<bool> values)
         {
             if (CheckListEmpty(values)) return "Значение не определено";
@@ -602,7 +584,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
-        // 39
+        // 37
         public static string WholeParagraphUnderlineStyle(List<Word.UnderlineType> UnderlineTypes)
         {
             if (CheckListEmpty(UnderlineTypes)) return "Значение не определено";

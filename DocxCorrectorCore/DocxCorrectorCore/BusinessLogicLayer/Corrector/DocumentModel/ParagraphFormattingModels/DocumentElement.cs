@@ -26,37 +26,35 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public virtual List<Word.OutlineLevel> OutlineLevel => new List<Word.OutlineLevel> { Word.OutlineLevel.BodyText }; // 11)
         public virtual List<bool> PageBreakBefore => new List<bool> { false }; // 12)
         public virtual List<double> RightIndentation => new List<double> { 0 }; // 13)
-        public virtual List<bool> RightToLeft => new List<bool> { false }; // 14)
-        public virtual List<double> SpaceAfter => new List<double> { 0 }; // 15)
-        public virtual List<double> SpaceBefore => new List<double> { 0 }; // 16)
-        public virtual double SpecialIndentationLeftBorder => -36.85; // 17)
-        public virtual double SpecialIndentationRightBorder => -34.00; // 17)
-        public virtual List<bool> WidowControl => new List<bool> { true }; // 18)
+        public virtual List<double> SpaceAfter => new List<double> { 0 }; // 14)
+        public virtual List<double> SpaceBefore => new List<double> { 0 }; // 15)
+        public virtual double SpecialIndentationLeftBorder => -36.85; // 16)
+        public virtual double SpecialIndentationRightBorder => -34.00; // 16)
+        public virtual List<bool> WidowControl => new List<bool> { true }; // 17)
 
         // Свойства CharacterFormat для всего абзаца
-        public virtual List<bool> WholeParagraphAllCaps => new List<bool> { false }; // 19)
-        public virtual List<Word.Color> WholeParagraphBackgroundColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White }; // 20)
-        public virtual List<bool> WholeParagraphBold => new List<bool> { false }; // 21)
-        public virtual List<Word.SingleBorder> WholeParagraphBorder => new List<Word.SingleBorder> { Word.SingleBorder.None }; // 22)
-        public virtual List<bool> WholeParagraphDoubleStrikethrough => new List<bool> { false }; // 23)
-        public virtual List<Word.Color> WholeParagraphFontColor => new List<Word.Color> { Word.Color.Black }; // 24)
-        public virtual List<string> WholeParagraphFontName => new List<string> { "Times New Roman" }; // 25)
-        public virtual List<bool> WholeParagraphHidden => new List<bool> { false }; // 26)
-        public virtual List<Word.Color> WholeParagraphHighlightColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White }; // 27)
-        public virtual List<bool> WholeParagraphItalic => new List<bool> { false }; // 28)
-        public virtual List<double> WholeParagraphKerning => new List<double> { 0 }; // 29)
-        public virtual List<double> WholeParagraphPosition => new List<double> { 0 }; // 30)
-        public virtual List<bool> WholeParagraphRightToLeft => new List<bool> { false }; // 31)
-        public virtual List<int> WholeParagraphScaling => new List<int> { 100 }; // 32)
-        public virtual double WholeParagraphSizeLeftBorder => 13.5; // 33)
-        public virtual double WholeParagraphSizeRightBorder => 14.5; // 33)
-        public static double? WholeParagraphChosenSize { get; protected set; } = null; // 33
-        public virtual List<bool> WholeParagraphSmallCaps => new List<bool> { false }; // 34)
-        public virtual List<double> WholeParagraphSpacing => new List<double> { 0 }; // 35)
-        public virtual List<bool> WholeParagraphStrikethrough => new List<bool> { false }; // 36)
-        public virtual List<bool> WholeParagraphSubscript => new List<bool> { false }; // 37)
-        public virtual List<bool> WholeParagraphSuperscript => new List<bool> { false }; // 38)
-        public virtual List<Word.UnderlineType> WholeParagraphUnderlineStyle => new List<Word.UnderlineType> { Word.UnderlineType.None }; // 39)
+        public virtual List<bool> WholeParagraphAllCaps => new List<bool> { false }; // 18)
+        public virtual List<Word.Color> WholeParagraphBackgroundColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White }; // 19)
+        public virtual List<bool> WholeParagraphBold => new List<bool> { false }; // 20)
+        public virtual List<Word.SingleBorder> WholeParagraphBorder => new List<Word.SingleBorder> { Word.SingleBorder.None }; // 21)
+        public virtual List<bool> WholeParagraphDoubleStrikethrough => new List<bool> { false }; // 22)
+        public virtual List<Word.Color> WholeParagraphFontColor => new List<Word.Color> { Word.Color.Black }; // 23)
+        public virtual List<string> WholeParagraphFontName => new List<string> { "Times New Roman" }; // 24)
+        public virtual List<bool> WholeParagraphHidden => new List<bool> { false }; // 25)
+        public virtual List<Word.Color> WholeParagraphHighlightColor => new List<Word.Color> { Word.Color.Empty, Word.Color.White }; // 26)
+        public virtual List<bool> WholeParagraphItalic => new List<bool> { false }; // 27)
+        public virtual List<double> WholeParagraphKerning => new List<double> { 0 }; // 28)
+        public virtual List<double> WholeParagraphPosition => new List<double> { 0 }; // 29)
+        public virtual List<int> WholeParagraphScaling => new List<int> { 100 }; // 30)
+        public virtual double WholeParagraphSizeLeftBorder => 13.5; // 31)
+        public virtual double WholeParagraphSizeRightBorder => 14.5; // 31)
+        public static double? WholeParagraphChosenSize { get; protected set; } = null; // 31
+        public virtual List<bool> WholeParagraphSmallCaps => new List<bool> { false }; // 32)
+        public virtual List<double> WholeParagraphSpacing => new List<double> { 0 }; // 33)
+        public virtual List<bool> WholeParagraphStrikethrough => new List<bool> { false }; // 34)
+        public virtual List<bool> WholeParagraphSubscript => new List<bool> { false }; // 35)
+        public virtual List<bool> WholeParagraphSuperscript => new List<bool> { false }; // 36)
+        public virtual List<Word.UnderlineType> WholeParagraphUnderlineStyle => new List<Word.UnderlineType> { Word.UnderlineType.None }; // 37)
 
         // Свойства CharacterFormat для раннеров
         public virtual List<Word.Color> RunnerBackgroundColor => WholeParagraphBackgroundColor; // 40
@@ -68,7 +66,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public virtual List<Word.Color> RunnerHighlightColor => WholeParagraphHighlightColor; // 46
         public virtual List<double> RunnerKerning => WholeParagraphKerning; // 47
         public virtual List<double> RunnerPosition => WholeParagraphPosition; // 48
-        public virtual List<bool> RunnerRightToLeft => WholeParagraphRightToLeft; // 49
         public virtual List<int> RunnerScaling => WholeParagraphScaling; // 50
         public virtual double RunnerSizeLeftBorder => WholeParagraphSizeLeftBorder; // 51
         public virtual double RunnerSizeRightBorder => WholeParagraphSizeRightBorder; // 51
@@ -218,15 +215,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Отступ справа'",
                     advice: AdviceCreator.RightIndentation(RightIndentation)
-                );
-                paragraphMistakes.Add(mistake);
-            }
-
-            if (!RightToLeft.Contains(paragraph.ParagraphFormat.RightToLeft))
-            {
-                ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Справа-налево'",
-                    advice: AdviceCreator.RightToLeft(RightToLeft)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -383,15 +371,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphRightToLeft.Contains(paragraph.CharacterFormatForParagraphMark.RightToLeft))
-            {
-                ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Справа-налево' для всего абзаца",
-                    advice: AdviceCreator.WholeParagraphRightToLeft(WholeParagraphRightToLeft)
-                );
-                paragraphMistakes.Add(mistake);
-            }
-
             if (!WholeParagraphScaling.Contains(paragraph.CharacterFormatForParagraphMark.Scaling))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
@@ -489,7 +468,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerBackgroundColor.Contains(runner.CharacterFormat.BackgroundColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Цвет заливки' для раннера"
+                    message: $"Неверное значение свойства 'Цвет заливки' для раннера",
+                    advice: AdviceCreator.WholeParagraphBackgroundColor(RunnerBackgroundColor)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -497,7 +477,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!CheckRunnerBorder(runner))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Границы' для раннера"
+                    message: $"Неверное значение свойства 'Границы' для раннера",
+                    advice: AdviceCreator.WholeParagraphBorder(RunnerBorder)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -505,7 +486,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerDoubleStrikethrough.Contains(runner.CharacterFormat.DoubleStrikethrough))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Двойное зачеркивание' для раннера"
+                    message: $"Неверное значение свойства 'Двойное зачеркивание' для раннера",
+                    advice: AdviceCreator.WholeParagraphDoubleStrikethrough(RunnerDoubleStrikethrough)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -513,7 +495,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerFontColor.Contains(runner.CharacterFormat.FontColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Цвет шрифта' для раннера"
+                    message: $"Неверное значение свойства 'Цвет шрифта' для раннера",
+                    advice: AdviceCreator.WholeParagraphFontColor(RunnerFontColor)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -521,7 +504,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerFontName.Contains(runner.CharacterFormat.FontName))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Шрифт' для раннера"
+                    message: $"Неверное значение свойства 'Шрифт' для раннера",
+                    advice: AdviceCreator.WholeParagraphFontName(RunnerFontName)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -529,7 +513,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerHidden.Contains(runner.CharacterFormat.Hidden))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Скрытый' для раннера"
+                    message: $"Неверное значение свойства 'Скрытый' для раннера",
+                    advice: AdviceCreator.WholeParagraphHidden(RunnerHidden)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -537,7 +522,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerHighlightColor.Contains(runner.CharacterFormat.HighlightColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Цвет выделения' для раннера"
+                    message: $"Неверное значение свойства 'Цвет выделения' для раннера",
+                    advice: AdviceCreator.WholeParagraphHighlightColor(RunnerHighlightColor)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -545,7 +531,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerKerning.Contains(runner.CharacterFormat.Kerning))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Кернинг' для раннера"
+                    message: $"Неверное значение свойства 'Кернинг' для раннера",
+                    advice: AdviceCreator.WholeParagraphKerning(RunnerKerning)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -553,15 +540,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerPosition.Contains(runner.CharacterFormat.Position))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Смещение' для раннера"
-                );
-                paragraphMistakes.Add(mistake);
-            }
-
-            if (!RunnerRightToLeft.Contains(runner.CharacterFormat.RightToLeft))
-            {
-                ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Справа-налево' для раннера"
+                    message: $"Неверное значение свойства 'Смещение' для раннера",
+                    advice: AdviceCreator.WholeParagraphPosition(RunnerPosition)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -569,7 +549,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerScaling.Contains(runner.CharacterFormat.Scaling))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Масштаб' для раннера"
+                    message: $"Неверное значение свойства 'Масштаб' для раннера",
+                    advice: AdviceCreator.WholeParagraphScaling(RunnerScaling)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -578,7 +559,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if ((WholeParagraphChosenSize != null) & (runner.CharacterFormat.Size != WholeParagraphChosenSize))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Размер шрифта' для раннера (должно быть единообразие)"
+                    message: $"Неверное значение свойства 'Размер шрифта' для раннера (должно быть единообразие)",
+                    AdviceCreator.WholeParagraphChosenSize((double)WholeParagraphChosenSize!)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -586,7 +568,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if ((runner.CharacterFormat.Size < RunnerSizeLeftBorder) | (runner.CharacterFormat.Size > RunnerSizeRightBorder))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Размер шрифта' для раннера"
+                    message: $"Неверное значение свойства 'Размер шрифта' для раннера",
+                    advice: AdviceCreator.WholeParagraphSizeBorder(RunnerSizeLeftBorder, RunnerSizeRightBorder)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -599,7 +582,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerSpacing.Contains(runner.CharacterFormat.Spacing))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Межсимвольный интервал' для раннера"
+                    message: $"Неверное значение свойства 'Межсимвольный интервал' для раннера",
+                    advice: AdviceCreator.WholeParagraphSpacing(RunnerSpacing)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -607,7 +591,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerStrikethrough.Contains(runner.CharacterFormat.Strikethrough))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Зачеркнутый' для раннера"
+                    message: $"Неверное значение свойства 'Зачеркнутый' для раннера",
+                    advice: AdviceCreator.WholeParagraphDoubleStrikethrough(RunnerStrikethrough)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -615,7 +600,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             if (!RunnerUnderlineStyle.Contains(runner.CharacterFormat.UnderlineStyle))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
-                    message: $"Неверное значение свойства 'Подчеркнутый' для раннера"
+                    message: $"Неверное значение свойства 'Подчеркнутый' для раннера",
+                    advice: AdviceCreator.WholeParagraphUnderlineStyle(RunnerUnderlineStyle)
                 );
                 paragraphMistakes.Add(mistake);
             }
@@ -656,7 +642,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             var runners = paragraph.GetChildElements(false, Word.ElementType.Run).ToList();
-            if (runners.Count == 1) { return paragraphMistakes; }
+            //if (runners.Count == 1) { return paragraphMistakes; }
 
             foreach (Word.Run runner in runners)
             {
@@ -718,6 +704,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Выполнить сравнение по свойствам (не включая особые) с параграфом paragraph
         public virtual ParagraphCorrections? CheckSingleParagraphFormatting(int id, Word.Paragraph paragraph)
         {
+            // TODO: Подумать над проверкой выбранного шрифта
             ResetChosenSize();
 
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
@@ -746,6 +733,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             }
         }
 
+        // TODO: Убрать?
         public void ResetChosenSize()
         {
             WholeParagraphChosenSize = null;

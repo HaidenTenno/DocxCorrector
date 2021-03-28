@@ -162,7 +162,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             OutlineLevel = documentElement.OutlineLevel;
             PageBreakBefore = documentElement.PageBreakBefore;
             RightIndentation = documentElement.RightIndentation;
-            RightToLeft = documentElement.RightToLeft;
             SpaceAfter = documentElement.SpaceAfter;
             SpaceBefore = documentElement.SpaceBefore;
             SpecialIndentationLeftBorder = documentElement.SpecialIndentationLeftBorder;
@@ -180,7 +179,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.PropertiesPuller
             WholeParagraphItalic = documentElement.WholeParagraphItalic;
             WholeParagraphKerning = documentElement.WholeParagraphKerning;
             WholeParagraphPosition = documentElement.WholeParagraphPosition;
-            WholeParagraphRightToLeft = documentElement.WholeParagraphRightToLeft;
             WholeParagraphScaling = documentElement.WholeParagraphScaling;
             WholeParagraphSizeLeftBorder = documentElement.WholeParagraphSizeLeftBorder;
             WholeParagraphSizeRightBorder = documentElement.WholeParagraphSizeRightBorder;

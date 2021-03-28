@@ -288,7 +288,7 @@ namespace DocxCorrectorCore.App
 
         // Получить список ошибок форматирования одного абзаца документа fileToCorrect по требованиям (ГОСТу) rules (номер абзаца paragraphID, класс абзаца chosenClass)
         // Сохранение результата по пути resultDirPath
-        public void GenerateFormattingMistakesJSON(string fileToCorrect, RulesModel rules, int paragraphID, ParagraphClass paragraphClass, string resultPath)
+        public void GenerateFormattingMistakesJSON(string fileToCorrect, RulesModel rules, int paragraphID, ParagraphClass paragraphClass, string resultPath) // TODO: + структура с доп инфо
         {
             Console.WriteLine($"Started {Path.GetFileName(fileToCorrect)}");
             ParagraphCorrections? paragraphCorrections = null;

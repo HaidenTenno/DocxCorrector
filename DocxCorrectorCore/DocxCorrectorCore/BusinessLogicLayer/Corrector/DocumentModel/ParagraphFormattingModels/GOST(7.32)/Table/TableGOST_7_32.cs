@@ -35,7 +35,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public virtual List<Word.Padding> TableFormatDistanceFromSurroundingText => new List<Word.Padding> { new Word.Padding(0, 0, 0, 0) };
         public virtual List<Word.HorizontalPosition> TableFormatHorizontalPosition => new List<Word.HorizontalPosition> { new Word.HorizontalPosition(Word.HorizontalPositionType.Absolute, Word.HorizontalPositionAnchor.Margin) };
         public virtual List<Word.VerticalPosition> TableFormatVerticalPosition => new List<Word.VerticalPosition> { new Word.VerticalPosition(0, Word.LengthUnit.Centimeter, Word.VerticalPositionAnchor.Margin) };
-        public virtual List<bool> TableFormatRightToLeft => new List<bool> { false };
         public virtual List<int> TableFormatRowBandSize => new List<int> { 1 };
 
         // Свойства TableRowFormat
@@ -232,16 +231,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableFormatRightToLeft.Contains(table.TableFormat.RightToLeft))
-            {
-                TableMistake mistake = new TableMistake(
-                    row: -1,
-                    column: -1,
-                    message: $"Ошибка в свойстве 'слева-направо' для таблиц"
-                );
-                tableMistakes.Add(mistake);
-            }
-
             if (!TableFormatRowBandSize.Contains(table.TableFormat.RowBandSize))
             {
                 TableMistake mistake = new TableMistake(
@@ -339,16 +328,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                     row: tableRowIndex,
                     column: tableCellIndex,
                     message: $"У параграфа присутствуют рамки"
-                );
-                tableMistakes.Add(mistake);
-            }
-
-            if (!RightToLeft.Contains(paragraph.ParagraphFormat.RightToLeft))
-            {
-                TableMistake mistake = new TableMistake(
-                    row: tableRowIndex,
-                    column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Справа-налево'"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -462,16 +441,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                     row: tableRowIndex,
                     column: tableCellIndex,
                     message: $"Неверное значение свойства 'Кернинг' для всего абзаца"
-                );
-                tableMistakes.Add(mistake);
-            }
-
-            if (!WholeParagraphRightToLeft.Contains(paragraph.CharacterFormatForParagraphMark.RightToLeft))
-            {
-                TableMistake mistake = new TableMistake(
-                    row: tableRowIndex,
-                    column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Справа-налево' для всего абзаца"
                 );
                 tableMistakes.Add(mistake);
             }
@@ -635,16 +604,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                     row: tableRowIndex,
                     column: tableCellIndex,
                     message: $"Неверное значение свойства 'Кернинг' для раннера"
-                );
-                tableMistakes.Add(mistake);
-            }
-
-            if (!RunnerRightToLeft.Contains(runner.CharacterFormat.RightToLeft))
-            {
-                TableMistake mistake = new TableMistake(
-                    row: tableRowIndex,
-                    column: tableCellIndex,
-                    message: $"Неверное значение свойства 'Справа-налево' для раннера"
                 );
                 tableMistakes.Add(mistake);
             }
