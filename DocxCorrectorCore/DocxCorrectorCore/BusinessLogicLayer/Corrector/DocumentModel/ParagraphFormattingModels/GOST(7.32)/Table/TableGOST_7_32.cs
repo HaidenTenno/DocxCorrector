@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
@@ -46,6 +47,12 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public virtual List<Word.BorderStyle> TableCellFormatAvailableBorders => new List<Word.BorderStyle> { Word.BorderStyle.None, Word.BorderStyle.Single };
         public virtual List<Word.Tables.TableCellTextDirection> TableCellFormatTextDirection => new List<Word.Tables.TableCellTextDirection> { Word.Tables.TableCellTextDirection.LeftToRight };
 
+        // Проверка, что список не пустой
+        private bool CheckIfListIsNotEmpty<T>(List<T> list)
+        {
+            return list.Count() != 0;
+        }
+
         // Проверка границ
         private bool CheckTableFormatBorder(Word.Tables.Table table)
         {
@@ -57,17 +64,17 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                     case Word.SingleBorderType.Bottom:
                     case Word.SingleBorderType.Left:
                     case Word.SingleBorderType.Right:
-                        if (!TableFormatOuterBorders.Contains(table.TableFormat.Borders[borderType].Style)) { return false; }
+                        if (CheckIfListIsNotEmpty(TableFormatOuterBorders) & !TableFormatOuterBorders.Contains(table.TableFormat.Borders[borderType].Style)) { return false; }
                         break;
 
                     case Word.SingleBorderType.InsideVertical:
                     case Word.SingleBorderType.InsideHorizontal:
-                        if (!TableFormatAvailableInnerBorders.Contains(table.TableFormat.Borders[borderType].Style)) { return false; }
+                        if (CheckIfListIsNotEmpty(TableFormatAvailableInnerBorders) & !TableFormatAvailableInnerBorders.Contains(table.TableFormat.Borders[borderType].Style)) { return false; }
                         break;
 
                     case Word.SingleBorderType.DiagonalDown:
                     case Word.SingleBorderType.DiagonalUp:
-                        if (!TableFormatDiagonalBorders.Contains(table.TableFormat.Borders[borderType].Style)) { return false; }
+                        if (CheckIfListIsNotEmpty(TableFormatDiagonalBorders) & !TableFormatDiagonalBorders.Contains(table.TableFormat.Borders[borderType].Style)) { return false; }
                         break;
                 }
             }
@@ -79,7 +86,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
             {
-                if (!TableCellFormatAvailableBorders.Contains(cell.CellFormat.Borders[borderType].Style)) { return false; }
+                if (CheckIfListIsNotEmpty(TableCellFormatAvailableBorders) & !TableCellFormatAvailableBorders.Contains(cell.CellFormat.Borders[borderType].Style)) { return false; }
             }
 
             return true;
@@ -89,7 +96,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
             {
-                if (!BorderStyle.Contains(paragraph.ParagraphFormat.Borders[borderType].Style))
+                if (CheckIfListIsNotEmpty(BorderStyle) & !BorderStyle.Contains(paragraph.ParagraphFormat.Borders[borderType].Style))
                 {
                     return false;
                 }
@@ -99,7 +106,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
         private bool CheckWholeParagraphBorder(Word.Paragraph paragraph)
         {
-            if (!WholeParagraphBorder.Contains(paragraph.CharacterFormatForParagraphMark.Border))
+            if (CheckIfListIsNotEmpty(WholeParagraphBorder) & !WholeParagraphBorder.Contains(paragraph.CharacterFormatForParagraphMark.Border))
             {
                 return false;
             }
@@ -108,7 +115,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
         private bool CheckRunnerBorder(Word.Run runner)
         {
-            if (!WholeParagraphBorder.Contains(runner.CharacterFormat.Border))
+            if (CheckIfListIsNotEmpty(WholeParagraphBorder) & !WholeParagraphBorder.Contains(runner.CharacterFormat.Border))
             {
                 return false;
             }
@@ -151,7 +158,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
             // Проверка Alignment в других методах
 
-            if (!TableFormatBackgroundColor.Contains(table.TableFormat.BackgroundColor))
+            if (CheckIfListIsNotEmpty(TableFormatBackgroundColor) & !TableFormatBackgroundColor.Contains(table.TableFormat.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
@@ -171,7 +178,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableFormatColumnBandSize.Contains(table.TableFormat.ColumnBandSize))
+            if (CheckIfListIsNotEmpty(TableFormatColumnBandSize) & !TableFormatColumnBandSize.Contains(table.TableFormat.ColumnBandSize))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
@@ -181,7 +188,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableFormatDefaultCellSpacing.Contains(table.TableFormat.DefaultCellSpacing))
+            if (CheckIfListIsNotEmpty(TableFormatDefaultCellSpacing) & !TableFormatDefaultCellSpacing.Contains(table.TableFormat.DefaultCellSpacing))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
@@ -191,7 +198,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableFormatIndentFromLeft.Contains(table.TableFormat.IndentFromLeft))
+            if (CheckIfListIsNotEmpty(TableFormatIndentFromLeft) & !TableFormatIndentFromLeft.Contains(table.TableFormat.IndentFromLeft))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
@@ -201,7 +208,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableFormatDistanceFromSurroundingText.Contains(table.TableFormat.Positioning.DistanceFromSurroundingText))
+            if (CheckIfListIsNotEmpty(TableFormatDistanceFromSurroundingText) & !TableFormatDistanceFromSurroundingText.Contains(table.TableFormat.Positioning.DistanceFromSurroundingText))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
@@ -211,7 +218,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableFormatHorizontalPosition.Contains(table.TableFormat.Positioning.HorizontalPosition))
+            if (CheckIfListIsNotEmpty(TableFormatHorizontalPosition) & !TableFormatHorizontalPosition.Contains(table.TableFormat.Positioning.HorizontalPosition))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
@@ -221,7 +228,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableFormatVerticalPosition.Contains(table.TableFormat.Positioning.VerticalPosition))
+            if (CheckIfListIsNotEmpty(TableFormatVerticalPosition) & !TableFormatVerticalPosition.Contains(table.TableFormat.Positioning.VerticalPosition))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
@@ -231,7 +238,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableFormatRowBandSize.Contains(table.TableFormat.RowBandSize))
+            if (CheckIfListIsNotEmpty(TableFormatRowBandSize) & !TableFormatRowBandSize.Contains(table.TableFormat.RowBandSize))
             {
                 TableMistake mistake = new TableMistake(
                     row: -1,
@@ -248,7 +255,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (!TableRowFormatAllowBreakAcrossPages.Contains(tableRow.RowFormat.AllowBreakAcrossPages))
+            if (CheckIfListIsNotEmpty(TableRowFormatAllowBreakAcrossPages) & !TableRowFormatAllowBreakAcrossPages.Contains(tableRow.RowFormat.AllowBreakAcrossPages))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -258,7 +265,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableRowFormatHidden.Contains(tableRow.RowFormat.Hidden))
+            if (CheckIfListIsNotEmpty(TableRowFormatHidden) & !TableRowFormatHidden.Contains(tableRow.RowFormat.Hidden))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -275,7 +282,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (!TableCellFormatBackgroundColor.Contains(tableCell.CellFormat.BackgroundColor))
+            if (CheckIfListIsNotEmpty(TableCellFormatBackgroundColor) & !TableCellFormatBackgroundColor.Contains(tableCell.CellFormat.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -295,7 +302,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!TableCellFormatTextDirection.Contains(tableCell.CellFormat.TextDirection))
+            if (CheckIfListIsNotEmpty(TableCellFormatTextDirection) & !TableCellFormatTextDirection.Contains(tableCell.CellFormat.TextDirection))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -312,7 +319,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (!BackgroundColor.Contains(paragraph.ParagraphFormat.BackgroundColor))
+            if (CheckIfListIsNotEmpty(BackgroundColor) & !BackgroundColor.Contains(paragraph.ParagraphFormat.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -341,7 +348,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
             if (tableRowIndex == 0)
             {
-                if (!FirstRowAlignment.Contains(paragraph.ParagraphFormat.Alignment))
+                if (CheckIfListIsNotEmpty(FirstRowAlignment) & !FirstRowAlignment.Contains(paragraph.ParagraphFormat.Alignment))
                 {
                     TableMistake mistake = new TableMistake(
                         row: tableRowIndex,
@@ -354,7 +361,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
             if ((tableCellIndex == 0) & (tableRowIndex != 0))
             {
-                if (!FirstColumnAlignment.Contains(paragraph.ParagraphFormat.Alignment))
+                if (CheckIfListIsNotEmpty(FirstColumnAlignment) & !FirstColumnAlignment.Contains(paragraph.ParagraphFormat.Alignment))
                 {
                     TableMistake mistake = new TableMistake(
                         row: tableRowIndex,
@@ -365,7 +372,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 }
             }
 
-            if (!WholeParagraphBackgroundColor.Contains(paragraph.CharacterFormatForParagraphMark.BackgroundColor))
+            if (CheckIfListIsNotEmpty(WholeParagraphBackgroundColor) & !WholeParagraphBackgroundColor.Contains(paragraph.CharacterFormatForParagraphMark.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -385,7 +392,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphDoubleStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.DoubleStrikethrough))
+            if (CheckIfListIsNotEmpty(WholeParagraphDoubleStrikethrough) & !WholeParagraphDoubleStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.DoubleStrikethrough))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -395,7 +402,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphFontColor.Contains(paragraph.CharacterFormatForParagraphMark.FontColor))
+            if (CheckIfListIsNotEmpty(WholeParagraphFontColor) & !WholeParagraphFontColor.Contains(paragraph.CharacterFormatForParagraphMark.FontColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -405,7 +412,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphFontName.Contains(paragraph.CharacterFormatForParagraphMark.FontName))
+            if (CheckIfListIsNotEmpty(WholeParagraphFontName) & !WholeParagraphFontName.Contains(paragraph.CharacterFormatForParagraphMark.FontName))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -415,7 +422,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphHidden.Contains(paragraph.CharacterFormatForParagraphMark.Hidden))
+            if (CheckIfListIsNotEmpty(WholeParagraphHidden) & !WholeParagraphHidden.Contains(paragraph.CharacterFormatForParagraphMark.Hidden))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -425,7 +432,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphHighlightColor.Contains(paragraph.CharacterFormatForParagraphMark.HighlightColor))
+            if (CheckIfListIsNotEmpty(WholeParagraphHighlightColor) & !WholeParagraphHighlightColor.Contains(paragraph.CharacterFormatForParagraphMark.HighlightColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -435,7 +442,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphKerning.Contains(paragraph.CharacterFormatForParagraphMark.Kerning))
+            if (CheckIfListIsNotEmpty(WholeParagraphKerning) & !WholeParagraphKerning.Contains(paragraph.CharacterFormatForParagraphMark.Kerning))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -445,7 +452,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphScaling.Contains(paragraph.CharacterFormatForParagraphMark.Scaling))
+            if (CheckIfListIsNotEmpty(WholeParagraphScaling) & !WholeParagraphScaling.Contains(paragraph.CharacterFormatForParagraphMark.Scaling))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -481,7 +488,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 WholeParagraphChosenSize = paragraph.CharacterFormatForParagraphMark.Size;
             }
 
-            if (!WholeParagraphStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.Strikethrough))
+            if (CheckIfListIsNotEmpty(WholeParagraphStrikethrough) & !WholeParagraphStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.Strikethrough))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -491,7 +498,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphSubscript.Contains(paragraph.CharacterFormatForParagraphMark.Subscript))
+            if (CheckIfListIsNotEmpty(WholeParagraphSubscript) & !WholeParagraphSubscript.Contains(paragraph.CharacterFormatForParagraphMark.Subscript))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -501,7 +508,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphSuperscript.Contains(paragraph.CharacterFormatForParagraphMark.Superscript))
+            if (CheckIfListIsNotEmpty(WholeParagraphSuperscript) & !WholeParagraphSuperscript.Contains(paragraph.CharacterFormatForParagraphMark.Superscript))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -511,7 +518,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphUnderlineStyle.Contains(paragraph.CharacterFormatForParagraphMark.UnderlineStyle))
+            if (CheckIfListIsNotEmpty(WholeParagraphUnderlineStyle) & !WholeParagraphUnderlineStyle.Contains(paragraph.CharacterFormatForParagraphMark.UnderlineStyle))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -528,7 +535,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             List<TableMistake> tableMistakes = new List<TableMistake>();
 
-            if (!RunnerBackgroundColor.Contains(runner.CharacterFormat.BackgroundColor))
+            if (CheckIfListIsNotEmpty(RunnerBackgroundColor) & !RunnerBackgroundColor.Contains(runner.CharacterFormat.BackgroundColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -548,7 +555,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!RunnerStrikethrough.Contains(runner.CharacterFormat.Strikethrough))
+            if (CheckIfListIsNotEmpty(RunnerStrikethrough) & !RunnerStrikethrough.Contains(runner.CharacterFormat.Strikethrough))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -558,7 +565,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!RunnerFontColor.Contains(runner.CharacterFormat.FontColor))
+            if (CheckIfListIsNotEmpty(RunnerFontColor) & !RunnerFontColor.Contains(runner.CharacterFormat.FontColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -568,7 +575,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!RunnerFontName.Contains(runner.CharacterFormat.FontName))
+            if (CheckIfListIsNotEmpty(RunnerFontName) & !RunnerFontName.Contains(runner.CharacterFormat.FontName))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -578,7 +585,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!RunnerHidden.Contains(runner.CharacterFormat.Hidden))
+            if (CheckIfListIsNotEmpty(RunnerHidden) & !RunnerHidden.Contains(runner.CharacterFormat.Hidden))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -588,7 +595,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!RunnerHighlightColor.Contains(runner.CharacterFormat.HighlightColor))
+            if (CheckIfListIsNotEmpty(RunnerHighlightColor) & !RunnerHighlightColor.Contains(runner.CharacterFormat.HighlightColor))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -598,7 +605,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!RunnerKerning.Contains(runner.CharacterFormat.Kerning))
+            if (CheckIfListIsNotEmpty(RunnerKerning) & !RunnerKerning.Contains(runner.CharacterFormat.Kerning))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -608,7 +615,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!RunnerScaling.Contains(runner.CharacterFormat.Scaling))
+            if (CheckIfListIsNotEmpty(RunnerScaling) & !RunnerScaling.Contains(runner.CharacterFormat.Scaling))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -644,7 +651,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 WholeParagraphChosenSize = runner.CharacterFormat.Size;
             }
 
-            if (!RunnerStrikethrough.Contains(runner.CharacterFormat.Strikethrough))
+            if (CheckIfListIsNotEmpty(RunnerStrikethrough) & !RunnerStrikethrough.Contains(runner.CharacterFormat.Strikethrough))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,
@@ -654,7 +661,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 tableMistakes.Add(mistake);
             }
 
-            if (!RunnerUnderlineStyle.Contains(runner.CharacterFormat.UnderlineStyle))
+            if (CheckIfListIsNotEmpty(RunnerUnderlineStyle) & !RunnerUnderlineStyle.Contains(runner.CharacterFormat.UnderlineStyle))
             {
                 TableMistake mistake = new TableMistake(
                     row: tableRowIndex,

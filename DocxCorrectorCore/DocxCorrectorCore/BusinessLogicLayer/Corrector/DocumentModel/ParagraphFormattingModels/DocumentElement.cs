@@ -76,12 +76,18 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Количество пустых строк (отбивок, SPACE, n0) после параграфа
         public virtual List<int> EmptyLinesAfter => new List<int> { 0 };
 
+        // Проверка, что список не пустой
+        private bool CheckIfListIsNotEmpty<T>(List<T> list)
+        {
+            return list.Count() != 0;
+        }
+
         // Проверка границ (Borders)
         private bool CheckParagraphFormatBorder(Word.Paragraph paragraph)
         {
             foreach (Word.SingleBorderType borderType in Enum.GetValues(typeof(Word.SingleBorderType)))
             {
-                if (!BorderStyle.Contains(paragraph.ParagraphFormat.Borders[borderType].Style))
+                if (CheckIfListIsNotEmpty(BorderStyle) & !BorderStyle.Contains(paragraph.ParagraphFormat.Borders[borderType].Style))
                 {
                     return false;
                 }
@@ -91,7 +97,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
         private bool CheckWholeParagraphBorder(Word.Paragraph paragraph)
         {
-            if (!WholeParagraphBorder.Contains(paragraph.CharacterFormatForParagraphMark.Border))
+            if (CheckIfListIsNotEmpty(WholeParagraphBorder) & !WholeParagraphBorder.Contains(paragraph.CharacterFormatForParagraphMark.Border))
             {
                 return false;
             }
@@ -100,7 +106,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
         private bool CheckRunnerBorder(Word.Run runner)
         {
-            if (!RunnerBorder.Contains(runner.CharacterFormat.Border))
+            if (CheckIfListIsNotEmpty(RunnerBorder) & !RunnerBorder.Contains(runner.CharacterFormat.Border))
             {
                 return false;
             }
@@ -111,7 +117,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
-            if (!Alignment.Contains(paragraph.ParagraphFormat.Alignment))
+            if (CheckIfListIsNotEmpty(Alignment) & !Alignment.Contains(paragraph.ParagraphFormat.Alignment))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное выравнивание",
@@ -120,7 +126,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!BackgroundColor.Contains(paragraph.ParagraphFormat.BackgroundColor))
+            if (CheckIfListIsNotEmpty(BackgroundColor) & !BackgroundColor.Contains(paragraph.ParagraphFormat.BackgroundColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверный цвет заливки параграфа",
@@ -138,7 +144,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!KeepLinesTogether.Contains(paragraph.ParagraphFormat.KeepLinesTogether))
+            if (CheckIfListIsNotEmpty(KeepLinesTogether) & !KeepLinesTogether.Contains(paragraph.ParagraphFormat.KeepLinesTogether))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Не разрывать абзац'",
@@ -147,7 +153,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!KeepWithNext.Contains(paragraph.ParagraphFormat.KeepWithNext))
+            if (CheckIfListIsNotEmpty(KeepWithNext) & !KeepWithNext.Contains(paragraph.ParagraphFormat.KeepWithNext))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Не отрывать от следующего'",
@@ -156,7 +162,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!LeftIndentation.Contains(paragraph.ParagraphFormat.LeftIndentation))
+            if (CheckIfListIsNotEmpty(LeftIndentation) & !LeftIndentation.Contains(paragraph.ParagraphFormat.LeftIndentation))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение отступа слева",
@@ -165,7 +171,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!LineSpacing.Contains(paragraph.ParagraphFormat.LineSpacing))
+            if (CheckIfListIsNotEmpty(LineSpacing) & !LineSpacing.Contains(paragraph.ParagraphFormat.LineSpacing))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение междустрочного интервала",
@@ -174,7 +180,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!MirrorIndents.Contains(paragraph.ParagraphFormat.MirrorIndents))
+            if (CheckIfListIsNotEmpty(MirrorIndents) & !MirrorIndents.Contains(paragraph.ParagraphFormat.MirrorIndents))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Зеркальные отступы'",
@@ -183,7 +189,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!NoSpaceBetweenParagraphsOfSameStyle.Contains(paragraph.ParagraphFormat.NoSpaceBetweenParagraphsOfSameStyle))
+            if (CheckIfListIsNotEmpty(NoSpaceBetweenParagraphsOfSameStyle) & !NoSpaceBetweenParagraphsOfSameStyle.Contains(paragraph.ParagraphFormat.NoSpaceBetweenParagraphsOfSameStyle))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Не добавлять интервал между параграфами одного стиля'",
@@ -192,7 +198,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!OutlineLevel.Contains(paragraph.ParagraphFormat.OutlineLevel))
+            if (CheckIfListIsNotEmpty(OutlineLevel) & !OutlineLevel.Contains(paragraph.ParagraphFormat.OutlineLevel))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение уровня заголовка",
@@ -201,7 +207,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!PageBreakBefore.Contains(paragraph.ParagraphFormat.PageBreakBefore))
+            if (CheckIfListIsNotEmpty(PageBreakBefore) & !PageBreakBefore.Contains(paragraph.ParagraphFormat.PageBreakBefore))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'С новой страницы'",
@@ -210,7 +216,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RightIndentation.Contains(paragraph.ParagraphFormat.RightIndentation))
+            if (CheckIfListIsNotEmpty(RightIndentation) & !RightIndentation.Contains(paragraph.ParagraphFormat.RightIndentation))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Отступ справа'",
@@ -219,7 +225,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!SpaceAfter.Contains(paragraph.ParagraphFormat.SpaceAfter))
+            if (CheckIfListIsNotEmpty(SpaceAfter) & !SpaceAfter.Contains(paragraph.ParagraphFormat.SpaceAfter))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Интервал после'",
@@ -228,7 +234,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!SpaceBefore.Contains(paragraph.ParagraphFormat.SpaceBefore))
+            if (CheckIfListIsNotEmpty(SpaceBefore) & !SpaceBefore.Contains(paragraph.ParagraphFormat.SpaceBefore))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Интервал до'",
@@ -247,7 +253,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WidowControl.Contains(paragraph.ParagraphFormat.WidowControl))
+            if (CheckIfListIsNotEmpty(WidowControl) & !WidowControl.Contains(paragraph.ParagraphFormat.WidowControl))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Запрет висячих строк'",
@@ -263,7 +269,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
-            if (!WholeParagraphAllCaps.Contains(paragraph.CharacterFormatForParagraphMark.AllCaps))
+            if (CheckIfListIsNotEmpty(WholeParagraphAllCaps) & !WholeParagraphAllCaps.Contains(paragraph.CharacterFormatForParagraphMark.AllCaps))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Все прописные' для всего абзаца",
@@ -272,7 +278,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphBackgroundColor.Contains(paragraph.CharacterFormatForParagraphMark.BackgroundColor))
+            if (CheckIfListIsNotEmpty(WholeParagraphBackgroundColor) & !WholeParagraphBackgroundColor.Contains(paragraph.CharacterFormatForParagraphMark.BackgroundColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет заливки' для всего абзаца",
@@ -281,7 +287,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphBold.Contains(paragraph.CharacterFormatForParagraphMark.Bold))
+            if (CheckIfListIsNotEmpty(WholeParagraphBold) & !WholeParagraphBold.Contains(paragraph.CharacterFormatForParagraphMark.Bold))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Жирный' для всего абзаца",
@@ -299,7 +305,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphDoubleStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.DoubleStrikethrough))
+            if (CheckIfListIsNotEmpty(WholeParagraphDoubleStrikethrough) & !WholeParagraphDoubleStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.DoubleStrikethrough))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Двойное зачеркивание' для всего абзаца",
@@ -308,7 +314,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphFontColor.Contains(paragraph.CharacterFormatForParagraphMark.FontColor))
+            if (CheckIfListIsNotEmpty(WholeParagraphFontColor) & !WholeParagraphFontColor.Contains(paragraph.CharacterFormatForParagraphMark.FontColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет шрифта' для всего абзаца",
@@ -317,7 +323,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphFontName.Contains(paragraph.CharacterFormatForParagraphMark.FontName))
+            if (CheckIfListIsNotEmpty(WholeParagraphFontName) & !WholeParagraphFontName.Contains(paragraph.CharacterFormatForParagraphMark.FontName))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Шрифт' для всего абзаца",
@@ -326,7 +332,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphHidden.Contains(paragraph.CharacterFormatForParagraphMark.Hidden))
+            if (CheckIfListIsNotEmpty(WholeParagraphHidden) & !WholeParagraphHidden.Contains(paragraph.CharacterFormatForParagraphMark.Hidden))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Скрытый' для всего абзаца",
@@ -335,7 +341,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphHighlightColor.Contains(paragraph.CharacterFormatForParagraphMark.HighlightColor))
+            if (CheckIfListIsNotEmpty(WholeParagraphHighlightColor) & !WholeParagraphHighlightColor.Contains(paragraph.CharacterFormatForParagraphMark.HighlightColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет выделения' для всего абзаца",
@@ -344,7 +350,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphItalic.Contains(paragraph.CharacterFormatForParagraphMark.Italic))
+            if (CheckIfListIsNotEmpty(WholeParagraphItalic) & !WholeParagraphItalic.Contains(paragraph.CharacterFormatForParagraphMark.Italic))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Курсив' для всего абзаца",
@@ -353,7 +359,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphKerning.Contains(paragraph.CharacterFormatForParagraphMark.Kerning))
+            if (CheckIfListIsNotEmpty(WholeParagraphKerning) & !WholeParagraphKerning.Contains(paragraph.CharacterFormatForParagraphMark.Kerning))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Кернинг' для всего абзаца",
@@ -362,7 +368,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphPosition.Contains(paragraph.CharacterFormatForParagraphMark.Position))
+            if (CheckIfListIsNotEmpty(WholeParagraphPosition) & !WholeParagraphPosition.Contains(paragraph.CharacterFormatForParagraphMark.Position))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Смещение' для всего абзаца",
@@ -371,7 +377,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphScaling.Contains(paragraph.CharacterFormatForParagraphMark.Scaling))
+            if (CheckIfListIsNotEmpty(WholeParagraphScaling) & !WholeParagraphScaling.Contains(paragraph.CharacterFormatForParagraphMark.Scaling))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Масштаб' для всего абзаца",
@@ -404,7 +410,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 WholeParagraphChosenSize = paragraph.CharacterFormatForParagraphMark.Size;
             }
 
-            if (!WholeParagraphSmallCaps.Contains(paragraph.CharacterFormatForParagraphMark.SmallCaps))
+            if (CheckIfListIsNotEmpty(WholeParagraphSmallCaps) & !WholeParagraphSmallCaps.Contains(paragraph.CharacterFormatForParagraphMark.SmallCaps))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Все строчные' для всего абзаца",
@@ -413,7 +419,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphSpacing.Contains(paragraph.CharacterFormatForParagraphMark.Spacing))
+            if (CheckIfListIsNotEmpty(WholeParagraphSpacing) & !WholeParagraphSpacing.Contains(paragraph.CharacterFormatForParagraphMark.Spacing))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Межсимвольный интервал' для всего абзаца",
@@ -422,7 +428,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.Strikethrough))
+            if (CheckIfListIsNotEmpty(WholeParagraphStrikethrough) & !WholeParagraphStrikethrough.Contains(paragraph.CharacterFormatForParagraphMark.Strikethrough))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Зачеркнутый' для всего абзаца",
@@ -431,7 +437,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphSubscript.Contains(paragraph.CharacterFormatForParagraphMark.Subscript))
+            if (CheckIfListIsNotEmpty(WholeParagraphSubscript) & !WholeParagraphSubscript.Contains(paragraph.CharacterFormatForParagraphMark.Subscript))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Подстрочный' для всего абзаца",
@@ -440,7 +446,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphSuperscript.Contains(paragraph.CharacterFormatForParagraphMark.Superscript))
+            if (CheckIfListIsNotEmpty(WholeParagraphSuperscript) & !WholeParagraphSuperscript.Contains(paragraph.CharacterFormatForParagraphMark.Superscript))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Надстрочный' для всего абзаца",
@@ -449,7 +455,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!WholeParagraphUnderlineStyle.Contains(paragraph.CharacterFormatForParagraphMark.UnderlineStyle))
+            if (CheckIfListIsNotEmpty(WholeParagraphUnderlineStyle) & !WholeParagraphUnderlineStyle.Contains(paragraph.CharacterFormatForParagraphMark.UnderlineStyle))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Подчеркнутый' для всего абзаца",
@@ -465,7 +471,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         {
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
-            if (!RunnerBackgroundColor.Contains(runner.CharacterFormat.BackgroundColor))
+            if (CheckIfListIsNotEmpty(RunnerBackgroundColor) & !RunnerBackgroundColor.Contains(runner.CharacterFormat.BackgroundColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет заливки' для раннера",
@@ -483,7 +489,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerDoubleStrikethrough.Contains(runner.CharacterFormat.DoubleStrikethrough))
+            if (CheckIfListIsNotEmpty(RunnerDoubleStrikethrough) & !RunnerDoubleStrikethrough.Contains(runner.CharacterFormat.DoubleStrikethrough))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Двойное зачеркивание' для раннера",
@@ -492,7 +498,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerFontColor.Contains(runner.CharacterFormat.FontColor))
+            if (CheckIfListIsNotEmpty(RunnerFontColor) & !RunnerFontColor.Contains(runner.CharacterFormat.FontColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет шрифта' для раннера",
@@ -501,7 +507,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerFontName.Contains(runner.CharacterFormat.FontName))
+            if (CheckIfListIsNotEmpty(RunnerFontName) & !RunnerFontName.Contains(runner.CharacterFormat.FontName))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Шрифт' для раннера",
@@ -510,7 +516,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerHidden.Contains(runner.CharacterFormat.Hidden))
+            if (CheckIfListIsNotEmpty(RunnerHidden) & !RunnerHidden.Contains(runner.CharacterFormat.Hidden))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Скрытый' для раннера",
@@ -519,7 +525,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerHighlightColor.Contains(runner.CharacterFormat.HighlightColor))
+            if (CheckIfListIsNotEmpty(RunnerHighlightColor) & !RunnerHighlightColor.Contains(runner.CharacterFormat.HighlightColor))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Цвет выделения' для раннера",
@@ -528,7 +534,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerKerning.Contains(runner.CharacterFormat.Kerning))
+            if (CheckIfListIsNotEmpty(RunnerKerning) & !RunnerKerning.Contains(runner.CharacterFormat.Kerning))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Кернинг' для раннера",
@@ -537,7 +543,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerPosition.Contains(runner.CharacterFormat.Position))
+            if (CheckIfListIsNotEmpty(RunnerPosition) & !RunnerPosition.Contains(runner.CharacterFormat.Position))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Смещение' для раннера",
@@ -546,7 +552,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerScaling.Contains(runner.CharacterFormat.Scaling))
+            if (CheckIfListIsNotEmpty(RunnerScaling) & !RunnerScaling.Contains(runner.CharacterFormat.Scaling))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Масштаб' для раннера",
@@ -579,7 +585,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 WholeParagraphChosenSize = runner.CharacterFormat.Size;
             }
 
-            if (!RunnerSpacing.Contains(runner.CharacterFormat.Spacing))
+            if (CheckIfListIsNotEmpty(RunnerSpacing) & !RunnerSpacing.Contains(runner.CharacterFormat.Spacing))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Межсимвольный интервал' для раннера",
@@ -588,7 +594,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerStrikethrough.Contains(runner.CharacterFormat.Strikethrough))
+            if (CheckIfListIsNotEmpty(RunnerStrikethrough) & !RunnerStrikethrough.Contains(runner.CharacterFormat.Strikethrough))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Зачеркнутый' для раннера",
@@ -597,7 +603,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 paragraphMistakes.Add(mistake);
             }
 
-            if (!RunnerUnderlineStyle.Contains(runner.CharacterFormat.UnderlineStyle))
+            if (CheckIfListIsNotEmpty(RunnerUnderlineStyle) & !RunnerUnderlineStyle.Contains(runner.CharacterFormat.UnderlineStyle))
             {
                 ParagraphMistake mistake = new ParagraphMistake(
                     message: $"Неверное значение свойства 'Подчеркнутый' для раннера",
