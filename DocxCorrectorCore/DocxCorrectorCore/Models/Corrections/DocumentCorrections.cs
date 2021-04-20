@@ -7,6 +7,7 @@ namespace DocxCorrectorCore.Models.Corrections
     public enum RulesModel
     {
         GOST,
+        GOST_7_0_11,
         ITMO
     }
 

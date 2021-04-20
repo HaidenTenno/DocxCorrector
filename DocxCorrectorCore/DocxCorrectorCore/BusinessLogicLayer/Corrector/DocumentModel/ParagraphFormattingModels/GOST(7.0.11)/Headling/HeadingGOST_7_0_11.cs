@@ -7,7 +7,7 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 {
-    public class HeadingGOST_7_32 : DocumentElementGOST_7_32
+    public class HeadingGOST_7_0_11 : DocumentElementGOST_7_0_11
     {
         //b0
 
@@ -15,23 +15,15 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public override ParagraphClass ParagraphClass => ParagraphClass.b0;
 
         // Свойства ParagraphFormat
+        public override List<bool> PageBreakBefore => new List<bool> { true, false };
 
         // Свойства CharacterFormat для всего абзаца
+        public override List<bool> WholeParagraphAllCaps => new List<bool> { };
+        public override List<bool> WholeParagraphBold => new List<bool> { };
 
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
 
     }
-
-    // TODO: Перенести в отдельную модель рядом с ParagraphFormattingModel
-    //public class DocumentHeadlings
-    //{
-    //    public HeadlingCorrections? CheckHeadlings(int id, List<ClassifiedParagraph> classifiedParagraphs)
-    //    {
-    //        // TODO: Продолжить тут
-
-    //        return null;
-    //    }
-    //}
 }

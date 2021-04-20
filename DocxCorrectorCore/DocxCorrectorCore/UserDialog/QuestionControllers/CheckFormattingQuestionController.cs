@@ -7,7 +7,7 @@ namespace DocxCorrectorCore.UserDialog
     public sealed class CheckFormattingQuestionController : StringAnswerQuestionController
     {
         // Public
-        public CheckFormattingQuestionController() : base("Введите: \nПуть к файлу для проверки, \nТребования для проверки (GOST/ITMO), \nНомер параграфа, \nМетка класса выбранного параграфа, \nПуть к файлу или директории для сохранения списка ошибок") { }
+        public CheckFormattingQuestionController() : base("Введите: \nПуть к файлу для проверки, \nТребования для проверки (GOST/GOST_7_0_11/ITMO), \nНомер параграфа, \nМетка класса выбранного параграфа, \nПуть к файлу или директории для сохранения списка ошибок") { }
 
         public override void Load()
         {

@@ -7,7 +7,7 @@ namespace DocxCorrectorCore.UserDialog
     public sealed class CreateClassModelFileQuestionController : StringAnswerQuestionController
     {
         // Public
-        public CreateClassModelFileQuestionController() : base("Введите: \nТребования для проверки (GOST/ITMO), \nМетка класса параграфа, \nПуть к файлу или директории для сохранения модели") { }
+        public CreateClassModelFileQuestionController() : base("Введите: \nТребования для проверки (GOST/GOST_7_0_11/ITMO), \nМетка класса параграфа, \nПуть к файлу или директории для сохранения модели") { }
 
         public override void Load()
         {
