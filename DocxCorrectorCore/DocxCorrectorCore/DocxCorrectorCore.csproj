@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="BusinessLogicLayer\Corrector\DocumentModel\ParagraphFormattingModels\GOST%287.0.11%29\ImageSign\" />
-    <Folder Include="BusinessLogicLayer\Corrector\DocumentModel\ParagraphFormattingModels\GOST%287.0.11%29\List\" />
     <Folder Include="BusinessLogicLayer\Corrector\DocumentModel\ParagraphFormattingModels\GOST%287.0.11%29\Table\" />
   </ItemGroup>
 

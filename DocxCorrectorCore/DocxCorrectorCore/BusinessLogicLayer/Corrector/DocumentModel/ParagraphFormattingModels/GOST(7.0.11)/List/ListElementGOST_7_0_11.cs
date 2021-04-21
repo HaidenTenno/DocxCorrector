@@ -8,7 +8,7 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 {
-    public class ListElementGOST_7_32 : DocumentElementGOST_7_32, IRegexSupportable
+    public class ListElementGOST_7_0_11 : DocumentElementGOST_7_32, IRegexSupportable
     {
         //d0
 
