@@ -7,6 +7,17 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 {
+    public enum EdgeSymbolType
+    {
+        CapitalLetter,
+        SmallLetter,
+        Colon,
+        Semicolon,
+        Comma,
+        TerminatingSymbol,
+        Other
+    }
+
     public abstract class DocumentElement
     {
         // Класс элемента
@@ -57,24 +68,29 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public virtual List<Word.UnderlineType> WholeParagraphUnderlineStyle => new List<Word.UnderlineType> { Word.UnderlineType.None }; // 37)
 
         // Свойства CharacterFormat для раннеров
-        public virtual List<Word.Color> RunnerBackgroundColor => WholeParagraphBackgroundColor; // 40
-        public virtual List<Word.SingleBorder> RunnerBorder => WholeParagraphBorder; // 41
-        public virtual List<bool> RunnerDoubleStrikethrough => WholeParagraphDoubleStrikethrough; // 42
-        public virtual List<Word.Color> RunnerFontColor => WholeParagraphFontColor; // 43
-        public virtual List<string> RunnerFontName => WholeParagraphFontName; // 44
-        public virtual List<bool> RunnerHidden => WholeParagraphHidden; // 45
-        public virtual List<Word.Color> RunnerHighlightColor => WholeParagraphHighlightColor; // 46
-        public virtual List<double> RunnerKerning => WholeParagraphKerning; // 47
-        public virtual List<double> RunnerPosition => WholeParagraphPosition; // 48
-        public virtual List<int> RunnerScaling => WholeParagraphScaling; // 50
-        public virtual double RunnerSizeLeftBorder => WholeParagraphSizeLeftBorder; // 51
-        public virtual double RunnerSizeRightBorder => WholeParagraphSizeRightBorder; // 51
-        public virtual List<double> RunnerSpacing => WholeParagraphSpacing; // 52
-        public virtual List<bool> RunnerStrikethrough => WholeParagraphStrikethrough; // 53
-        public virtual List<Word.UnderlineType> RunnerUnderlineStyle => WholeParagraphUnderlineStyle; // 54
+        public virtual List<Word.Color> RunnerBackgroundColor => WholeParagraphBackgroundColor; // 40)
+        public virtual List<Word.SingleBorder> RunnerBorder => WholeParagraphBorder; // 41)
+        public virtual List<bool> RunnerDoubleStrikethrough => WholeParagraphDoubleStrikethrough; // 42)
+        public virtual List<Word.Color> RunnerFontColor => WholeParagraphFontColor; // 43)
+        public virtual List<string> RunnerFontName => WholeParagraphFontName; // 44)
+        public virtual List<bool> RunnerHidden => WholeParagraphHidden; // 45)
+        public virtual List<Word.Color> RunnerHighlightColor => WholeParagraphHighlightColor; // 46)
+        public virtual List<double> RunnerKerning => WholeParagraphKerning; // 47)
+        public virtual List<double> RunnerPosition => WholeParagraphPosition; // 48)
+        public virtual List<int> RunnerScaling => WholeParagraphScaling; // 50)
+        public virtual double RunnerSizeLeftBorder => WholeParagraphSizeLeftBorder; // 51)
+        public virtual double RunnerSizeRightBorder => WholeParagraphSizeRightBorder; // 51)
+        public virtual List<double> RunnerSpacing => WholeParagraphSpacing; // 52)
+        public virtual List<bool> RunnerStrikethrough => WholeParagraphStrikethrough; // 53)
+        public virtual List<Word.UnderlineType> RunnerUnderlineStyle => WholeParagraphUnderlineStyle; // 54)
 
-        // Количество пустых строк (отбивок, SPACE, n0) после параграфа
-        public virtual List<int> EmptyLinesAfter => new List<int> { 0 };
+        // Количество пустых строк (отбивок, SPACE, n0) до или после параграфа
+        public virtual List<int> EmptyLinesBefore => new List<int> { 0 }; // 55
+        public virtual List<int> EmptyLinesAfter => new List<int> { 0 }; // 56
+
+        // Тип первого и последего символов
+        public virtual List<EdgeSymbolType> StartSymbolType => new List<EdgeSymbolType> { }; // 57)
+        public virtual List<EdgeSymbolType> LastSymbolType => new List<EdgeSymbolType> { }; // 57)
 
         // Проверка, что список не пустой
         private bool CheckIfListIsNotEmpty<T>(List<T> list)
@@ -670,6 +686,101 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             return paragraphMistakes;
         }
 
+        // Проверка первого символа
+        protected virtual ParagraphMistake? CheckStartSymbol(Word.Paragraph paragraph) 
+        {
+            char firstSymbol;
+            try { firstSymbol = paragraph.Content.ToString()[0]; } catch { return null; }
+
+            if (!CheckEdgeSymbol(firstSymbol, StartSymbolType))
+            {
+                return new ParagraphMistake(
+                    message: "Неверный первый символ",
+                    advice: AdviceCreator.EdgeSymbol(StartSymbolType)
+                );
+            }
+
+            return null;
+        }
+        // Проверка последнего символа
+        protected virtual ParagraphMistake? CheckLastSymbol(Word.Paragraph paragraph) 
+        {
+            char lastSymbol;
+            string paragraphContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraph);
+            try { lastSymbol = paragraphContent.Last(); } catch { return null; }
+
+            if (!CheckEdgeSymbol(lastSymbol, LastSymbolType))
+            {
+                return new ParagraphMistake(
+                    message: "Неверный последний символ",
+                    advice: AdviceCreator.EdgeSymbol(LastSymbolType, last: true)
+                );
+            }
+
+            return null;
+        }
+
+        protected bool CheckEdgeSymbol(char edgeSymbol, List<EdgeSymbolType> edgeSymbolTypes)
+        {
+            List<char> possibleLetters(EdgeSymbolType edgeSymbolType)
+            {
+                List<char> possibleLetters = new List<char> { };
+
+                switch (edgeSymbolType)
+                {
+                    case EdgeSymbolType.CapitalLetter:
+                        break;
+                    case EdgeSymbolType.SmallLetter:
+                        break;
+                    case EdgeSymbolType.Colon:
+                        possibleLetters.Add(':');
+                        break;
+                    case EdgeSymbolType.Semicolon:
+                        possibleLetters.Add(';');
+                        break;
+                    case EdgeSymbolType.Comma:
+                        possibleLetters.Add(',');
+                        break;
+                    case EdgeSymbolType.TerminatingSymbol:
+                        possibleLetters.AddRange(new List<char> { '.', '!', '?' });
+                        break;
+                    default:
+                        break;
+                }
+
+                return possibleLetters;
+            }
+
+            if (edgeSymbolTypes.Count == 0) { return true; }
+            // TODO: !!!
+            //if (edgeSymbol == '"') { return true; }
+
+
+            foreach (EdgeSymbolType edgeSymbolType in edgeSymbolTypes)
+            {
+                switch (edgeSymbolType)
+                {
+                    case EdgeSymbolType.CapitalLetter:
+                        if (char.IsUpper(edgeSymbol)) { return true; }
+                        break;
+                    case EdgeSymbolType.SmallLetter:
+                        if (char.IsLower(edgeSymbol)) { return true; }
+                        break;
+                    case EdgeSymbolType.Colon:
+                    case EdgeSymbolType.Semicolon:
+                    case EdgeSymbolType.Comma:
+                    case EdgeSymbolType.TerminatingSymbol:
+                        List<char> possibleLettersForType = possibleLetters(edgeSymbolType);
+                        if ((possibleLettersForType.Count != 0) & (possibleLettersForType.Contains(edgeSymbol))) { return true; }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return false;
+        }
+
         // Базовый метод проверки
         public virtual ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
@@ -691,7 +802,15 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             // Особые свойства
             // Проверка количества пустых строк
             paragraphMistakes.AddRange(CheckSpecialFeatures(id, classifiedParagraphs));
-            
+
+            // Проверка первого символа
+            ParagraphMistake? startSymbolMistake = CheckStartSymbol(paragraph);
+            if (startSymbolMistake != null) { paragraphMistakes.Add(startSymbolMistake); }
+
+            // Проверка последнего символа
+            ParagraphMistake? lastSymbolMistake = CheckLastSymbol(paragraph);
+            if (lastSymbolMistake != null) { paragraphMistakes.Add(lastSymbolMistake); }
+
             if (paragraphMistakes.Count != 0)
             {
                 return new ParagraphCorrections(
@@ -707,7 +826,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             }
         }
 
-        // Выполнить сравнение по свойствам (не включая особые) с параграфом paragraph
+        // Выполнить сравнение по свойствам (не включая особые, кроме первого символа) с параграфом paragraph
         public virtual ParagraphCorrections? CheckSingleParagraphFormatting(int id, Word.Paragraph paragraph)
         {
             // TODO: Подумать над проверкой выбранного шрифта
@@ -723,6 +842,14 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 
             // Свойства CharacterFormat для раннеров
             paragraphMistakes.AddRange(CheckRunners(paragraph));
+
+            // Проверка первого символа
+            ParagraphMistake? startSymbolMistake = CheckStartSymbol(paragraph);
+            if (startSymbolMistake != null) { paragraphMistakes.Add(startSymbolMistake); }
+
+            // Проверка последнего символа
+            ParagraphMistake? lastSymbolMistake = CheckLastSymbol(paragraph);
+            if (lastSymbolMistake != null) { paragraphMistakes.Add(lastSymbolMistake); }
 
             if (paragraphMistakes.Count != 0)
             {

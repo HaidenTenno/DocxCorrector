@@ -20,23 +20,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
-
-        // Проверка первого симола
-        // TODO: Переписать для Enum
-        private ParagraphMistake? CheckStartSymbol(Word.Paragraph paragraph)
-        {
-            char firstSymbol;
-            try { firstSymbol = paragraph.Content.ToString()[0]; } catch { return null; }
-
-            if ((firstSymbol != '"') & (!char.IsUpper(firstSymbol)))
-            {
-                return new ParagraphMistake(
-                    message: "Параграф должен начинаться с большой буквы"
-                );
-            }
-
-            return null;
-        }
+        public override List<EdgeSymbolType> StartSymbolType => new List<EdgeSymbolType> { EdgeSymbolType.CapitalLetter };
 
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
@@ -48,9 +32,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
-            // Проверка первого символа
-            ParagraphMistake? startSymbolMistake = CheckStartSymbol(paragraph);
-            if (startSymbolMistake != null) { paragraphMistakes.Add(startSymbolMistake); }
 
             if (paragraphMistakes.Count != 0)
             {

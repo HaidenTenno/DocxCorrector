@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel;
 using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
@@ -585,15 +586,15 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
         }
 
         // 37
-        public static string WholeParagraphUnderlineStyle(List<Word.UnderlineType> UnderlineTypes)
+        public static string WholeParagraphUnderlineStyle(List<Word.UnderlineType> underlineTypes)
         {
-            if (CheckListEmpty(UnderlineTypes)) return "Значение не определено";
-            string prefix = UnderlineTypes.Count > 1 ? "Стиль подчеркивания должнен быть одним из следующих: " : "Цвет выделения документа должнен быть ";
+            if (CheckListEmpty(underlineTypes)) return "Значение не определено";
+            string prefix = underlineTypes.Count > 1 ? "Стиль подчеркивания должнен быть одним из следующих: " : "Цвет выделения документа должнен быть ";
 
             List<string> possibleStrings = new List<string>();
-            foreach (Word.UnderlineType UnderlineType in UnderlineTypes)
+            foreach (Word.UnderlineType underlineType in underlineTypes)
             {
-                switch (UnderlineType)
+                switch (underlineType)
                 {
                     case Word.UnderlineType.None:
                         possibleStrings.Add("нет подчёркивания");
@@ -608,5 +609,44 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
             return advice;
         }
 
+        // 57
+        public static string EdgeSymbol(List<EdgeSymbolType> edgeSymbolTypes, bool last = false)
+        {
+            if (CheckListEmpty(edgeSymbolTypes)) return "Значение не определено";
+            string lastFirst = last ? "Последний": "Первый";
+            string prefix = edgeSymbolTypes.Count > 1 ? $"{lastFirst} символ абзаца должнен быть одним из следующих: " : $"{lastFirst} символ абзаца должнен быть ";
+
+            List<string> possibleStrings = new List<string>();
+            foreach (EdgeSymbolType edgeSymbolType in edgeSymbolTypes)
+            {
+                switch (edgeSymbolType)
+                {
+                    case EdgeSymbolType.CapitalLetter:
+                        possibleStrings.Add("заглавная буква");
+                        break;
+                    case EdgeSymbolType.SmallLetter:
+                        possibleStrings.Add("строчная буква");
+                        break;
+                    case EdgeSymbolType.Colon:
+                        possibleStrings.Add("двоеточие");
+                        break;
+                    case EdgeSymbolType.Semicolon:
+                        possibleStrings.Add("точка с запятой");
+                        break;
+                    case EdgeSymbolType.Comma:
+                        possibleStrings.Add("запятая");
+                        break;
+                    case EdgeSymbolType.TerminatingSymbol:
+                        possibleStrings.Add("точка/восклицательный/вопросительный знак");
+                        break;
+                    default:
+                        possibleStrings.Add("Другой тип символа");
+                        break;
+                }
+            }
+
+            string advice = prefix + string.Join(", ", possibleStrings);
+            return advice;
+        }
     }
 }

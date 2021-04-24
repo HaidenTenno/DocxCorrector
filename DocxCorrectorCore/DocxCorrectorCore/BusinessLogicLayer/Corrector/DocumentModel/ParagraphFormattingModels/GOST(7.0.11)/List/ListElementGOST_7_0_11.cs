@@ -22,34 +22,15 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
+        public override List<EdgeSymbolType> LastSymbolType => new List<EdgeSymbolType> { EdgeSymbolType.Comma };
 
         // Свойства списка
         // Маркер
         // TODO: !!!
         public virtual List<string> MarkerFormats => new List<string> { "—", "–", "−", "-", "%1)", "%1" };
 
-        // Последний символ
-        public virtual char LastSymbol => ',';
-
         // IRegexSupportable
         public virtual List<Regex> Regexes => throw new NotImplementedException();
-
-        // Проверка последнего символа
-        private ParagraphMistake? CheckLastSymbol(Word.Paragraph paragraph)
-        {
-            char lastSymbol;
-            string paragraphContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraph);
-            try { lastSymbol = paragraphContent.Last(); } catch { return null; }
-
-            if (lastSymbol != LastSymbol)
-            {
-                return new ParagraphMistake(
-                    message: "Неверный последний символ"
-                );
-            }
-
-            return null;
-        }
 
         // Проверить свойства списка
         protected List<ParagraphMistake> CheckListFormat(Word.Paragraph paragraph)
@@ -79,10 +60,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 );
                 paragraphMistakes.Add(markerParagraphMistake);
             }
-
-            // Проверка последнего символа
-            ParagraphMistake? lastSymbolMistake = CheckLastSymbol(paragraph);
-            if (lastSymbolMistake != null) { paragraphMistakes.Add(lastSymbolMistake); }
 
             return paragraphMistakes;
         }

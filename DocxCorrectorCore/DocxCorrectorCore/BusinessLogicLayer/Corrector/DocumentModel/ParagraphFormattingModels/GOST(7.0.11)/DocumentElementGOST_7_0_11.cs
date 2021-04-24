@@ -15,11 +15,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public override double WholeParagraphSizeRightBorder => 14;
 
         // Свойства CharacterFormat для раннеров
-
+        
         // Количество пустых строк (отбивок, SPACE, n0) до или после параграфа
-        public virtual List<int> EmptyLinesBefore => new List<int> { 0 };
+        public override List<int> EmptyLinesBefore => new List<int> { 0 };
         public override List<int> EmptyLinesAfter => new List<int> { 0 };
-
-        //TODO: Check empty lines before
     }
 }

@@ -21,27 +21,8 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
-
-        // Последний символ
-        public virtual char LastSymbol => ':';
-
-        // Проверка последнего симола
-        // TODO: Переписать для Enum
-        private ParagraphMistake? CheckLastSymbol(Word.Paragraph paragraph)
-        {
-            char lastSymbol;
-            string paragraphContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraph);
-            try { lastSymbol = paragraphContent.Last(); } catch { return null; }
-
-            if (lastSymbol != LastSymbol)
-            {
-                return new ParagraphMistake(
-                    message: "Неверный последний символ"
-                );
-            }
-
-            return null;
-        }
+        public override List<EdgeSymbolType> StartSymbolType => new List<EdgeSymbolType> { EdgeSymbolType.CapitalLetter };
+        public override List<EdgeSymbolType> LastSymbolType => new List<EdgeSymbolType> { EdgeSymbolType.Colon };
 
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
@@ -53,9 +34,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
-            // Проверка последнего символа
-            ParagraphMistake? lastSymbolMistake = CheckLastSymbol(paragraph);
-            if (lastSymbolMistake != null) { paragraphMistakes.Add(lastSymbolMistake); }
 
             if (paragraphMistakes.Count != 0)
             {

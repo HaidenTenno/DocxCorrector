@@ -30,23 +30,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public override List<int> EmptyLinesBefore => new List<int> { 3 };
         public override List<int> EmptyLinesAfter => new List<int> { 3 };
 
-        // Проверка первого симола
-        // TODO: Переписать для Enum
-        private ParagraphMistake? CheckStartSymbol(Word.Paragraph paragraph)
-        {
-            char firstSymbol;
-            try { firstSymbol = paragraph.Content.ToString()[0]; } catch { return null; }
-
-            if ((firstSymbol != '"') & (!char.IsUpper(firstSymbol)))
-            {
-                return new ParagraphMistake(
-                    message: "Параграф должен начинаться с большой буквы"
-                );
-            }
-
-            return null;
-        }
-
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
         {
