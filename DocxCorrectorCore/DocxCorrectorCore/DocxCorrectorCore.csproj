@@ -22,9 +22,4 @@
     <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="BusinessLogicLayer\Corrector\DocumentModel\ParagraphFormattingModels\GOST%287.0.11%29\ImageSign\" />
-    <Folder Include="BusinessLogicLayer\Corrector\DocumentModel\ParagraphFormattingModels\GOST%287.0.11%29\Table\" />
-  </ItemGroup>
-
 </Project>

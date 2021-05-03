@@ -6,7 +6,7 @@ using Word = GemBox.Document;
 
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 {
-    public class ImageSignGOST_7_32 : DocumentElementGOST_7_32, IRegexSupportable
+    public class ImageSignGOST_7_0_11 : DocumentElementGOST_7_0_11, IRegexSupportable
     {
         //h1
 
@@ -16,7 +16,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Свойства ParagraphFormat
         public override List<Word.HorizontalAlignment> Alignment => new List<Word.HorizontalAlignment> { Word.HorizontalAlignment.Center };
         public override List<bool> KeepLinesTogether => new List<bool> { true };
-        public override List<double> LineSpacing => new List<double> { 1.0, 1.5 };
         public override double SpecialIndentationLeftBorder => 0;
         public override double SpecialIndentationRightBorder => 0;
 

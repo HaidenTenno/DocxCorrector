@@ -14,6 +14,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         Colon,
         Semicolon,
         Comma,
+        Dot,
         TerminatingSymbol,
         Other
     }
@@ -687,7 +688,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         }
 
         // Проверка первого символа
-        protected virtual ParagraphMistake? CheckStartSymbol(Word.Paragraph paragraph) 
+        protected virtual ParagraphMistake? CheckStartSymbol(Word.Paragraph paragraph)
         {
             char firstSymbol;
             try { firstSymbol = paragraph.Content.ToString()[0]; } catch { return null; }
@@ -703,7 +704,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             return null;
         }
         // Проверка последнего символа
-        protected virtual ParagraphMistake? CheckLastSymbol(Word.Paragraph paragraph) 
+        protected virtual ParagraphMistake? CheckLastSymbol(Word.Paragraph paragraph)
         {
             char lastSymbol;
             string paragraphContent = GemBoxHelper.GetParagraphContentWithoutNewLine(paragraph);

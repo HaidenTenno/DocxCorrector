@@ -636,6 +636,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
                     case EdgeSymbolType.Comma:
                         possibleStrings.Add("запятая");
                         break;
+                    case EdgeSymbolType.Dot:
+                        possibleStrings.Add("точка");
+                        break;
                     case EdgeSymbolType.TerminatingSymbol:
                         possibleStrings.Add("точка/восклицательный/вопросительный знак");
                         break;

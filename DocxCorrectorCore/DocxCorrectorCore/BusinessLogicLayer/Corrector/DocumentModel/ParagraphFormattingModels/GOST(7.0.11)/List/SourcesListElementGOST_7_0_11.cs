@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using DocxCorrectorCore.Models.Corrections;
 using DocxCorrectorCore.Services.Helpers;
 using Word = GemBox.Document;
 
-
 namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 {
-    public class SimpleListLastElementGOST_7_0_11 : ListElementGOST_7_0_11
+    public class SourcesListElementGOST_7_0_11: ListElementGOST_7_0_11
     {
-        //d3
+        // r0
 
         // Класс элемента
-        public override ParagraphClass ParagraphClass => ParagraphClass.d3;
+        public override ParagraphClass ParagraphClass => ParagraphClass.r0;
 
         // Свойства ParagraphFormat
 
@@ -20,7 +21,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
-        public override List<EdgeSymbolType> LastSymbolType => new List<EdgeSymbolType> { EdgeSymbolType.Dot };
 
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)
@@ -51,6 +51,37 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             }
 
             return result;
+        }
+
+
+        public SourcesListMistake? CheckSourcesListElement(int id, List<Regex> regexes, Word.Element sourcesListElement)
+        {
+            Word.Paragraph sourcesListElementParagraph;
+            try { sourcesListElementParagraph = (Word.Paragraph)sourcesListElement; }
+            catch
+            {
+                return new SourcesListMistake(
+                    paragraphID: id,
+                    prefix: "TABLE",
+                    message: $"В списке литературы не может стоять таблица"
+                );
+            }
+
+            ParsedListElement parsedListElement = new ParsedListElement(sourcesListElementParagraph);
+
+            foreach (Regex regex in regexes)
+            {
+                if (regex.IsMatch(parsedListElement.Content))
+                {
+                    return null;
+                }
+            }
+
+            return new SourcesListMistake(
+                paragraphID: id,
+                prefix: GemBoxHelper.GetParagraphPrefix(sourcesListElementParagraph, 20),
+                message: "Элемент списка литературы не соответствует ни одному из шаблонов"
+            );
         }
     }
 }

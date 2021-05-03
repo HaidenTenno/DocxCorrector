@@ -149,8 +149,9 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector
 
             List<ClassifiedParagraph> classifiedParagraphs = GemBoxHelper.CombineParagraphsWithClassificationResult(document, paragraphClasses);
 
-            // TODO: Model switch + продолжить, когда будут разрабатываться новые режимы
-            var standartSourcesList = new SourcesList();
+            // Модель
+            GlobalDocumentModel model = ModelSwitcher.GetSelectedModel(rulesModel);
+            var standartSourcesList = model.SourcesListFormattingModel;
 
             // Идти по списку классифицированных элементов
             for (int classifiedParagraphIndex = 0; classifiedParagraphIndex < classifiedParagraphs.Count(); classifiedParagraphIndex++)

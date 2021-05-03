@@ -9,7 +9,6 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
 {
     public class TableSignGOST_7_32 : DocumentElementGOST_7_32, IRegexSupportable
     {
-        // TODO: Обратить внимание (пока класс f0)
         //f0
 
         // Класс элемента
@@ -17,6 +16,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         private readonly ParagraphClass paragraphClass;
         public override List<bool> KeepLinesTogether => new List<bool> { true };
         public override List<bool> KeepWithNext => new List<bool> { true };
+        public override List<double> LineSpacing => new List<double> { 1.0, 1.5 };
         public override double SpecialIndentationLeftBorder => 0;
         public override double SpecialIndentationRightBorder => 0;
 
@@ -68,6 +68,37 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
             List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
 
             // Особые свойства
+            ParagraphMistake? regexMistake = CheckRegexMatch(paragraph);
+            if (regexMistake != null) { paragraphMistakes.Add(regexMistake); }
+
+            if (paragraphMistakes.Count != 0)
+            {
+                if (result != null)
+                {
+                    result.Mistakes.AddRange(paragraphMistakes);
+                }
+                else
+                {
+                    result = new ParagraphCorrections(
+                        paragraphID: id,
+                        paragraphClass: ParagraphClass,
+                        prefix: GemBoxHelper.GetParagraphPrefix(paragraph, 20),
+                        mistakes: paragraphMistakes
+                    );
+                }
+            }
+
+            return result;
+        }
+
+        public override ParagraphCorrections? CheckSingleParagraphFormatting(int id, Word.Paragraph paragraph)
+        {
+            ParagraphCorrections? result = base.CheckSingleParagraphFormatting(id, paragraph);
+
+            List<ParagraphMistake> paragraphMistakes = new List<ParagraphMistake>();
+
+            // Особые свойства
+            // Проверка соответствия шаблону
             ParagraphMistake? regexMistake = CheckRegexMatch(paragraph);
             if (regexMistake != null) { paragraphMistakes.Add(regexMistake); }
 

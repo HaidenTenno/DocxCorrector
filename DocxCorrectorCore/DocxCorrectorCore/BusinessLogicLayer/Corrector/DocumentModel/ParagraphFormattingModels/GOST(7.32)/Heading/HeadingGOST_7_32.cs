@@ -24,15 +24,4 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         public override List<EdgeSymbolType> StartSymbolType => new List<EdgeSymbolType> { EdgeSymbolType.CapitalLetter };
         public override List<EdgeSymbolType> LastSymbolType => new List<EdgeSymbolType> { EdgeSymbolType.SmallLetter };
     }
-
-    // TODO: Перенести в отдельную модель рядом с ParagraphFormattingModel
-    //public class DocumentHeadlings
-    //{
-    //    public HeadlingCorrections? CheckHeadlings(int id, List<ClassifiedParagraph> classifiedParagraphs)
-    //    {
-    //        // TODO: Продолжить тут
-
-    //        return null;
-    //    }
-    //}
 }

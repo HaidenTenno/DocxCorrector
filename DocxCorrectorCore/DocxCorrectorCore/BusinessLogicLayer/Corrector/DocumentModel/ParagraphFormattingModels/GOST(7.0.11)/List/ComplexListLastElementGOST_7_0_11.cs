@@ -20,7 +20,7 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
         // Свойства CharacterFormat для всего абзаца
 
         // Особые свойства
-        public override List<EdgeSymbolType> LastSymbolType => new List<EdgeSymbolType> { EdgeSymbolType.TerminatingSymbol };
+        public override List<EdgeSymbolType> LastSymbolType => new List<EdgeSymbolType> { EdgeSymbolType.Dot };
 
         // Метод проверки
         public override ParagraphCorrections? CheckFormatting(int id, List<ClassifiedParagraph> classifiedParagraphs)

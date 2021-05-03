@@ -24,10 +24,10 @@ namespace DocxCorrectorCore.BusinessLogicLayer.Corrector.DocumentModel
                 ParagraphClass.d4 => new ComplexListFirstElementGOST_7_32(),
                 ParagraphClass.d5 => new ComplexListMiddleElementGOST_7_32(),
                 ParagraphClass.d6 => new ComplexListLastElementGOST_7_32(),
-                //ParagraphClass.f1 => new TableSignGOST_7_32(ParagraphClass.f1),
-                //ParagraphClass.f3 => new TableSignGOST_7_32(ParagraphClass.f3),
-                //ParagraphClass.h1 => new ImageSignGOST_7_32(),
-                //ParagraphClass.r0 => new SourcesListElementGOST_7_32(),
+                ParagraphClass.f1 => new TableSignGOST_7_0_11(ParagraphClass.f1),
+                ParagraphClass.f3 => new TableSignGOST_7_0_11(ParagraphClass.f3),
+                ParagraphClass.h1 => new ImageSignGOST_7_0_11(),
+                ParagraphClass.r0 => new SourcesListElementGOST_7_0_11(),
                 _ => null
             };
         }
